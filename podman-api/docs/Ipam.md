@@ -1,0 +1,13 @@
+# Ipam
+
+## Properties
+
+Name | Type | Description | Notes
+------------ | ------------- | ------------- | -------------
+**config** | Option<[**Vec<models::IpamConfig>**](IPAMConfig.md)> |  | [optional]
+**driver** | Option<**String**> |  | [optional]
+**options** | Option<**std::collections::HashMap<String, String>**> |  | [optional]
+
+[[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
+
+
