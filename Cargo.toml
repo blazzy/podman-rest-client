@@ -1,0 +1,10 @@
+[workspace]
+members = [".", "podman-api"]
+
+[package]
+name = "podman-rest-client"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+podman-api = { path="./podman-api" }
