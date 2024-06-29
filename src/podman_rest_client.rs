@@ -4,8 +4,8 @@ use hyper_util::rt::TokioExecutor;
 use podman_api::apis::client::APIClient;
 use podman_api::apis::configuration::Configuration as APIConfiguration;
 
-use crate::ssh;
 use crate::error;
+use crate::ssh;
 
 pub struct PodmanRestClient(pub APIClient);
 

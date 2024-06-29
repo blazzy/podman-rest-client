@@ -61,9 +61,7 @@ impl Service<Uri> for SshConnector {
         let socket_path = self.socket_path.clone();
 
         let future = async move {
-            let socket_channel = session
-                .channel_open_direct_streamlocal(socket_path)
-                .await?;
+            let socket_channel = session.channel_open_direct_streamlocal(socket_path).await?;
 
             Ok(WrapChannelStream(socket_channel.into_stream()))
         };

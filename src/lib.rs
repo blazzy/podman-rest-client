@@ -1,62 +1,34 @@
-use std::process::Stdio;
-use std::str::FromStr;
+//! Provides an interface for querying the podman rest api. Most of the interface is generated from
+//! the the official podman swagger file. This crate adds a layer to make it possible to connect to
+//! podman over ssh. This is commonly necessary on macOs where the container runtime runs in a
+//! virtual machine you connect to over ssh.
+//!
+//! ```
+//! let client = PodmanRestCli
+//! ```
+//!
 
-use serde::Deserialize;
-use tokio::process::Command;
-
+pub mod cli;
 mod error;
-mod ssh;
 mod podman_rest_client;
+mod ssh;
 
-
-pub use podman_rest_client::PodmanRestClient;
-pub use podman_rest_client::Config;
 pub use error::Error;
+pub use podman_rest_client::Config;
+pub use podman_rest_client::PodmanRestClient;
 
-#[derive(Deserialize, Debug)]
-struct PodmanConnection {
-    #[serde(rename = "Name")]
-    pub name: String,
-    #[serde(rename = "URI")]
-    pub uri: String,
-    #[serde(rename = "Identity")]
-    pub identity: String,
-    #[serde(rename = "Default")]
-    pub default: bool,
-}
+/*
+impl PodmanConnection {
+    fn into_config(&mut self) -> Result<Config, hyper::http::uri::InvalidUri> {
+        let uri = hyper::Uri::from_str(&self.uri)?;
+        let user_name = uri.authority().and_then(|authority| {
+            if let Some((user_name, _)) = authority.to_string().split_once('@') {
+                Some(user_name.to_string())
+            } else {
+                None
+            }
+        });
 
-pub async fn get_default_system_config()  {
-    let cmd = Command::new("podman")
-        .args(["system", "connection", "list", "--format", "json"])
-        .stdout(Stdio::piped())
-        .spawn()
-        .unwrap();
-    let output = cmd.wait_with_output().await.unwrap();
-    let string = &String::from_utf8_lossy(&output.stdout);
-    println!("{}", string);
-
-    let json: Vec<PodmanConnection> = serde_json::from_str(string).unwrap();
-    let uri = hyper::Uri::from_str(&json[0].uri).unwrap();
-    let authority = uri.authority().unwrap();
-
-    println!("{}", uri.path());
-    println!("{:?}", uri.host());
-    println!("{:?}", uri.scheme());
-    println!("{:?}", uri.port());
-    println!("{:?}", authority.as_ref());
-    println!("{:?}", uri);
-    println!("{:?}", json);
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[tokio::test]
-    async fn it_works() {
-        get_default_system_config().await;
-
-        assert_eq!(4, 4);
+        Ok(())
     }
-}
-
+}*/
