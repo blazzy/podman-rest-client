@@ -1,0 +1,17 @@
+name: lint
+on: [push]
+jobs:
+  rdme:
+    name: rustfmt
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt
+      - name: Check Formatting
+        run: cargo fmt --check
+      - name: Check if the README is up to date.
+        run: |
+          cargo install cargo-rdme
+          cargo rdme --check
