@@ -40,7 +40,10 @@ pub struct PodNetworkConfig {
     #[serde(rename = "no_manage_hosts", skip_serializing_if = "Option::is_none")]
     pub no_manage_hosts: Option<bool>,
     /// NoManageResolvConf indicates that /etc/resolv.conf should not be managed by the pod. Instead, each container will create and manage a separate resolv.conf as if they had not joined a pod. Conflicts with NoInfra=true and DNSServer, DNSSearch, DNSOption. Optional.
-    #[serde(rename = "no_manage_resolv_conf", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "no_manage_resolv_conf",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub no_manage_resolv_conf: Option<bool>,
     /// PortMappings is a set of ports to map into the infra container. As, by default, containers share their network with the infra container, this will forward the ports to the entire pod. Only available if NetNS is set to Bridge, Slirp, or Pasta. Optional.
     #[serde(rename = "portmappings", skip_serializing_if = "Option::is_none")]
@@ -64,4 +67,3 @@ impl PodNetworkConfig {
         }
     }
 }
-

@@ -22,9 +22,6 @@ pub struct LinuxPids {
 impl LinuxPids {
     /// LinuxPids for Linux cgroup 'pids' resource management (Linux 4.3)
     pub fn new() -> LinuxPids {
-        LinuxPids {
-            limit: None,
-        }
+        LinuxPids { limit: None }
     }
 }
-

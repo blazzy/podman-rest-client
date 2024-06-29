@@ -36,7 +36,14 @@ pub struct HistoryResponseItem {
 
 impl HistoryResponseItem {
     /// HistoryResponseItem individual image layer information in response to ImageHistory operation
-    pub fn new(comment: String, created: i64, created_by: String, id: String, size: i64, tags: Vec<String>) -> HistoryResponseItem {
+    pub fn new(
+        comment: String,
+        created: i64,
+        created_by: String,
+        id: String,
+        size: i64,
+        tags: Vec<String>,
+    ) -> HistoryResponseItem {
         HistoryResponseItem {
             comment,
             created,
@@ -47,4 +54,3 @@ impl HistoryResponseItem {
         }
     }
 }
-

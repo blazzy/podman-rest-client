@@ -19,9 +19,6 @@ pub struct SecretCreateReport {
 
 impl SecretCreateReport {
     pub fn new() -> SecretCreateReport {
-        SecretCreateReport {
-            id: None,
-        }
+        SecretCreateReport { id: None }
     }
 }
-

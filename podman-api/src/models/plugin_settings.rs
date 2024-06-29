@@ -28,7 +28,12 @@ pub struct PluginSettings {
 }
 
 impl PluginSettings {
-    pub fn new(args: Vec<String>, devices: Vec<models::PluginDevice>, env: Vec<String>, mounts: Vec<models::PluginMount>) -> PluginSettings {
+    pub fn new(
+        args: Vec<String>,
+        devices: Vec<models::PluginDevice>,
+        env: Vec<String>,
+        mounts: Vec<models::PluginMount>,
+    ) -> PluginSettings {
         PluginSettings {
             args,
             devices,
@@ -37,4 +42,3 @@ impl PluginSettings {
         }
     }
 }
-

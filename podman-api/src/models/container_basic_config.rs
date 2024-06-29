@@ -23,10 +23,16 @@ pub struct ContainerBasicConfig {
     #[serde(rename = "conmon_pid_file", skip_serializing_if = "Option::is_none")]
     pub conmon_pid_file: Option<String>,
     /// ContainerCreateCommand is the command that was used to create this container. This will be shown in the output of Inspect() on the container, and may also be used by some tools that wish to recreate the container (e.g. `podman generate systemd --new`). Optional.
-    #[serde(rename = "containerCreateCommand", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "containerCreateCommand",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub container_create_command: Option<Vec<String>>,
     /// DependencyContainers is an array of containers this container depends on. Dependency containers must be started before this container. Dependencies can be specified by name or full/partial ID. Optional.
-    #[serde(rename = "dependencyContainers", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "dependencyContainers",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub dependency_containers: Option<Vec<String>>,
     /// Entrypoint is the container's entrypoint. If not given and Image is specified, this will be populated by the image's configuration. Optional.
     #[serde(rename = "entrypoint", skip_serializing_if = "Option::is_none")]
@@ -53,7 +59,10 @@ pub struct ContainerBasicConfig {
     #[serde(rename = "httpproxy", skip_serializing_if = "Option::is_none")]
     pub httpproxy: Option<bool>,
     /// InitContainerType describes if this container is an init container and if so, what type: always or once. Optional.
-    #[serde(rename = "init_container_type", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "init_container_type",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub init_container_type: Option<String>,
     /// Labels are key-value pairs that are used to add metadata to containers. Optional.
     #[serde(rename = "labels", skip_serializing_if = "Option::is_none")]
@@ -173,4 +182,3 @@ impl ContainerBasicConfig {
         }
     }
 }
-

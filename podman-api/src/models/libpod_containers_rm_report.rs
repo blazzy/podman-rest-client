@@ -14,7 +14,12 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct LibpodContainersRmReport {
     /// Error which occurred during Rm operation (if any). This field is optional and may be omitted if no error occurred.
-    #[serde(rename = "Err", default, with = "::serde_with::rust::double_option", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "Err",
+        default,
+        with = "::serde_with::rust::double_option",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub err: Option<Option<String>>,
     #[serde(rename = "Id", skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
@@ -28,4 +33,3 @@ impl LibpodContainersRmReport {
         }
     }
 }
-

@@ -19,7 +19,10 @@ pub struct Container {
     pub config: Option<Box<models::Config>>,
     #[serde(rename = "Created", skip_serializing_if = "Option::is_none")]
     pub created: Option<i64>,
-    #[serde(rename = "DefaultReadOnlyNonRecursive", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "DefaultReadOnlyNonRecursive",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub default_read_only_non_recursive: Option<bool>,
     #[serde(rename = "HostConfig", skip_serializing_if = "Option::is_none")]
     pub host_config: Option<Box<models::HostConfig>>,
@@ -81,4 +84,3 @@ impl Container {
         }
     }
 }
-

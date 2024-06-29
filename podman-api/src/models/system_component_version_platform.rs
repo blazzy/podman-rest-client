@@ -19,9 +19,6 @@ pub struct SystemComponentVersionPlatform {
 
 impl SystemComponentVersionPlatform {
     pub fn new() -> SystemComponentVersionPlatform {
-        SystemComponentVersionPlatform {
-            name: None,
-        }
+        SystemComponentVersionPlatform { name: None }
     }
 }
-

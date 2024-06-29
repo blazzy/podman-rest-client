@@ -25,10 +25,6 @@ pub struct ContainerCreateResponse {
 impl ContainerCreateResponse {
     /// ContainerCreateResponse is the response struct for creating a container
     pub fn new(id: String, warnings: Vec<String>) -> ContainerCreateResponse {
-        ContainerCreateResponse {
-            id,
-            warnings,
-        }
+        ContainerCreateResponse { id, warnings }
     }
 }
-

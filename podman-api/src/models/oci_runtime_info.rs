@@ -35,4 +35,3 @@ impl OciRuntimeInfo {
         }
     }
 }
-

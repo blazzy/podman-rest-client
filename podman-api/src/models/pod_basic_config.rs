@@ -23,7 +23,10 @@ pub struct PodBasicConfig {
     #[serde(rename = "infra_command", skip_serializing_if = "Option::is_none")]
     pub infra_command: Option<Vec<String>>,
     /// InfraConmonPidFile is a custom path to store the infra container's conmon PID.
-    #[serde(rename = "infra_conmon_pid_file", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "infra_conmon_pid_file",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub infra_conmon_pid_file: Option<String>,
     /// InfraImage is the image that will be used for the infra container. If not set, the default set in the Libpod configuration file will be used. Conflicts with NoInfra=true. Optional.
     #[serde(rename = "infra_image", skip_serializing_if = "Option::is_none")]
@@ -96,4 +99,3 @@ impl PodBasicConfig {
         }
     }
 }
-

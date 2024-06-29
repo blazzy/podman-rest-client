@@ -15,7 +15,10 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct InspectNetworkSettings {
     /// AdditionalMacAddresses is a set of additional MAC Addresses beyond the first. CNI may configure more than one interface for a single network, which can cause this.
-    #[serde(rename = "AdditionalMACAddresses", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "AdditionalMACAddresses",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub additional_mac_addresses: Option<Vec<String>>,
     #[serde(rename = "Bridge", skip_serializing_if = "Option::is_none")]
     pub bridge: Option<String>,
@@ -29,7 +32,10 @@ pub struct InspectNetworkSettings {
     #[serde(rename = "GlobalIPv6Address", skip_serializing_if = "Option::is_none")]
     pub global_ipv6_address: Option<String>,
     /// GlobalIPv6PrefixLen is the length of the subnet mask of this network.
-    #[serde(rename = "GlobalIPv6PrefixLen", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "GlobalIPv6PrefixLen",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub global_ipv6_prefix_len: Option<i64>,
     #[serde(rename = "HairpinMode", skip_serializing_if = "Option::is_none")]
     pub hairpin_mode: Option<bool>,
@@ -42,9 +48,15 @@ pub struct InspectNetworkSettings {
     /// IPv6Gateway is the IPv6 gateway this network will use.
     #[serde(rename = "IPv6Gateway", skip_serializing_if = "Option::is_none")]
     pub ipv6_gateway: Option<String>,
-    #[serde(rename = "LinkLocalIPv6Address", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "LinkLocalIPv6Address",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub link_local_ipv6_address: Option<String>,
-    #[serde(rename = "LinkLocalIPv6PrefixLen", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "LinkLocalIPv6PrefixLen",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub link_local_ipv6_prefix_len: Option<i64>,
     /// MacAddress is the MAC address for the interface in this network.
     #[serde(rename = "MacAddress", skip_serializing_if = "Option::is_none")]
@@ -59,10 +71,16 @@ pub struct InspectNetworkSettings {
     #[serde(rename = "SandboxKey", skip_serializing_if = "Option::is_none")]
     pub sandbox_key: Option<String>,
     /// SecondaryIPAddresses is a list of extra IP Addresses that the container has been assigned in this network.
-    #[serde(rename = "SecondaryIPAddresses", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "SecondaryIPAddresses",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub secondary_ip_addresses: Option<Vec<models::Address>>,
     /// SecondaryIPv6Addresses is a list of extra IPv6 Addresses that the container has been assigned in this network.
-    #[serde(rename = "SecondaryIPv6Addresses", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "SecondaryIPv6Addresses",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub secondary_ipv6_addresses: Option<Vec<models::Address>>,
 }
 
@@ -92,4 +110,3 @@ impl InspectNetworkSettings {
         }
     }
 }
-

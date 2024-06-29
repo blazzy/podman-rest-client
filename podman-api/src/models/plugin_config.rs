@@ -58,7 +58,21 @@ pub struct PluginConfig {
 }
 
 impl PluginConfig {
-    pub fn new(args: models::PluginConfigArgs, description: String, documentation: String, entrypoint: Vec<String>, env: Vec<models::PluginEnv>, interface: models::PluginConfigInterface, ipc_host: bool, linux: models::PluginConfigLinux, mounts: Vec<models::PluginMount>, network: models::PluginConfigNetwork, pid_host: bool, propagated_mount: String, work_dir: String) -> PluginConfig {
+    pub fn new(
+        args: models::PluginConfigArgs,
+        description: String,
+        documentation: String,
+        entrypoint: Vec<String>,
+        env: Vec<models::PluginEnv>,
+        interface: models::PluginConfigInterface,
+        ipc_host: bool,
+        linux: models::PluginConfigLinux,
+        mounts: Vec<models::PluginMount>,
+        network: models::PluginConfigNetwork,
+        pid_host: bool,
+        propagated_mount: String,
+        work_dir: String,
+    ) -> PluginConfig {
         PluginConfig {
             args: Box::new(args),
             description,
@@ -79,4 +93,3 @@ impl PluginConfig {
         }
     }
 }
-

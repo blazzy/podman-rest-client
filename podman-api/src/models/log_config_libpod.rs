@@ -39,4 +39,3 @@ impl LogConfigLibpod {
         }
     }
 }
-

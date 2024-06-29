@@ -54,7 +54,10 @@ pub struct InspectContainerData {
     pub is_infra: Option<bool>,
     #[serde(rename = "IsService", skip_serializing_if = "Option::is_none")]
     pub is_service: Option<bool>,
-    #[serde(rename = "KubeExitCodePropagation", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "KubeExitCodePropagation",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub kube_exit_code_propagation: Option<String>,
     #[serde(rename = "MountLabel", skip_serializing_if = "Option::is_none")]
     pub mount_label: Option<String>,
@@ -143,4 +146,3 @@ impl InspectContainerData {
         }
     }
 }
-

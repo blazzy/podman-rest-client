@@ -22,7 +22,10 @@ pub struct NetworkSettings {
     pub gateway: Option<String>,
     #[serde(rename = "GlobalIPv6Address", skip_serializing_if = "Option::is_none")]
     pub global_ipv6_address: Option<String>,
-    #[serde(rename = "GlobalIPv6PrefixLen", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "GlobalIPv6PrefixLen",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub global_ipv6_prefix_len: Option<i64>,
     /// HairpinMode specifies if hairpin NAT should be enabled on the virtual interface  Deprecated: This field is never set and will be removed in a future release.
     #[serde(rename = "HairpinMode", skip_serializing_if = "Option::is_none")]
@@ -34,10 +37,16 @@ pub struct NetworkSettings {
     #[serde(rename = "IPv6Gateway", skip_serializing_if = "Option::is_none")]
     pub ipv6_gateway: Option<String>,
     /// LinkLocalIPv6Address is an IPv6 unicast address using the link-local prefix  Deprecated: This field is never set and will be removed in a future release.
-    #[serde(rename = "LinkLocalIPv6Address", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "LinkLocalIPv6Address",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub link_local_ipv6_address: Option<String>,
     /// LinkLocalIPv6PrefixLen is the prefix length of an IPv6 unicast address  Deprecated: This field is never set and will be removed in a future release.
-    #[serde(rename = "LinkLocalIPv6PrefixLen", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "LinkLocalIPv6PrefixLen",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub link_local_ipv6_prefix_len: Option<i64>,
     #[serde(rename = "MacAddress", skip_serializing_if = "Option::is_none")]
     pub mac_address: Option<String>,
@@ -50,9 +59,15 @@ pub struct NetworkSettings {
     pub sandbox_id: Option<String>,
     #[serde(rename = "SandboxKey", skip_serializing_if = "Option::is_none")]
     pub sandbox_key: Option<String>,
-    #[serde(rename = "SecondaryIPAddresses", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "SecondaryIPAddresses",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub secondary_ip_addresses: Option<Vec<models::Address>>,
-    #[serde(rename = "SecondaryIPv6Addresses", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "SecondaryIPv6Addresses",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub secondary_ipv6_addresses: Option<Vec<models::Address>>,
 }
 
@@ -81,4 +96,3 @@ impl NetworkSettings {
         }
     }
 }
-

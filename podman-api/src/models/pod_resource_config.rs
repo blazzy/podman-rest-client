@@ -22,8 +22,12 @@ pub struct PodResourceConfig {
     #[serde(rename = "resource_limits", skip_serializing_if = "Option::is_none")]
     pub resource_limits: Option<Box<models::LinuxResources>>,
     /// ThrottleReadBpsDevice contains the rate at which the devices in the pod can be read from/accessed
-    #[serde(rename = "throttleReadBpsDevice", skip_serializing_if = "Option::is_none")]
-    pub throttle_read_bps_device: Option<std::collections::HashMap<String, models::LinuxThrottleDevice>>,
+    #[serde(
+        rename = "throttleReadBpsDevice",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub throttle_read_bps_device:
+        Option<std::collections::HashMap<String, models::LinuxThrottleDevice>>,
 }
 
 impl PodResourceConfig {
@@ -36,4 +40,3 @@ impl PodResourceConfig {
         }
     }
 }
-

@@ -30,7 +30,12 @@ pub struct PluginDevice {
 
 impl PluginDevice {
     /// PluginDevice plugin device
-    pub fn new(description: String, name: String, path: String, settable: Vec<String>) -> PluginDevice {
+    pub fn new(
+        description: String,
+        name: String,
+        path: String,
+        settable: Vec<String>,
+    ) -> PluginDevice {
         PluginDevice {
             description,
             name,
@@ -39,4 +44,3 @@ impl PluginDevice {
         }
     }
 }
-

@@ -13,11 +13,17 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct SystemPruneReport {
-    #[serde(rename = "ContainerPruneReports", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "ContainerPruneReports",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub container_prune_reports: Option<Vec<models::PruneReport>>,
     #[serde(rename = "ImagePruneReports", skip_serializing_if = "Option::is_none")]
     pub image_prune_reports: Option<Vec<models::PruneReport>>,
-    #[serde(rename = "NetworkPruneReports", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "NetworkPruneReports",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub network_prune_reports: Option<Vec<models::NetworkPruneReport>>,
     #[serde(rename = "PodPruneReport", skip_serializing_if = "Option::is_none")]
     pub pod_prune_report: Option<Vec<models::PodPruneReport>>,
@@ -39,4 +45,3 @@ impl SystemPruneReport {
         }
     }
 }
-

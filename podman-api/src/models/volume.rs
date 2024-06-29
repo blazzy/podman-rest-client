@@ -46,7 +46,14 @@ pub struct Volume {
 
 impl Volume {
     /// Volume volume
-    pub fn new(driver: String, labels: std::collections::HashMap<String, String>, mountpoint: String, name: String, options: std::collections::HashMap<String, String>, scope: String) -> Volume {
+    pub fn new(
+        driver: String,
+        labels: std::collections::HashMap<String, String>,
+        mountpoint: String,
+        name: String,
+        options: std::collections::HashMap<String, String>,
+        scope: String,
+    ) -> Volume {
         Volume {
             cluster_volume: None,
             created_at: None,
@@ -61,4 +68,3 @@ impl Volume {
         }
     }
 }
-

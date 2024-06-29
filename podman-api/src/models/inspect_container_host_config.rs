@@ -27,13 +27,22 @@ pub struct InspectContainerHostConfig {
     #[serde(rename = "BlkioDeviceReadBps", skip_serializing_if = "Option::is_none")]
     pub blkio_device_read_bps: Option<Vec<models::InspectBlkioThrottleDevice>>,
     /// BlkioDeviceReadIOps is an array of I/O throttle parameters for individual device nodes. This specifically sets the read rate cap in iops per second for device nodes. As with BlkioWeightDevice, we pull the path from /sys/dev, and we don't guarantee the path will be identical to the original (though the node will be).
-    #[serde(rename = "BlkioDeviceReadIOps", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "BlkioDeviceReadIOps",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub blkio_device_read_i_ops: Option<Vec<models::InspectBlkioThrottleDevice>>,
     /// BlkioDeviceWriteBps is an array of I/O throttle parameters for individual device nodes. this specifically sets write rate cap in bytes per second for device nodes. as with BlkioWeightDevice, we pull the path from /sys/dev, and we don't guarantee the path will be identical to the original (though the node will be).
-    #[serde(rename = "BlkioDeviceWriteBps", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "BlkioDeviceWriteBps",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub blkio_device_write_bps: Option<Vec<models::InspectBlkioThrottleDevice>>,
     /// BlkioDeviceWriteIOps is an array of I/O throttle parameters for individual device nodes. This specifically sets the write rate cap in iops per second for device nodes. As with BlkioWeightDevice, we pull the path from /sys/dev, and we don't guarantee the path will be identical to the original (though the node will be).
-    #[serde(rename = "BlkioDeviceWriteIOps", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "BlkioDeviceWriteIOps",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub blkio_device_write_i_ops: Option<Vec<models::InspectBlkioThrottleDevice>>,
     /// BlkioWeight indicates the I/O resources allocated to the container. It is a relative weight in the scheduler for assigning I/O time versus other Cgroups.
     #[serde(rename = "BlkioWeight", skip_serializing_if = "Option::is_none")]
@@ -295,4 +304,3 @@ impl InspectContainerHostConfig {
         }
     }
 }
-

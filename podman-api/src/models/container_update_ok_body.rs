@@ -22,9 +22,6 @@ pub struct ContainerUpdateOkBody {
 impl ContainerUpdateOkBody {
     /// ContainerUpdateOKBody OK response to ContainerUpdate operation
     pub fn new(warnings: Vec<String>) -> ContainerUpdateOkBody {
-        ContainerUpdateOkBody {
-            warnings,
-        }
+        ContainerUpdateOkBody { warnings }
     }
 }
-

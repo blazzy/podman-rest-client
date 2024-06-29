@@ -30,7 +30,12 @@ pub struct VolumeCreate {
 
 impl VolumeCreate {
     /// Details for creating a volume
-    pub fn new(driver: String, driver_opts: std::collections::HashMap<String, String>, labels: std::collections::HashMap<String, String>, name: String) -> VolumeCreate {
+    pub fn new(
+        driver: String,
+        driver_opts: std::collections::HashMap<String, String>,
+        labels: std::collections::HashMap<String, String>,
+        name: String,
+    ) -> VolumeCreate {
         VolumeCreate {
             driver,
             driver_opts,
@@ -39,4 +44,3 @@ impl VolumeCreate {
         }
     }
 }
-

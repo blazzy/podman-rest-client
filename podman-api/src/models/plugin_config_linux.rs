@@ -27,7 +27,11 @@ pub struct PluginConfigLinux {
 
 impl PluginConfigLinux {
     /// PluginConfigLinux plugin config linux
-    pub fn new(allow_all_devices: bool, capabilities: Vec<String>, devices: Vec<models::PluginDevice>) -> PluginConfigLinux {
+    pub fn new(
+        allow_all_devices: bool,
+        capabilities: Vec<String>,
+        devices: Vec<models::PluginDevice>,
+    ) -> PluginConfigLinux {
         PluginConfigLinux {
             allow_all_devices,
             capabilities,
@@ -35,4 +39,3 @@ impl PluginConfigLinux {
         }
     }
 }
-

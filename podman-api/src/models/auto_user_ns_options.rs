@@ -14,10 +14,16 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct AutoUserNsOptions {
     /// AdditionalGIDMappings specified additional GID mappings to include in the generated user namespace.
-    #[serde(rename = "AdditionalGIDMappings", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "AdditionalGIDMappings",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub additional_gid_mappings: Option<Vec<models::IdMap>>,
     /// AdditionalUIDMappings specified additional UID mappings to include in the generated user namespace.
-    #[serde(rename = "AdditionalUIDMappings", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "AdditionalUIDMappings",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub additional_uid_mappings: Option<Vec<models::IdMap>>,
     /// GroupFile to use if the container uses a volume.
     #[serde(rename = "GroupFile", skip_serializing_if = "Option::is_none")]
@@ -45,4 +51,3 @@ impl AutoUserNsOptions {
         }
     }
 }
-

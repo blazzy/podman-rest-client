@@ -47,7 +47,10 @@ pub struct InspectContainerConfig {
     #[serde(rename = "Healthcheck", skip_serializing_if = "Option::is_none")]
     pub healthcheck: Option<Box<models::Schema2HealthConfig>>,
     /// HealthcheckOnFailureAction defines an action to take once the container turns unhealthy.
-    #[serde(rename = "HealthcheckOnFailureAction", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "HealthcheckOnFailureAction",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub healthcheck_on_failure_action: Option<String>,
     /// Container hostname
     #[serde(rename = "Hostname", skip_serializing_if = "Option::is_none")]
@@ -150,4 +153,3 @@ impl InspectContainerConfig {
         }
     }
 }
-

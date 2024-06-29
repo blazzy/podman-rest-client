@@ -47,4 +47,3 @@ impl Schema2HealthConfig {
         }
     }
 }
-

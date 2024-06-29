@@ -27,4 +27,3 @@ impl ImageDelete200ResponseInner {
         }
     }
 }
-

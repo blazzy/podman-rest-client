@@ -53,13 +53,19 @@ pub struct SpecGenerator {
     #[serde(rename = "conmon_pid_file", skip_serializing_if = "Option::is_none")]
     pub conmon_pid_file: Option<String>,
     /// ContainerCreateCommand is the command that was used to create this container. This will be shown in the output of Inspect() on the container, and may also be used by some tools that wish to recreate the container (e.g. `podman generate systemd --new`). Optional.
-    #[serde(rename = "containerCreateCommand", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "containerCreateCommand",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub container_create_command: Option<Vec<String>>,
     /// Create the working directory if it doesn't exist. If unset, it doesn't create it. Optional.
     #[serde(rename = "create_working_dir", skip_serializing_if = "Option::is_none")]
     pub create_working_dir: Option<bool>,
     /// DependencyContainers is an array of containers this container depends on. Dependency containers must be started before this container. Dependencies can be specified by name or full/partial ID. Optional.
-    #[serde(rename = "dependencyContainers", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "dependencyContainers",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub dependency_containers: Option<Vec<String>>,
     /// DeviceCgroupRule are device cgroup rules that allow containers to use additional types of devices.
     #[serde(rename = "device_cgroup_rule", skip_serializing_if = "Option::is_none")]
@@ -101,7 +107,10 @@ pub struct SpecGenerator {
     #[serde(rename = "groups", skip_serializing_if = "Option::is_none")]
     pub groups: Option<Vec<String>>,
     /// HealthCheckOnFailureAction defines how Podman reacts when a container's health status turns unhealthy.
-    #[serde(rename = "health_check_on_failure_action", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "health_check_on_failure_action",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub health_check_on_failure_action: Option<i64>,
     #[serde(rename = "healthconfig", skip_serializing_if = "Option::is_none")]
     pub healthconfig: Option<Box<models::Schema2HealthConfig>>,
@@ -144,7 +153,10 @@ pub struct SpecGenerator {
     #[serde(rename = "init", skip_serializing_if = "Option::is_none")]
     pub init: Option<bool>,
     /// InitContainerType describes if this container is an init container and if so, what type: always or once. Optional.
-    #[serde(rename = "init_container_type", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "init_container_type",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub init_container_type: Option<String>,
     /// InitPath specifies the path to the init binary that will be added if Init is specified above. If not specified, the default set in the Libpod config will be used. Ignored if Init above is not set. Optional.
     #[serde(rename = "init_path", skip_serializing_if = "Option::is_none")]
@@ -210,7 +222,10 @@ pub struct SpecGenerator {
     #[serde(rename = "procfs_opts", skip_serializing_if = "Option::is_none")]
     pub procfs_opts: Option<Vec<String>>,
     /// PublishExposedPorts will publish ports specified in the image to random unused ports (guaranteed to be above 1024) on the host. This is based on ports set in Expose below, and any ports specified by the Image (if one is given). Only available if NetNS is set to Bridge or Slirp. Optional.
-    #[serde(rename = "publish_image_ports", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "publish_image_ports",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub publish_image_ports: Option<bool>,
     /// Rlimits are POSIX rlimits to apply to the container. Optional.
     #[serde(rename = "r_limits", skip_serializing_if = "Option::is_none")]
@@ -219,7 +234,10 @@ pub struct SpecGenerator {
     #[serde(rename = "raw_image_name", skip_serializing_if = "Option::is_none")]
     pub raw_image_name: Option<String>,
     /// ReadOnlyFilesystem indicates that everything will be mounted as read-only. Optional.
-    #[serde(rename = "read_only_filesystem", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "read_only_filesystem",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub read_only_filesystem: Option<bool>,
     /// ReadWriteTmpfs indicates that when running with a ReadOnlyFilesystem mount temporary file systems. Optional.
     #[serde(rename = "read_write_tmpfs", skip_serializing_if = "Option::is_none")]
@@ -254,7 +272,10 @@ pub struct SpecGenerator {
     #[serde(rename = "seccomp_policy", skip_serializing_if = "Option::is_none")]
     pub seccomp_policy: Option<String>,
     /// SeccompProfilePath is the path to a JSON file containing the container's Seccomp profile. If not specified, no Seccomp profile will be used. Optional.
-    #[serde(rename = "seccomp_profile_path", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "seccomp_profile_path",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub seccomp_profile_path: Option<String>,
     /// EnvSecrets are secrets that will be set as environment variables Optional.
     #[serde(rename = "secret_env", skip_serializing_if = "Option::is_none")]
@@ -271,7 +292,10 @@ pub struct SpecGenerator {
     /// ShmSizeSystemd is the size of systemd-specific tmpfs mounts specifically /run, /run/lock, /var/log/journal and /tmp. Optional
     #[serde(rename = "shm_size_systemd", skip_serializing_if = "Option::is_none")]
     pub shm_size_systemd: Option<i64>,
-    #[serde(rename = "startupHealthConfig", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "startupHealthConfig",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub startup_health_config: Option<Box<models::StartupHealthCheck>>,
     /// Stdin is whether the container will keep its STDIN open. Optional.
     #[serde(rename = "stdin", skip_serializing_if = "Option::is_none")]
@@ -295,17 +319,33 @@ pub struct SpecGenerator {
     #[serde(rename = "terminal", skip_serializing_if = "Option::is_none")]
     pub terminal: Option<bool>,
     /// IO read rate limit per cgroup per device, bytes per second
-    #[serde(rename = "throttleReadBpsDevice", skip_serializing_if = "Option::is_none")]
-    pub throttle_read_bps_device: Option<std::collections::HashMap<String, models::LinuxThrottleDevice>>,
+    #[serde(
+        rename = "throttleReadBpsDevice",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub throttle_read_bps_device:
+        Option<std::collections::HashMap<String, models::LinuxThrottleDevice>>,
     /// IO read rate limit per cgroup per device, IO per second
-    #[serde(rename = "throttleReadIOPSDevice", skip_serializing_if = "Option::is_none")]
-    pub throttle_read_iops_device: Option<std::collections::HashMap<String, models::LinuxThrottleDevice>>,
+    #[serde(
+        rename = "throttleReadIOPSDevice",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub throttle_read_iops_device:
+        Option<std::collections::HashMap<String, models::LinuxThrottleDevice>>,
     /// IO write rate limit per cgroup per device, bytes per second
-    #[serde(rename = "throttleWriteBpsDevice", skip_serializing_if = "Option::is_none")]
-    pub throttle_write_bps_device: Option<std::collections::HashMap<String, models::LinuxThrottleDevice>>,
+    #[serde(
+        rename = "throttleWriteBpsDevice",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub throttle_write_bps_device:
+        Option<std::collections::HashMap<String, models::LinuxThrottleDevice>>,
     /// IO write rate limit per cgroup per device, IO per second
-    #[serde(rename = "throttleWriteIOPSDevice", skip_serializing_if = "Option::is_none")]
-    pub throttle_write_iops_device: Option<std::collections::HashMap<String, models::LinuxThrottleDevice>>,
+    #[serde(
+        rename = "throttleWriteIOPSDevice",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub throttle_write_iops_device:
+        Option<std::collections::HashMap<String, models::LinuxThrottleDevice>>,
     /// Timeout is a maximum time in seconds the container will run before main process is sent SIGKILL. If 0 is used, signal will not be sent. Container can run indefinitely if they do not stop after the default termination signal. Optional.
     #[serde(rename = "timeout", skip_serializing_if = "Option::is_none")]
     pub timeout: Option<i32>,
@@ -331,7 +371,10 @@ pub struct SpecGenerator {
     #[serde(rename = "use_image_hosts", skip_serializing_if = "Option::is_none")]
     pub use_image_hosts: Option<bool>,
     /// UseImageResolvConf indicates that resolv.conf should not be managed by Podman, but instead sourced from the image. Conflicts with DNSServer, DNSSearch, DNSOption. Optional.
-    #[serde(rename = "use_image_resolve_conf", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "use_image_resolve_conf",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub use_image_resolve_conf: Option<bool>,
     /// User is the user the container will be run as. Can be given as a UID or a username; if a username, it will be resolved within the container, using the container's /etc/passwd. If unset, the container will be run as root. Optional.
     #[serde(rename = "user", skip_serializing_if = "Option::is_none")]
@@ -482,4 +525,3 @@ impl SpecGenerator {
         }
     }
 }
-

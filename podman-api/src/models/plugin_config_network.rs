@@ -22,9 +22,6 @@ pub struct PluginConfigNetwork {
 impl PluginConfigNetwork {
     /// PluginConfigNetwork plugin config network
     pub fn new(r#type: String) -> PluginConfigNetwork {
-        PluginConfigNetwork {
-            r#type,
-        }
+        PluginConfigNetwork { r#type }
     }
 }
-

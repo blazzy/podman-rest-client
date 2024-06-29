@@ -49,4 +49,3 @@ impl ImageSearch200Response {
         }
     }
 }
-

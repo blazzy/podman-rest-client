@@ -19,9 +19,6 @@ pub struct ImageTreeReport {
 
 impl ImageTreeReport {
     pub fn new() -> ImageTreeReport {
-        ImageTreeReport {
-            tree: None,
-        }
+        ImageTreeReport { tree: None }
     }
 }
-

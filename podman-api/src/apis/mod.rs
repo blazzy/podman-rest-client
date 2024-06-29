@@ -25,9 +25,9 @@ pub struct ApiError {
 impl Debug for ApiError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("ApiError")
-         .field("code", &self.code)
-         .field("body", &"hyper::body::Incoming")
-         .finish()
+            .field("code", &self.code)
+            .field("body", &"hyper::body::Incoming")
+            .finish()
     }
 }
 
@@ -67,37 +67,37 @@ impl From<serde_json::Error> for Error {
 mod request;
 
 mod containers_api;
-pub use self::containers_api::{ ContainersApi, ContainersApiClient };
+pub use self::containers_api::{ContainersApi, ContainersApiClient};
 mod containers_compat_api;
-pub use self::containers_compat_api::{ ContainersCompatApi, ContainersCompatApiClient };
+pub use self::containers_compat_api::{ContainersCompatApi, ContainersCompatApiClient};
 mod exec_api;
-pub use self::exec_api::{ ExecApi, ExecApiClient };
+pub use self::exec_api::{ExecApi, ExecApiClient};
 mod exec_compat_api;
-pub use self::exec_compat_api::{ ExecCompatApi, ExecCompatApiClient };
+pub use self::exec_compat_api::{ExecCompatApi, ExecCompatApiClient};
 mod images_api;
-pub use self::images_api::{ ImagesApi, ImagesApiClient };
+pub use self::images_api::{ImagesApi, ImagesApiClient};
 mod images_compat_api;
-pub use self::images_compat_api::{ ImagesCompatApi, ImagesCompatApiClient };
+pub use self::images_compat_api::{ImagesCompatApi, ImagesCompatApiClient};
 mod manifests_api;
-pub use self::manifests_api::{ ManifestsApi, ManifestsApiClient };
+pub use self::manifests_api::{ManifestsApi, ManifestsApiClient};
 mod networks_api;
-pub use self::networks_api::{ NetworksApi, NetworksApiClient };
+pub use self::networks_api::{NetworksApi, NetworksApiClient};
 mod networks_compat_api;
-pub use self::networks_compat_api::{ NetworksCompatApi, NetworksCompatApiClient };
+pub use self::networks_compat_api::{NetworksCompatApi, NetworksCompatApiClient};
 mod pods_api;
-pub use self::pods_api::{ PodsApi, PodsApiClient };
+pub use self::pods_api::{PodsApi, PodsApiClient};
 mod secrets_api;
-pub use self::secrets_api::{ SecretsApi, SecretsApiClient };
+pub use self::secrets_api::{SecretsApi, SecretsApiClient};
 mod secrets_compat_api;
-pub use self::secrets_compat_api::{ SecretsCompatApi, SecretsCompatApiClient };
+pub use self::secrets_compat_api::{SecretsCompatApi, SecretsCompatApiClient};
 mod system_api;
-pub use self::system_api::{ SystemApi, SystemApiClient };
+pub use self::system_api::{SystemApi, SystemApiClient};
 mod system_compat_api;
-pub use self::system_compat_api::{ SystemCompatApi, SystemCompatApiClient };
+pub use self::system_compat_api::{SystemCompatApi, SystemCompatApiClient};
 mod volumes_api;
-pub use self::volumes_api::{ VolumesApi, VolumesApiClient };
+pub use self::volumes_api::{VolumesApi, VolumesApiClient};
 mod volumes_compat_api;
-pub use self::volumes_compat_api::{ VolumesCompatApi, VolumesCompatApiClient };
+pub use self::volumes_compat_api::{VolumesCompatApi, VolumesCompatApiClient};
 
-pub mod configuration;
 pub mod client;
+pub mod configuration;

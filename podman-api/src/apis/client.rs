@@ -1,8 +1,8 @@
 use std::rc::Rc;
 
+use super::configuration::Configuration;
 use hyper;
 use hyper_util::client::legacy::connect::Connect;
-use super::configuration::Configuration;
 
 pub struct APIClient {
     containers_api: Box<dyn crate::apis::ContainersApi>,
@@ -25,12 +25,16 @@ pub struct APIClient {
 
 impl APIClient {
     pub fn new<C: Connect>(configuration: Configuration<C>) -> APIClient
-        where C: Clone + std::marker::Send + Sync + 'static {
+    where
+        C: Clone + std::marker::Send + Sync + 'static,
+    {
         let rc = Rc::new(configuration);
 
         APIClient {
             containers_api: Box::new(crate::apis::ContainersApiClient::new(rc.clone())),
-            containers_compat_api: Box::new(crate::apis::ContainersCompatApiClient::new(rc.clone())),
+            containers_compat_api: Box::new(crate::apis::ContainersCompatApiClient::new(
+                rc.clone(),
+            )),
             exec_api: Box::new(crate::apis::ExecApiClient::new(rc.clone())),
             exec_compat_api: Box::new(crate::apis::ExecCompatApiClient::new(rc.clone())),
             images_api: Box::new(crate::apis::ImagesApiClient::new(rc.clone())),
@@ -48,68 +52,67 @@ impl APIClient {
         }
     }
 
-    pub fn containers_api(&self) -> &dyn crate::apis::ContainersApi{
+    pub fn containers_api(&self) -> &dyn crate::apis::ContainersApi {
         self.containers_api.as_ref()
     }
 
-    pub fn containers_compat_api(&self) -> &dyn crate::apis::ContainersCompatApi{
+    pub fn containers_compat_api(&self) -> &dyn crate::apis::ContainersCompatApi {
         self.containers_compat_api.as_ref()
     }
 
-    pub fn exec_api(&self) -> &dyn crate::apis::ExecApi{
+    pub fn exec_api(&self) -> &dyn crate::apis::ExecApi {
         self.exec_api.as_ref()
     }
 
-    pub fn exec_compat_api(&self) -> &dyn crate::apis::ExecCompatApi{
+    pub fn exec_compat_api(&self) -> &dyn crate::apis::ExecCompatApi {
         self.exec_compat_api.as_ref()
     }
 
-    pub fn images_api(&self) -> &dyn crate::apis::ImagesApi{
+    pub fn images_api(&self) -> &dyn crate::apis::ImagesApi {
         self.images_api.as_ref()
     }
 
-    pub fn images_compat_api(&self) -> &dyn crate::apis::ImagesCompatApi{
+    pub fn images_compat_api(&self) -> &dyn crate::apis::ImagesCompatApi {
         self.images_compat_api.as_ref()
     }
 
-    pub fn manifests_api(&self) -> &dyn crate::apis::ManifestsApi{
+    pub fn manifests_api(&self) -> &dyn crate::apis::ManifestsApi {
         self.manifests_api.as_ref()
     }
 
-    pub fn networks_api(&self) -> &dyn crate::apis::NetworksApi{
+    pub fn networks_api(&self) -> &dyn crate::apis::NetworksApi {
         self.networks_api.as_ref()
     }
 
-    pub fn networks_compat_api(&self) -> &dyn crate::apis::NetworksCompatApi{
+    pub fn networks_compat_api(&self) -> &dyn crate::apis::NetworksCompatApi {
         self.networks_compat_api.as_ref()
     }
 
-    pub fn pods_api(&self) -> &dyn crate::apis::PodsApi{
+    pub fn pods_api(&self) -> &dyn crate::apis::PodsApi {
         self.pods_api.as_ref()
     }
 
-    pub fn secrets_api(&self) -> &dyn crate::apis::SecretsApi{
+    pub fn secrets_api(&self) -> &dyn crate::apis::SecretsApi {
         self.secrets_api.as_ref()
     }
 
-    pub fn secrets_compat_api(&self) -> &dyn crate::apis::SecretsCompatApi{
+    pub fn secrets_compat_api(&self) -> &dyn crate::apis::SecretsCompatApi {
         self.secrets_compat_api.as_ref()
     }
 
-    pub fn system_api(&self) -> &dyn crate::apis::SystemApi{
+    pub fn system_api(&self) -> &dyn crate::apis::SystemApi {
         self.system_api.as_ref()
     }
 
-    pub fn system_compat_api(&self) -> &dyn crate::apis::SystemCompatApi{
+    pub fn system_compat_api(&self) -> &dyn crate::apis::SystemCompatApi {
         self.system_compat_api.as_ref()
     }
 
-    pub fn volumes_api(&self) -> &dyn crate::apis::VolumesApi{
+    pub fn volumes_api(&self) -> &dyn crate::apis::VolumesApi {
         self.volumes_api.as_ref()
     }
 
-    pub fn volumes_compat_api(&self) -> &dyn crate::apis::VolumesCompatApi{
+    pub fn volumes_compat_api(&self) -> &dyn crate::apis::VolumesCompatApi {
         self.volumes_compat_api.as_ref()
     }
-
 }

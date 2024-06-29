@@ -30,7 +30,12 @@ pub struct PluginEnv {
 
 impl PluginEnv {
     /// PluginEnv plugin env
-    pub fn new(description: String, name: String, settable: Vec<String>, value: String) -> PluginEnv {
+    pub fn new(
+        description: String,
+        name: String,
+        settable: Vec<String>,
+        value: String,
+    ) -> PluginEnv {
         PluginEnv {
             description,
             name,
@@ -39,4 +44,3 @@ impl PluginEnv {
         }
     }
 }
-

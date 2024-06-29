@@ -19,9 +19,6 @@ pub struct ImageImportReport {
 
 impl ImageImportReport {
     pub fn new() -> ImageImportReport {
-        ImageImportReport {
-            id: None,
-        }
+        ImageImportReport { id: None }
     }
 }
-

@@ -19,9 +19,6 @@ pub struct ImageLoadReport {
 
 impl ImageLoadReport {
     pub fn new() -> ImageLoadReport {
-        ImageLoadReport {
-            names: None,
-        }
+        ImageLoadReport { names: None }
     }
 }
-

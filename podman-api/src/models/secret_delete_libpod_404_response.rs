@@ -33,4 +33,3 @@ impl SecretDeleteLibpod404Response {
         }
     }
 }
-

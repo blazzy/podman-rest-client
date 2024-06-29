@@ -21,9 +21,6 @@ pub struct ConfigReference {
 impl ConfigReference {
     /// ConfigReference specifies the source which provides a network's configuration
     pub fn new() -> ConfigReference {
-        ConfigReference {
-            network: None,
-        }
+        ConfigReference { network: None }
     }
 }
-

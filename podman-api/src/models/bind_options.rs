@@ -20,10 +20,16 @@ pub struct BindOptions {
     #[serde(rename = "Propagation", skip_serializing_if = "Option::is_none")]
     pub propagation: Option<String>,
     /// ReadOnlyForceRecursive raises an error if the mount cannot be made recursively read-only.
-    #[serde(rename = "ReadOnlyForceRecursive", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "ReadOnlyForceRecursive",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub read_only_force_recursive: Option<bool>,
     /// ReadOnlyNonRecursive makes the mount non-recursively read-only, but still leaves the mount recursive (unless NonRecursive is set to true in conjunction).
-    #[serde(rename = "ReadOnlyNonRecursive", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "ReadOnlyNonRecursive",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub read_only_non_recursive: Option<bool>,
 }
 
@@ -38,4 +44,3 @@ impl BindOptions {
         }
     }
 }
-

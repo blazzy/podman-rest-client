@@ -39,7 +39,15 @@ pub struct PluginMount {
 
 impl PluginMount {
     /// PluginMount plugin mount
-    pub fn new(description: String, destination: String, name: String, options: Vec<String>, settable: Vec<String>, source: String, r#type: String) -> PluginMount {
+    pub fn new(
+        description: String,
+        destination: String,
+        name: String,
+        options: Vec<String>,
+        settable: Vec<String>,
+        source: String,
+        r#type: String,
+    ) -> PluginMount {
         PluginMount {
             description,
             destination,
@@ -51,4 +59,3 @@ impl PluginMount {
         }
     }
 }
-

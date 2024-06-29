@@ -38,4 +38,3 @@ impl DeviceRequest {
         }
     }
 }
-

@@ -18,7 +18,10 @@ pub struct PodCreateOptions {
     pub cgroup_parent: Option<String>,
     #[serde(rename = "container_command", skip_serializing_if = "Option::is_none")]
     pub container_command: Option<String>,
-    #[serde(rename = "container_conmon_pidfile", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "container_conmon_pidfile",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub container_conmon_pidfile: Option<String>,
     #[serde(rename = "container_name", skip_serializing_if = "Option::is_none")]
     pub container_name: Option<String>,
@@ -101,4 +104,3 @@ impl PodCreateOptions {
         }
     }
 }
-

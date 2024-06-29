@@ -56,7 +56,10 @@ pub struct PodSpecGenerator {
     #[serde(rename = "infra_command", skip_serializing_if = "Option::is_none")]
     pub infra_command: Option<Vec<String>>,
     /// InfraConmonPidFile is a custom path to store the infra container's conmon PID.
-    #[serde(rename = "infra_conmon_pid_file", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "infra_conmon_pid_file",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub infra_conmon_pid_file: Option<String>,
     /// InfraImage is the image that will be used for the infra container. If not set, the default set in the Libpod configuration file will be used. Conflicts with NoInfra=true. Optional.
     #[serde(rename = "infra_image", skip_serializing_if = "Option::is_none")]
@@ -87,7 +90,10 @@ pub struct PodSpecGenerator {
     #[serde(rename = "no_manage_hosts", skip_serializing_if = "Option::is_none")]
     pub no_manage_hosts: Option<bool>,
     /// NoManageResolvConf indicates that /etc/resolv.conf should not be managed by the pod. Instead, each container will create and manage a separate resolv.conf as if they had not joined a pod. Conflicts with NoInfra=true and DNSServer, DNSSearch, DNSOption. Optional.
-    #[serde(rename = "no_manage_resolv_conf", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "no_manage_resolv_conf",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub no_manage_resolv_conf: Option<bool>,
     /// Overlay volumes are named volumes that will be added to the pod. Optional.
     #[serde(rename = "overlay_volumes", skip_serializing_if = "Option::is_none")]
@@ -131,8 +137,12 @@ pub struct PodSpecGenerator {
     #[serde(rename = "sysctl", skip_serializing_if = "Option::is_none")]
     pub sysctl: Option<std::collections::HashMap<String, String>>,
     /// ThrottleReadBpsDevice contains the rate at which the devices in the pod can be read from/accessed
-    #[serde(rename = "throttleReadBpsDevice", skip_serializing_if = "Option::is_none")]
-    pub throttle_read_bps_device: Option<std::collections::HashMap<String, models::LinuxThrottleDevice>>,
+    #[serde(
+        rename = "throttleReadBpsDevice",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub throttle_read_bps_device:
+        Option<std::collections::HashMap<String, models::LinuxThrottleDevice>>,
     #[serde(rename = "userns", skip_serializing_if = "Option::is_none")]
     pub userns: Option<Box<models::Namespace>>,
     #[serde(rename = "utsns", skip_serializing_if = "Option::is_none")]
@@ -198,4 +208,3 @@ impl PodSpecGenerator {
         }
     }
 }
-

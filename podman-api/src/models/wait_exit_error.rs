@@ -22,9 +22,6 @@ pub struct WaitExitError {
 impl WaitExitError {
     /// WaitExitError container waiting error, if any
     pub fn new() -> WaitExitError {
-        WaitExitError {
-            message: None,
-        }
+        WaitExitError { message: None }
     }
 }
-

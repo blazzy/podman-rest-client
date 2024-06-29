@@ -21,9 +21,6 @@ pub struct UpdateEntities {
 impl UpdateEntities {
     /// UpdateEntities used to wrap the oci resource spec in a swagger model
     pub fn new() -> UpdateEntities {
-        UpdateEntities {
-            resources: None,
-        }
+        UpdateEntities { resources: None }
     }
 }
-

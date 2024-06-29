@@ -77,7 +77,10 @@ pub struct InspectPodData {
     #[serde(rename = "blkio_weight", skip_serializing_if = "Option::is_none")]
     pub blkio_weight: Option<i32>,
     /// BlkioWeightDevice contains the blkio weight device limits for the pod
-    #[serde(rename = "blkio_weight_device", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "blkio_weight_device",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub blkio_weight_device: Option<Vec<models::InspectBlkioWeightDevice>>,
     /// CPUPeriod contains the CPU period of the pod
     #[serde(rename = "cpu_period", skip_serializing_if = "Option::is_none")]
@@ -162,4 +165,3 @@ impl InspectPodData {
         }
     }
 }
-

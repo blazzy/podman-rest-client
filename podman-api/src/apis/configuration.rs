@@ -13,7 +13,9 @@ use hyper_util::client::legacy::connect::Connect;
 use hyper_util::client::legacy::Client;
 
 pub struct Configuration<C: Connect>
-    where C: Clone + std::marker::Send + Sync + 'static {
+where
+    C: Clone + std::marker::Send + Sync + 'static,
+{
     pub base_path: String,
     pub user_agent: Option<String>,
     pub client: Client<C, String>,
@@ -31,7 +33,9 @@ pub struct ApiKey {
 }
 
 impl<C: Connect> Configuration<C>
-    where C: Clone + std::marker::Send + Sync {
+where
+    C: Clone + std::marker::Send + Sync,
+{
     pub fn new(client: Client<C, String>) -> Configuration<C> {
         Configuration {
             base_path: "http://podman.io".to_owned(),

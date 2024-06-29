@@ -27,4 +27,3 @@ impl NetworkCreate201Response {
         }
     }
 }
-

@@ -23,17 +23,29 @@ pub struct ManifestAddArtifactOptions {
     /// Arch overrides the architecture for the item in the manifest list
     #[serde(rename = "arch", skip_serializing_if = "Option::is_none")]
     pub arch: Option<String>,
-    #[serde(rename = "artifact_annotations", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "artifact_annotations",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub artifact_annotations: Option<std::collections::HashMap<String, String>>,
     #[serde(rename = "artifact_config", skip_serializing_if = "Option::is_none")]
     pub artifact_config: Option<String>,
-    #[serde(rename = "artifact_config_type", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "artifact_config_type",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub artifact_config_type: Option<String>,
-    #[serde(rename = "artifact_exclude_titles", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "artifact_exclude_titles",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub artifact_exclude_titles: Option<bool>,
     #[serde(rename = "artifact_files", skip_serializing_if = "Option::is_none")]
     pub artifact_files: Option<Vec<String>>,
-    #[serde(rename = "artifact_layer_type", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "artifact_layer_type",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub artifact_layer_type: Option<String>,
     #[serde(rename = "artifact_subject", skip_serializing_if = "Option::is_none")]
     pub artifact_subject: Option<String>,
@@ -92,4 +104,3 @@ impl ManifestAddArtifactOptions {
         }
     }
 }
-

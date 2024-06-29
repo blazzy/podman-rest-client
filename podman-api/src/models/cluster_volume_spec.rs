@@ -15,7 +15,10 @@ use serde::{Deserialize, Serialize};
 pub struct ClusterVolumeSpec {
     #[serde(rename = "AccessMode", skip_serializing_if = "Option::is_none")]
     pub access_mode: Option<Box<models::AccessMode>>,
-    #[serde(rename = "AccessibilityRequirements", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "AccessibilityRequirements",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub accessibility_requirements: Option<Box<models::TopologyRequirement>>,
     #[serde(rename = "Availability", skip_serializing_if = "Option::is_none")]
     pub availability: Option<String>,
@@ -41,4 +44,3 @@ impl ClusterVolumeSpec {
         }
     }
 }
-

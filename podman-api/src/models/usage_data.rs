@@ -25,10 +25,6 @@ pub struct UsageData {
 impl UsageData {
     /// UsageData Usage details about the volume. This information is used by the `GET /system/df` endpoint, and omitted in other endpoints.
     pub fn new(ref_count: i64, size: i64) -> UsageData {
-        UsageData {
-            ref_count,
-            size,
-        }
+        UsageData { ref_count, size }
     }
 }
-

@@ -47,13 +47,19 @@ pub struct ContainerNetworkConfig {
     #[serde(rename = "portmappings", skip_serializing_if = "Option::is_none")]
     pub portmappings: Option<Vec<models::PortMapping>>,
     /// PublishExposedPorts will publish ports specified in the image to random unused ports (guaranteed to be above 1024) on the host. This is based on ports set in Expose below, and any ports specified by the Image (if one is given). Only available if NetNS is set to Bridge or Slirp. Optional.
-    #[serde(rename = "publish_image_ports", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "publish_image_ports",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub publish_image_ports: Option<bool>,
     /// UseImageHosts indicates that /etc/hosts should not be managed by Podman, and instead sourced from the image. Conflicts with HostAdd. Optional.
     #[serde(rename = "use_image_hosts", skip_serializing_if = "Option::is_none")]
     pub use_image_hosts: Option<bool>,
     /// UseImageResolvConf indicates that resolv.conf should not be managed by Podman, but instead sourced from the image. Conflicts with DNSServer, DNSSearch, DNSOption. Optional.
-    #[serde(rename = "use_image_resolve_conf", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "use_image_resolve_conf",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub use_image_resolve_conf: Option<bool>,
 }
 
@@ -78,4 +84,3 @@ impl ContainerNetworkConfig {
         }
     }
 }
-

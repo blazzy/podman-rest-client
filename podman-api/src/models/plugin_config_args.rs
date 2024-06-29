@@ -30,7 +30,12 @@ pub struct PluginConfigArgs {
 
 impl PluginConfigArgs {
     /// PluginConfigArgs plugin config args
-    pub fn new(description: String, name: String, settable: Vec<String>, value: Vec<String>) -> PluginConfigArgs {
+    pub fn new(
+        description: String,
+        name: String,
+        settable: Vec<String>,
+        value: Vec<String>,
+    ) -> PluginConfigArgs {
         PluginConfigArgs {
             description,
             name,
@@ -39,4 +44,3 @@ impl PluginConfigArgs {
         }
     }
 }
-

@@ -41,4 +41,3 @@ impl Schema2PlatformSpec {
         }
     }
 }
-

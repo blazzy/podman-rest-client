@@ -25,10 +25,6 @@ pub struct ContainerTopOkBody {
 impl ContainerTopOkBody {
     /// ContainerTopOKBody OK response to ContainerTop operation
     pub fn new(processes: Vec<Vec<String>>, titles: Vec<String>) -> ContainerTopOkBody {
-        ContainerTopOkBody {
-            processes,
-            titles,
-        }
+        ContainerTopOkBody { processes, titles }
     }
 }
-

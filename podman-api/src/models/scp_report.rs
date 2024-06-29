@@ -19,9 +19,6 @@ pub struct ScpReport {
 
 impl ScpReport {
     pub fn new() -> ScpReport {
-        ScpReport {
-            id: None,
-        }
+        ScpReport { id: None }
     }
 }
-

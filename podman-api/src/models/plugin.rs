@@ -34,7 +34,12 @@ pub struct Plugin {
 
 impl Plugin {
     /// Plugin A plugin for the Engine API
-    pub fn new(config: models::PluginConfig, enabled: bool, name: String, settings: models::PluginSettings) -> Plugin {
+    pub fn new(
+        config: models::PluginConfig,
+        enabled: bool,
+        name: String,
+        settings: models::PluginSettings,
+    ) -> Plugin {
         Plugin {
             config: Box::new(config),
             enabled,
@@ -45,4 +50,3 @@ impl Plugin {
         }
     }
 }
-

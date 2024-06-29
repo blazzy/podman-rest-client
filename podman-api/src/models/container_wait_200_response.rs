@@ -28,4 +28,3 @@ impl ContainerWait200Response {
         }
     }
 }
-

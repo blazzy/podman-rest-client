@@ -19,9 +19,6 @@ pub struct SecretVersion {
 
 impl SecretVersion {
     pub fn new() -> SecretVersion {
-        SecretVersion {
-            index: None,
-        }
+        SecretVersion { index: None }
     }
 }
-

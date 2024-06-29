@@ -48,7 +48,17 @@ pub struct Summary {
 
 impl Summary {
     /// Summary summary
-    pub fn new(containers: i64, created: i64, id: String, labels: std::collections::HashMap<String, String>, parent_id: String, repo_digests: Vec<String>, repo_tags: Vec<String>, shared_size: i64, size: i64) -> Summary {
+    pub fn new(
+        containers: i64,
+        created: i64,
+        id: String,
+        labels: std::collections::HashMap<String, String>,
+        parent_id: String,
+        repo_digests: Vec<String>,
+        repo_tags: Vec<String>,
+        shared_size: i64,
+        size: i64,
+    ) -> Summary {
         Summary {
             containers,
             created,
@@ -63,4 +73,3 @@ impl Summary {
         }
     }
 }
-

@@ -24,4 +24,3 @@ impl NetworkPrune200Response {
         }
     }
 }
-

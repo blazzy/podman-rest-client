@@ -75,4 +75,3 @@ impl ManifestAddOptions {
         }
     }
 }
-

@@ -20,9 +20,6 @@ pub struct ImageBuild200Response {
 
 impl ImageBuild200Response {
     pub fn new(stream: String) -> ImageBuild200Response {
-        ImageBuild200Response {
-            stream,
-        }
+        ImageBuild200Response { stream }
     }
 }
-

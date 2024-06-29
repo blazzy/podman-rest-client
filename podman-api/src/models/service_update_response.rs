@@ -22,9 +22,6 @@ pub struct ServiceUpdateResponse {
 impl ServiceUpdateResponse {
     /// ServiceUpdateResponse service update response
     pub fn new() -> ServiceUpdateResponse {
-        ServiceUpdateResponse {
-            warnings: None,
-        }
+        ServiceUpdateResponse { warnings: None }
     }
 }
-

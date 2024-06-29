@@ -23,10 +23,6 @@ pub struct FilesystemChange {
 
 impl FilesystemChange {
     pub fn new(kind: i32, path: String) -> FilesystemChange {
-        FilesystemChange {
-            kind,
-            path,
-        }
+        FilesystemChange { kind, path }
     }
 }
-

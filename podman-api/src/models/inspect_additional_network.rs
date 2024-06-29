@@ -15,7 +15,10 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct InspectAdditionalNetwork {
     /// AdditionalMacAddresses is a set of additional MAC Addresses beyond the first. CNI may configure more than one interface for a single network, which can cause this.
-    #[serde(rename = "AdditionalMACAddresses", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "AdditionalMACAddresses",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub additional_mac_addresses: Option<Vec<String>>,
     /// Aliases are any network aliases the container has in this network.
     #[serde(rename = "Aliases", skip_serializing_if = "Option::is_none")]
@@ -33,7 +36,10 @@ pub struct InspectAdditionalNetwork {
     #[serde(rename = "GlobalIPv6Address", skip_serializing_if = "Option::is_none")]
     pub global_ipv6_address: Option<String>,
     /// GlobalIPv6PrefixLen is the length of the subnet mask of this network.
-    #[serde(rename = "GlobalIPv6PrefixLen", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "GlobalIPv6PrefixLen",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub global_ipv6_prefix_len: Option<i64>,
     /// IPAMConfig is presently unused and maintained exclusively for compatibility.
     #[serde(rename = "IPAMConfig", skip_serializing_if = "Option::is_none")]
@@ -57,10 +63,16 @@ pub struct InspectAdditionalNetwork {
     #[serde(rename = "NetworkID", skip_serializing_if = "Option::is_none")]
     pub network_id: Option<String>,
     /// SecondaryIPAddresses is a list of extra IP Addresses that the container has been assigned in this network.
-    #[serde(rename = "SecondaryIPAddresses", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "SecondaryIPAddresses",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub secondary_ip_addresses: Option<Vec<models::Address>>,
     /// SecondaryIPv6Addresses is a list of extra IPv6 Addresses that the container has been assigned in this network.
-    #[serde(rename = "SecondaryIPv6Addresses", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "SecondaryIPv6Addresses",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub secondary_ipv6_addresses: Option<Vec<models::Address>>,
 }
 
@@ -87,4 +99,3 @@ impl InspectAdditionalNetwork {
         }
     }
 }
-

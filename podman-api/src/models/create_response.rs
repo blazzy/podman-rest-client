@@ -25,10 +25,6 @@ pub struct CreateResponse {
 impl CreateResponse {
     /// OK response to ContainerCreate operation
     pub fn new(id: String, warnings: Vec<String>) -> CreateResponse {
-        CreateResponse {
-            id,
-            warnings,
-        }
+        CreateResponse { id, warnings }
     }
 }
-

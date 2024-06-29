@@ -24,17 +24,33 @@ pub struct ContainerResourceConfig {
     #[serde(rename = "resource_limits", skip_serializing_if = "Option::is_none")]
     pub resource_limits: Option<Box<models::LinuxResources>>,
     /// IO read rate limit per cgroup per device, bytes per second
-    #[serde(rename = "throttleReadBpsDevice", skip_serializing_if = "Option::is_none")]
-    pub throttle_read_bps_device: Option<std::collections::HashMap<String, models::LinuxThrottleDevice>>,
+    #[serde(
+        rename = "throttleReadBpsDevice",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub throttle_read_bps_device:
+        Option<std::collections::HashMap<String, models::LinuxThrottleDevice>>,
     /// IO read rate limit per cgroup per device, IO per second
-    #[serde(rename = "throttleReadIOPSDevice", skip_serializing_if = "Option::is_none")]
-    pub throttle_read_iops_device: Option<std::collections::HashMap<String, models::LinuxThrottleDevice>>,
+    #[serde(
+        rename = "throttleReadIOPSDevice",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub throttle_read_iops_device:
+        Option<std::collections::HashMap<String, models::LinuxThrottleDevice>>,
     /// IO write rate limit per cgroup per device, bytes per second
-    #[serde(rename = "throttleWriteBpsDevice", skip_serializing_if = "Option::is_none")]
-    pub throttle_write_bps_device: Option<std::collections::HashMap<String, models::LinuxThrottleDevice>>,
+    #[serde(
+        rename = "throttleWriteBpsDevice",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub throttle_write_bps_device:
+        Option<std::collections::HashMap<String, models::LinuxThrottleDevice>>,
     /// IO write rate limit per cgroup per device, IO per second
-    #[serde(rename = "throttleWriteIOPSDevice", skip_serializing_if = "Option::is_none")]
-    pub throttle_write_iops_device: Option<std::collections::HashMap<String, models::LinuxThrottleDevice>>,
+    #[serde(
+        rename = "throttleWriteIOPSDevice",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub throttle_write_iops_device:
+        Option<std::collections::HashMap<String, models::LinuxThrottleDevice>>,
     /// CgroupConf are key-value options passed into the container runtime that are used to configure cgroup v2. Optional.
     #[serde(rename = "unified", skip_serializing_if = "Option::is_none")]
     pub unified: Option<std::collections::HashMap<String, String>>,
@@ -59,4 +75,3 @@ impl ContainerResourceConfig {
         }
     }
 }
-

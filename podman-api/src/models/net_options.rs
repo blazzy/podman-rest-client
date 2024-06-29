@@ -33,7 +33,10 @@ pub struct NetOptions {
     pub networks: Option<std::collections::HashMap<String, models::PerNetworkOptions>>,
     #[serde(rename = "no_manage_hosts", skip_serializing_if = "Option::is_none")]
     pub no_manage_hosts: Option<bool>,
-    #[serde(rename = "no_manage_resolv_conf", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "no_manage_resolv_conf",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub no_manage_resolv_conf: Option<bool>,
     #[serde(rename = "portmappings", skip_serializing_if = "Option::is_none")]
     pub portmappings: Option<Vec<models::PortMapping>>,
@@ -57,4 +60,3 @@ impl NetOptions {
         }
     }
 }
-

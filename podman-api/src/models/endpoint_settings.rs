@@ -27,7 +27,10 @@ pub struct EndpointSettings {
     pub gateway: Option<String>,
     #[serde(rename = "GlobalIPv6Address", skip_serializing_if = "Option::is_none")]
     pub global_ipv6_address: Option<String>,
-    #[serde(rename = "GlobalIPv6PrefixLen", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "GlobalIPv6PrefixLen",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub global_ipv6_prefix_len: Option<i64>,
     #[serde(rename = "IPAMConfig", skip_serializing_if = "Option::is_none")]
     pub ipam_config: Option<Box<models::EndpointIpamConfig>>,
@@ -68,4 +71,3 @@ impl EndpointSettings {
         }
     }
 }
-

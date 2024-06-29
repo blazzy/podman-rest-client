@@ -21,9 +21,6 @@ pub struct ImageStore {
 impl ImageStore {
     /// ImageStore describes the image store.  Right now only the number of images present
     pub fn new() -> ImageStore {
-        ImageStore {
-            number: None,
-        }
+        ImageStore { number: None }
     }
 }
-

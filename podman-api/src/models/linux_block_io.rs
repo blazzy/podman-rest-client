@@ -18,16 +18,28 @@ pub struct LinuxBlockIo {
     #[serde(rename = "leafWeight", skip_serializing_if = "Option::is_none")]
     pub leaf_weight: Option<i32>,
     /// IO read rate limit per cgroup per device, bytes per second
-    #[serde(rename = "throttleReadBpsDevice", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "throttleReadBpsDevice",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub throttle_read_bps_device: Option<Vec<models::LinuxThrottleDevice>>,
     /// IO read rate limit per cgroup per device, IO per second
-    #[serde(rename = "throttleReadIOPSDevice", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "throttleReadIOPSDevice",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub throttle_read_iops_device: Option<Vec<models::LinuxThrottleDevice>>,
     /// IO write rate limit per cgroup per device, bytes per second
-    #[serde(rename = "throttleWriteBpsDevice", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "throttleWriteBpsDevice",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub throttle_write_bps_device: Option<Vec<models::LinuxThrottleDevice>>,
     /// IO write rate limit per cgroup per device, IO per second
-    #[serde(rename = "throttleWriteIOPSDevice", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "throttleWriteIOPSDevice",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub throttle_write_iops_device: Option<Vec<models::LinuxThrottleDevice>>,
     /// Specifies per cgroup weight
     #[serde(rename = "weight", skip_serializing_if = "Option::is_none")]
@@ -51,4 +63,3 @@ impl LinuxBlockIo {
         }
     }
 }
-

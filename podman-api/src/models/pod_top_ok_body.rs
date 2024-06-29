@@ -23,10 +23,6 @@ pub struct PodTopOkBody {
 
 impl PodTopOkBody {
     pub fn new(processes: Vec<Vec<String>>, titles: Vec<String>) -> PodTopOkBody {
-        PodTopOkBody {
-            processes,
-            titles,
-        }
+        PodTopOkBody { processes, titles }
     }
 }
-

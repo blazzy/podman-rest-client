@@ -22,9 +22,6 @@ pub struct IdResponse {
 impl IdResponse {
     /// IDResponse Response to an API call that returns just an Id
     pub fn new(id: String) -> IdResponse {
-        IdResponse {
-            id,
-        }
+        IdResponse { id }
     }
 }
-

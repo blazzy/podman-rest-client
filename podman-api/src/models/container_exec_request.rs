@@ -25,7 +25,7 @@ pub struct ContainerExecRequest {
     /// Command to run, as a string or array of strings.
     #[serde(rename = "Cmd", skip_serializing_if = "Option::is_none")]
     pub cmd: Option<Vec<String>>,
-    /// \"Override the key sequence for detaching a container. Format is a single character [a-Z] or ctrl-<value> where <value> is one of: a-z, @, ^, [, , or _.\" 
+    /// \"Override the key sequence for detaching a container. Format is a single character [a-Z] or ctrl-<value> where <value> is one of: a-z, @, ^, [, , or _.\"
     #[serde(rename = "DetachKeys", skip_serializing_if = "Option::is_none")]
     pub detach_keys: Option<String>,
     /// A list of environment variables in the form [\"VAR=value\", ...]
@@ -37,7 +37,7 @@ pub struct ContainerExecRequest {
     /// Allocate a pseudo-TTY
     #[serde(rename = "Tty", skip_serializing_if = "Option::is_none")]
     pub tty: Option<bool>,
-    /// \"The user, and optionally, group to run the exec process inside the container. Format is one of: user, user:group, uid, or uid:gid.\" 
+    /// \"The user, and optionally, group to run the exec process inside the container. Format is one of: user, user:group, uid, or uid:gid.\"
     #[serde(rename = "User", skip_serializing_if = "Option::is_none")]
     pub user: Option<String>,
     /// The working directory for the exec process inside the container.
@@ -61,4 +61,3 @@ impl ContainerExecRequest {
         }
     }
 }
-

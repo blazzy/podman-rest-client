@@ -19,9 +19,6 @@ pub struct ContainerWait200ResponseError {
 
 impl ContainerWait200ResponseError {
     pub fn new() -> ContainerWait200ResponseError {
-        ContainerWait200ResponseError {
-            message: None,
-        }
+        ContainerWait200ResponseError { message: None }
     }
 }
-

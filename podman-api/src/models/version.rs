@@ -19,9 +19,6 @@ pub struct Version {
 
 impl Version {
     pub fn new() -> Version {
-        Version {
-            index: None,
-        }
+        Version { index: None }
     }
 }
-

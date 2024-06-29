@@ -20,9 +20,6 @@ pub struct ImageBuildLibpod200Response {
 
 impl ImageBuildLibpod200Response {
     pub fn new(stream: String) -> ImageBuildLibpod200Response {
-        ImageBuildLibpod200Response {
-            stream,
-        }
+        ImageBuildLibpod200Response { stream }
     }
 }
-

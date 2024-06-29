@@ -39,4 +39,3 @@ impl Schema2ManifestDescriptor {
         }
     }
 }
-

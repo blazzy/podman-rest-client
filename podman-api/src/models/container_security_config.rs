@@ -44,7 +44,10 @@ pub struct ContainerSecurityConfig {
     #[serde(rename = "procfs_opts", skip_serializing_if = "Option::is_none")]
     pub procfs_opts: Option<Vec<String>>,
     /// ReadOnlyFilesystem indicates that everything will be mounted as read-only. Optional.
-    #[serde(rename = "read_only_filesystem", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "read_only_filesystem",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub read_only_filesystem: Option<bool>,
     /// ReadWriteTmpfs indicates that when running with a ReadOnlyFilesystem mount temporary file systems. Optional.
     #[serde(rename = "read_write_tmpfs", skip_serializing_if = "Option::is_none")]
@@ -53,7 +56,10 @@ pub struct ContainerSecurityConfig {
     #[serde(rename = "seccomp_policy", skip_serializing_if = "Option::is_none")]
     pub seccomp_policy: Option<String>,
     /// SeccompProfilePath is the path to a JSON file containing the container's Seccomp profile. If not specified, no Seccomp profile will be used. Optional.
-    #[serde(rename = "seccomp_profile_path", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "seccomp_profile_path",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub seccomp_profile_path: Option<String>,
     /// SelinuxProcessLabel is the process label the container will use. If SELinux is enabled and this is not specified, a label will be automatically generated if not specified. Optional.
     #[serde(rename = "selinux_opts", skip_serializing_if = "Option::is_none")]
@@ -97,4 +103,3 @@ impl ContainerSecurityConfig {
         }
     }
 }
-

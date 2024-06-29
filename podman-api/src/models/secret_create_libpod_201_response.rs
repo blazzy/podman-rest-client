@@ -19,9 +19,6 @@ pub struct SecretCreateLibpod201Response {
 
 impl SecretCreateLibpod201Response {
     pub fn new() -> SecretCreateLibpod201Response {
-        SecretCreateLibpod201Response {
-            id: None,
-        }
+        SecretCreateLibpod201Response { id: None }
     }
 }
-

@@ -15,11 +15,17 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ContainerHealthCheckConfig {
     /// HealthCheckOnFailureAction defines how Podman reacts when a container's health status turns unhealthy.
-    #[serde(rename = "health_check_on_failure_action", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "health_check_on_failure_action",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub health_check_on_failure_action: Option<i64>,
     #[serde(rename = "healthconfig", skip_serializing_if = "Option::is_none")]
     pub healthconfig: Option<Box<models::Schema2HealthConfig>>,
-    #[serde(rename = "startupHealthConfig", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "startupHealthConfig",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub startup_health_config: Option<Box<models::StartupHealthCheck>>,
 }
 
@@ -33,4 +39,3 @@ impl ContainerHealthCheckConfig {
         }
     }
 }
-

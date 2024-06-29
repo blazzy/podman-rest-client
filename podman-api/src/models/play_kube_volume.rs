@@ -20,9 +20,6 @@ pub struct PlayKubeVolume {
 
 impl PlayKubeVolume {
     pub fn new() -> PlayKubeVolume {
-        PlayKubeVolume {
-            name: None,
-        }
+        PlayKubeVolume { name: None }
     }
 }
-

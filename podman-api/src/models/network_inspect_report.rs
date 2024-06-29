@@ -43,7 +43,10 @@ pub struct NetworkInspectReport {
     #[serde(rename = "name", skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// List of custom DNS server for podman's DNS resolver at network level, all the containers attached to this network will consider resolvers configured at network level.
-    #[serde(rename = "network_dns_servers", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "network_dns_servers",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub network_dns_servers: Option<Vec<String>>,
     /// NetworkInterface is the network interface name on the host.
     #[serde(rename = "network_interface", skip_serializing_if = "Option::is_none")]
@@ -80,4 +83,3 @@ impl NetworkInspectReport {
         }
     }
 }
-

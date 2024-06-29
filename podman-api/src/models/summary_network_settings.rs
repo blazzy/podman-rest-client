@@ -21,9 +21,6 @@ pub struct SummaryNetworkSettings {
 impl SummaryNetworkSettings {
     /// SummaryNetworkSettings provides a summary of container's networks in /containers/json
     pub fn new() -> SummaryNetworkSettings {
-        SummaryNetworkSettings {
-            networks: None,
-        }
+        SummaryNetworkSettings { networks: None }
     }
 }
-

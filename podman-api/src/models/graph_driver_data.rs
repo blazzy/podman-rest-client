@@ -25,10 +25,6 @@ pub struct GraphDriverData {
 impl GraphDriverData {
     /// GraphDriverData Information about the storage driver used to store the container's and image's filesystem.
     pub fn new(data: std::collections::HashMap<String, String>, name: String) -> GraphDriverData {
-        GraphDriverData {
-            data,
-            name,
-        }
+        GraphDriverData { data, name }
     }
 }
-
