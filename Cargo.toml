@@ -1,21 +1,31 @@
 [workspace]
 members = [".", "podman-autogen-api"]
 
+[workspace.package]
+version = "0.1.0"
+license = "MIT OR Apache-2.0"
+edition = "2021"
+repository = "https://github.com/blazzy/podman-rest-client"
+
 [package]
 name = "podman-rest-client"
-version = "0.1.0"
-edition = "2021"
 description = "Interface for querying the podman REST API. Supports connections over SSH."
-repository = "https://github.com/blazzy/podman-rest-client"
-license = "MIT"
 readme = "README.md"
+version.workspace = true
+license.workspace = true
+edition.workspace = true
+repository.workspace = true
+
+
+[workspace.dependencies]
+hyper = { version = "^1.3.1", features = ["full"] }
 
 
 [dependencies]
 async-trait = "0.1.80"
-hyper = { version = "^1.3.1", features = ["full"] }
+hyper = { workspace = true }
 hyper-util = { version = "0.1.5", features = ["client-legacy", "http1"] }
-podman-autogen-api = { version = "0.1.0", path="./podman-autogen-api" }
+podman-autogen-api = { version = "=0.1.0", path="podman-autogen-api" }
 russh = "0.43.0"
 russh-keys = "0.43.0"
 serde = { version = "1.0.203", features = ["derive"] }

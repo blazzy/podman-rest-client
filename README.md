@@ -27,7 +27,7 @@ use podman_rest_client::PodmanRestClient;
 let uri = "ssh://core@127.0.0.1:63169/run/user/501/podman/podman.sock";
 let key: Option<String> = Some("/path/to/key".into());
 
-let client = PodmanRestClient::new(uri, None).await.unwrap();
+let client = PodmanRestClient::new(uri, key).await.unwrap();
 
 let images = client.images_api().image_list_libpod(None,None).await.unwrap();
 ```
