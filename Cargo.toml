@@ -1,5 +1,5 @@
 [workspace]
-members = [".", "podman-api"]
+members = [".", "podman-autogen-api"]
 
 [package]
 name = "podman-rest-client"
@@ -14,7 +14,7 @@ readme = "README.md"
 async-trait = "0.1.80"
 hyper = { version = "^1.3.1", features = ["full"] }
 hyper-util = { version = "0.1.5", features = ["client-legacy", "http1"] }
-podman-api = { path="./podman-api" }
+podman-autogen-api = { path="./podman-autogen-api" }
 russh = "0.43.0"
 russh-keys = "0.43.0"
 serde = { version = "1.0.203", features = ["derive"] }

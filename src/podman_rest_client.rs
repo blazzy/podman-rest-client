@@ -4,8 +4,8 @@ use std::str::FromStr;
 use hyper_util::client::legacy::connect::Connect;
 use hyper_util::client::legacy::Client;
 use hyper_util::rt::TokioExecutor;
-use podman_api::apis::client::APIClient;
-use podman_api::apis::configuration::Configuration as APIConfiguration;
+use podman_autogen_api::apis::client::APIClient;
+use podman_autogen_api::apis::configuration::Configuration as APIConfiguration;
 
 use crate::error::Error;
 use crate::ssh;
