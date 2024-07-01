@@ -6,6 +6,17 @@ pub enum Error {
     SshKey(#[from] russh_keys::Error),
     #[error("IO error: {0}")]
     Io(#[from] std::io::Error),
+    #[error("Invalid URI: {0}")]
+    InvalidUri(#[from] hyper::http::uri::InvalidUri),
     #[error("SSH Authentication Failed")]
     AuthenticationFailed,
+
+    #[error("Missing scheme in URI")]
+    InvalidScheme,
+    #[error("Missing SSH user name in URI")]
+    SshUserNameRequired,
+    #[error("Missing ssh key path")]
+    SshKeyPathRequired,
+    #[error("Missing SSH host in URI")]
+    SshHostRequired,
 }

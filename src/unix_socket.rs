@@ -1,54 +1,33 @@
 use std::future::Future;
 use std::io;
 use std::pin::Pin;
-use std::sync::Arc;
 use std::task::{Context, Poll};
 
 use hyper::rt::ReadBufCursor;
 use hyper::Uri;
 use hyper_util::client::legacy::connect::{Connected, Connection};
-use russh::client as ssh_client;
-use russh::client::Config;
-use russh::client::Msg;
-use russh::ChannelStream;
-use russh_keys::key;
-use tokio::io::{AsyncRead, AsyncWrite};
+use tokio::io::AsyncRead;
+use tokio::io::AsyncWrite;
+use tokio::net::UnixStream;
 use tower_service::Service;
 
 use crate::error::Error;
 
 #[derive(Clone)]
-pub(crate) struct SshConnector {
-    session: Arc<ssh_client::Handle<Client>>,
-    socket_path: String,
+pub(crate) struct UnixConnector {
+    path: String,
 }
 
-impl SshConnector {
-    pub async fn new(
-        user: &str,
-        key: &str,
-        address: &str,
-        socket_path: &str,
-    ) -> Result<SshConnector, Error> {
-        let config = Arc::new(Config::default());
-        let sh = Client {};
-        let mut session = ssh_client::connect(config, address, sh).await?;
-        let key_pair = russh_keys::load_secret_key(key, None)?;
-        let auth_res = session
-            .authenticate_publickey(user, Arc::new(key_pair))
-            .await?;
-        if !auth_res {
-            return Err(Error::AuthenticationFailed);
-        }
-        Ok(SshConnector {
-            session: Arc::new(session),
-            socket_path: socket_path.to_string(),
-        })
+pub struct UnixStreamWrapper(pub UnixStream);
+
+impl UnixConnector {
+    pub fn new(path: String) -> UnixConnector {
+        UnixConnector { path }
     }
 }
 
-impl Service<Uri> for SshConnector {
-    type Response = WrapChannelStream;
+impl Service<Uri> for UnixConnector {
+    type Response = UnixStreamWrapper;
     type Error = Error;
     type Future = Pin<Box<dyn Future<Output = Result<Self::Response, Self::Error>> + Send>>;
 
@@ -57,27 +36,23 @@ impl Service<Uri> for SshConnector {
     }
 
     fn call(&mut self, _req: Uri) -> Self::Future {
-        let session = self.session.clone();
-        let socket_path = self.socket_path.clone();
-
+        let path = self.path.clone();
         let future = async move {
-            let socket_channel = session.channel_open_direct_streamlocal(socket_path).await?;
+            let stream = UnixStreamWrapper(UnixStream::connect(path).await?);
 
-            Ok(WrapChannelStream(socket_channel.into_stream()))
+            Ok(stream)
         };
         Box::pin(future)
     }
 }
 
-pub struct WrapChannelStream(pub ChannelStream<Msg>);
-
-impl Connection for WrapChannelStream {
+impl Connection for UnixStreamWrapper {
     fn connected(&self) -> Connected {
         Connected::new()
     }
 }
 
-impl hyper::rt::Read for WrapChannelStream {
+impl hyper::rt::Read for UnixStreamWrapper {
     fn poll_read(
         self: Pin<&mut Self>,
         cx: &mut Context<'_>,
@@ -98,21 +73,7 @@ impl hyper::rt::Read for WrapChannelStream {
     }
 }
 
-struct Client {}
-
-#[async_trait::async_trait]
-impl ssh_client::Handler for Client {
-    type Error = russh::Error;
-
-    async fn check_server_key(
-        &mut self,
-        _server_public_key: &key::PublicKey,
-    ) -> Result<bool, russh::Error> {
-        Ok(true)
-    }
-}
-
-impl hyper::rt::Write for WrapChannelStream {
+impl hyper::rt::Write for UnixStreamWrapper {
     fn poll_write(
         self: Pin<&mut Self>,
         cx: &mut Context<'_>,
