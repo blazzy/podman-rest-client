@@ -5,6 +5,10 @@ members = [".", "podman-api"]
 name = "podman-rest-client"
 version = "0.1.0"
 edition = "2021"
+repository = "https://github.com/blazzy/podman-rest-client"
+license = "MIT"
+readme = "README.md"
+
 
 [dependencies]
 async-trait = "0.1.80"
