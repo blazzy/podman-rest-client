@@ -15,14 +15,19 @@ const BASE_PATH: &str = "http://d/v5.1.0";
 
 pub struct PodmanRestClient(pub APIClient);
 
+pub struct Config {
+    pub uri: String,
+    pub identity_file: Option<String>,
+}
+
 impl PodmanRestClient {
-    pub async fn new(uri: &str, key_path: Option<String>) -> Result<PodmanRestClient, Error> {
-        let uri = hyper::Uri::from_str(uri)?;
+    pub async fn new(config: Config) -> Result<PodmanRestClient, Error> {
+        let uri = hyper::Uri::from_str(&config.uri)?;
 
         if let Some(scheme) = uri.scheme() {
             match scheme.as_str() {
                 "unix" => PodmanRestClient::new_unix(uri).await,
-                "ssh" => PodmanRestClient::new_ssh(uri, key_path).await,
+                "ssh" => PodmanRestClient::new_ssh(uri, config.identity_file).await,
                 _ => Err(Error::InvalidScheme),
             }
         } else {

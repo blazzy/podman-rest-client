@@ -17,25 +17,31 @@ accessible over ssh.
 
 ```rust
 use podman_rest_client::PodmanRestClient;
+use podman_rest_client::guess_configuration;
+;
 
-let uri = "unix://path_to_unix_socket";
+let config = guess_configuration().await.unwrap();
 
-let client = PodmanRestClient::new(uri, None).await.unwrap();
+let client = PodmanRestClient::new(config).await.unwrap();
 
 let images = client.images_api().image_list_libpod(None,None).await.unwrap();
 ```
 
-### Connecting via ssh from macOS
+If guess_configuration doesn't work for you you can manually create a config.
 
 ```rust
 use podman_rest_client::PodmanRestClient;
+use podman_rest_client::Config;
 
-let uri = "ssh://core@127.0.0.1:63169/run/user/501/podman/podman.sock";
-let key: Option<String> = Some("/path/to/key".into());
+let ssh_client = PodmanRestClient::new(Config {
+    uri: "ssh://core@127.0.0.1:63169/run/user/501/podman/podman.sock".to_string(),
+    identity_file: Some("/path/to/identity_file".into()),
+}).await.unwrap();
 
-let client = PodmanRestClient::new(uri, key).await.unwrap();
-
-let images = client.images_api().image_list_libpod(None,None).await.unwrap();
+let unix_client = PodmanRestClient::new(Config {
+    uri: "unix://run/user/501/podman/podman.sock".to_string(),
+    identity_file: None,
+}).await.unwrap();
 ```
 
 <!-- cargo-rdme end -->

@@ -18,7 +18,7 @@ pub struct PodmanConnection {
     #[serde(rename = "URI")]
     pub uri: String,
     #[serde(rename = "Identity")]
-    pub identity: String,
+    pub identity: Option<String>,
     #[serde(rename = "Default")]
     pub default: bool,
     #[serde(rename = "IsMachine")]
