@@ -13,8 +13,6 @@ the podman rest api over ssh to a unix socket and directl to a unix socket. Conn
 ssh are  commonly necessary on macOs where the container runtime runs in a virtual machine
 accessible over ssh.
 
-### Connecting via a unix socket on Linux
-
 ```rust
 use podman_rest_client::PodmanRestClient;
 use podman_rest_client::guess_configuration;
