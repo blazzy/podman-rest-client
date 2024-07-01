@@ -1,4 +1,10 @@
 # podman-rest-client
+
+[![Crates.io Version](https://img.shields.io/crates/v/podman-rest-client)](https://crates.io/crates/podman-rest-client)
+[![docs.rs](https://docs.rs/podman-rest-client/badge.svg)](https://docs.rs/podman-rest-client)
+[![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
+
+
 <!-- cargo-rdme start -->
 
 Provides an interface for querying the podman rest api. Most of the interface is generated from
