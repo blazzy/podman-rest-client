@@ -55,7 +55,6 @@ pub enum GuessError {
     Cli(#[from] cli::CliError),
 }
 
-#[cfg(target_os = "macos")]
 pub async fn guess_configuration() -> Result<Config, GuessError> {
     if cfg!(target_os = "macos") {
         let default = cli::get_default_system_connection()
