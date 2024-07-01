@@ -68,7 +68,7 @@ pub async fn guess_configuration() -> Result<Config, GuessError> {
     } else {
         let uid = nix::unistd::getuid();
         Ok(Config {
-            uri: format!("/run/user/{}/podman/podman.sock", uid),
+            uri: format!("unix:///run/user/{}/podman/podman.sock", uid),
             identity_file: None,
         })
     }
