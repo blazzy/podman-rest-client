@@ -1,17 +1,35 @@
-name: lint
-on: [push]
+name: Main
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  CARGO_TERM_COLOR: always
+
 jobs:
   rdme:
-    name: rustfmt
+    name: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: dtolnay/rust-toolchain@stable
         with:
           components: rustfmt
-      - name: Check Formatting
+
+      - name: Format
         run: cargo fmt --check
-      - name: Check if the README is up to date.
+
+      - name: README sync 
         run: |
           cargo install cargo-rdme
           cargo rdme --check
+
+      - name: Build
+        run: cargo build --verbose
+
+      - name: Tests
+        run: cargo test --verbose
