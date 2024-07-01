@@ -1,6 +1,6 @@
-use podman_rest_client::{guess_configuration, Config, PodmanRestClient};
-use podman_rest_client::Error;
 use assert_matches::assert_matches;
+use podman_rest_client::Error;
+use podman_rest_client::{guess_configuration, Config, PodmanRestClient};
 
 #[tokio::test]
 async fn it_connects_to_a_unix_socket() {
@@ -25,7 +25,10 @@ async fn it_errors_on_invalid_uris() {
     let err = PodmanRestClient::new(Config {
         uri: "tcp:///127.0.0.1:80".to_string(),
         identity_file: None,
-    }).await.err().unwrap();
+    })
+    .await
+    .err()
+    .unwrap();
 
     assert_matches!(err, Error::InvalidScheme);
 }
