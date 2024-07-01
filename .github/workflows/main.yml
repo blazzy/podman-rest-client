@@ -21,13 +21,15 @@ jobs:
         with:
           components: rustfmt
 
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-rdme
+
       - name: Format
         run: cargo fmt --check
 
       - name: README sync 
-        run: |
-          cargo install cargo-rdme
-          cargo rdme --check
+        run: cargo rdme --check
 
       - name: Build
         run: cargo build --verbose
