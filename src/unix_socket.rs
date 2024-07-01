@@ -21,8 +21,10 @@ pub(crate) struct UnixConnector {
 pub struct UnixStreamWrapper(pub UnixStream);
 
 impl UnixConnector {
-    pub fn new(path: String) -> UnixConnector {
-        UnixConnector { path }
+    pub fn new(path: &str) -> UnixConnector {
+        UnixConnector {
+            path: path.to_string(),
+        }
     }
 }
 

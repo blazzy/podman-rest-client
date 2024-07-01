@@ -22,23 +22,18 @@ pub struct Config {
 
 impl PodmanRestClient {
     pub async fn new(config: Config) -> Result<PodmanRestClient, Error> {
-        let uri = hyper::Uri::from_str(&config.uri)?;
+        let (scheme, rest) = config.uri.split_once("://").ok_or(Error::InvalidScheme)?;
 
-        if let Some(scheme) = uri.scheme() {
-            match scheme.as_str() {
-                "unix" => PodmanRestClient::new_unix(uri).await,
-                "ssh" => PodmanRestClient::new_ssh(uri, config.identity_file).await,
-                _ => Err(Error::InvalidScheme),
-            }
-        } else {
-            Err(Error::InvalidScheme)
+        match scheme {
+            "unix" => PodmanRestClient::new_unix(rest).await,
+            "ssh" => PodmanRestClient::new_ssh(config.uri, config.identity_file).await,
+            _ => Err(Error::InvalidScheme),
         }
     }
 
-    pub async fn new_ssh(
-        uri: hyper::Uri,
-        key_path: Option<String>,
-    ) -> Result<PodmanRestClient, Error> {
+    pub async fn new_ssh(uri: String, key_path: Option<String>) -> Result<PodmanRestClient, Error> {
+        let uri = hyper::Uri::from_str(&uri)?;
+
         let user_name = uri.authority().and_then(|authority| {
             if let Some((user_name, _)) = authority.to_string().split_once('@') {
                 Some(user_name.to_string())
@@ -59,8 +54,8 @@ impl PodmanRestClient {
         PodmanRestClient::new_connector(connector).await
     }
 
-    pub async fn new_unix(uri: hyper::Uri) -> Result<PodmanRestClient, Error> {
-        let connector = unix_socket::UnixConnector::new(uri.to_string());
+    pub async fn new_unix(path: &str) -> Result<PodmanRestClient, Error> {
+        let connector = unix_socket::UnixConnector::new(path);
 
         PodmanRestClient::new_connector(connector).await
     }

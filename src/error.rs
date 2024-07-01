@@ -7,11 +7,11 @@ pub enum Error {
     #[error("IO error: {0}")]
     Io(#[from] std::io::Error),
     #[error("Invalid URI: {0}")]
-    InvalidUri(#[from] hyper::http::uri::InvalidUri),
+    InvalidUri(#[from] http::uri::InvalidUri),
     #[error("SSH Authentication Failed")]
     AuthenticationFailed,
 
-    #[error("Missing scheme in URI")]
+    #[error("Missing or unkown scheme in URI")]
     InvalidScheme,
     #[error("Missing SSH user name in URI")]
     SshUserNameRequired,
