@@ -4,21 +4,26 @@
 //! ssh are  commonly necessary on macOs where the container runtime runs in a virtual machine
 //! accessible over ssh.
 //!
+//! ## Usage
+//!
 //! ```no_run
 //! # tokio_test::block_on(async {
 //! use podman_rest_client::PodmanRestClient;
 //! use podman_rest_client::guess_configuration;
-//! ;
 //!
+//! // Setup the default configuration
 //! let config = guess_configuration().await.unwrap();
 //!
+//! // Initialize a client
 //! let client = PodmanRestClient::new(config).await.unwrap();
 //!
+//! // Fetch a list of container images
 //! let images = client.images_api().image_list_libpod(None,None).await.unwrap();
 //! # })
 //! ```
 //!
-//! If guess_configuration doesn't work for you you can manually create a config.
+//! `guess_configuration` tries to find the default path to the podman socket depending on the
+//! platform you are on. You can also manually create clients configurations:
 //!
 //! ```no_run
 //! # tokio_test::block_on(async {
@@ -31,7 +36,7 @@
 //! }).await.unwrap();
 //!
 //! let unix_client = PodmanRestClient::new(Config {
-//!     uri: "unix://run/user/501/podman/podman.sock".to_string(),
+//!     uri: "unix:///run/user/501/podman/podman.sock".to_string(),
 //!     identity_file: None,
 //! }).await.unwrap();
 //! # })
