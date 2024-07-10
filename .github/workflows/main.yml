@@ -11,34 +11,33 @@ env:
   RUST_BACKTRACE: 1
 
 jobs:
-  rdme:
-    name: build
+  build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
-      - uses: dtolnay/rust-toolchain@stable
-        with:
-          components: rustfmt
+    - uses: dtolnay/rust-toolchain@stable
+      with:
+        components: rustfmt
 
-      - uses: taiki-e/install-action@v2
-        with:
-          tool: cargo-rdme
+    - uses: taiki-e/install-action@v2
+      with:
+        tool: cargo-rdme
 
-      - name: Format
-        run: cargo fmt --check
+    - name: Format
+      run: cargo fmt --check
 
-      - name: README sync 
-        run: cargo rdme --check
+    - name: README sync 
+      run: cargo rdme --check
 
-      - name: Build
-        run: cargo build --verbose
+    - name: Build
+      run: cargo build --verbose
 
-      - name: Set up Podman
-        run: |
-          sudo apt-get install -y podman
-          sudo systemctl enable --now podman.socket
-          sudo systemctl status podman.socket
+    - name: Set up Podman
+      run: |
+        sudo apt-get install -y podman
+        sudo systemctl enable --now podman.socket
+        sudo systemctl status podman.socket
 
-      - name: Tests
-        run: cargo test --verbose
+    - name: Tests
+      run: cargo test --verbose
