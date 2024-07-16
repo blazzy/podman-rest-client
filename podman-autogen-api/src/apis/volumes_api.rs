@@ -38,29 +38,32 @@ where
     }
 }
 
-pub trait VolumesApi {
+pub trait VolumesApi: Send {
     fn volume_create_libpod(
         &self,
         create: Option<models::VolumeCreateOptions>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::VolumeConfigResponse, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::VolumeConfigResponse, Error>> + Send>>;
     fn volume_delete_libpod(
         &self,
         name: &str,
         force: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>>;
-    fn volume_exists_libpod(&self, name: &str) -> Pin<Box<dyn Future<Output = Result<(), Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>>;
+    fn volume_exists_libpod(
+        &self,
+        name: &str,
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>>;
     fn volume_inspect_libpod(
         &self,
         name: &str,
-    ) -> Pin<Box<dyn Future<Output = Result<models::VolumeConfigResponse, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::VolumeConfigResponse, Error>> + Send>>;
     fn volume_list_libpod(
         &self,
         filters: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::VolumeConfigResponse>, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::VolumeConfigResponse>, Error>> + Send>>;
     fn volume_prune_libpod(
         &self,
         filters: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::PruneReport>, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::PruneReport>, Error>> + Send>>;
 }
 
 impl<C: Connect> VolumesApi for VolumesApiClient<C>
@@ -71,7 +74,7 @@ where
     fn volume_create_libpod(
         &self,
         create: Option<models::VolumeCreateOptions>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::VolumeConfigResponse, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::VolumeConfigResponse, Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
             "/libpod/volumes/create".to_string(),
@@ -86,7 +89,7 @@ where
         &self,
         name: &str,
         force: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::DELETE,
             "/libpod/volumes/{name}".to_string(),
@@ -102,7 +105,10 @@ where
     }
 
     #[allow(unused_mut)]
-    fn volume_exists_libpod(&self, name: &str) -> Pin<Box<dyn Future<Output = Result<(), Error>>>> {
+    fn volume_exists_libpod(
+        &self,
+        name: &str,
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::GET,
             "/libpod/volumes/{name}/exists".to_string(),
@@ -117,7 +123,7 @@ where
     fn volume_inspect_libpod(
         &self,
         name: &str,
-    ) -> Pin<Box<dyn Future<Output = Result<models::VolumeConfigResponse, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::VolumeConfigResponse, Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::GET,
             "/libpod/volumes/{name}/json".to_string(),
@@ -131,7 +137,8 @@ where
     fn volume_list_libpod(
         &self,
         filters: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::VolumeConfigResponse>, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::VolumeConfigResponse>, Error>> + Send>>
+    {
         let mut req = __internal_request::Request::new(
             hyper::Method::GET,
             "/libpod/volumes/json".to_string(),
@@ -148,7 +155,7 @@ where
     fn volume_prune_libpod(
         &self,
         filters: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::PruneReport>, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::PruneReport>, Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
             "/libpod/volumes/prune".to_string(),

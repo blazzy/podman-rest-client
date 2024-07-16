@@ -38,45 +38,47 @@ where
     }
 }
 
-pub trait NetworksApi {
+pub trait NetworksApi: Send {
     fn network_connect_libpod(
         &self,
         name: &str,
         create: Option<models::NetworkConnectOptions>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>>;
     fn network_create_libpod(
         &self,
         create: Option<models::NetworkCreateLibpod>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::Network, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::Network, Error>> + Send>>;
     fn network_delete_libpod(
         &self,
         name: &str,
         force: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::NetworkRmReport>, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::NetworkRmReport>, Error>> + Send>>;
     fn network_disconnect_libpod(
         &self,
         name: &str,
         create: Option<models::NetworkDisconnect>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>>;
-    fn network_exists_libpod(&self, name: &str)
-        -> Pin<Box<dyn Future<Output = Result<(), Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>>;
+    fn network_exists_libpod(
+        &self,
+        name: &str,
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>>;
     fn network_inspect_libpod(
         &self,
         name: &str,
-    ) -> Pin<Box<dyn Future<Output = Result<models::NetworkInspectReport, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::NetworkInspectReport, Error>> + Send>>;
     fn network_list_libpod(
         &self,
         filters: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::Network>, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::Network>, Error>> + Send>>;
     fn network_prune_libpod(
         &self,
         filters: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::NetworkPruneReport>, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::NetworkPruneReport>, Error>> + Send>>;
     fn network_update_libpod(
         &self,
         name: &str,
         update: Option<models::NetworkUpdateOptions>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>>;
 }
 
 impl<C: Connect> NetworksApi for NetworksApiClient<C>
@@ -88,7 +90,7 @@ where
         &self,
         name: &str,
         create: Option<models::NetworkConnectOptions>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
             "/libpod/networks/{name}/connect".to_string(),
@@ -104,7 +106,7 @@ where
     fn network_create_libpod(
         &self,
         create: Option<models::NetworkCreateLibpod>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::Network, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::Network, Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
             "/libpod/networks/create".to_string(),
@@ -119,7 +121,7 @@ where
         &self,
         name: &str,
         force: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::NetworkRmReport>, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::NetworkRmReport>, Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::DELETE,
             "/libpod/networks/{name}".to_string(),
@@ -138,7 +140,7 @@ where
         &self,
         name: &str,
         create: Option<models::NetworkDisconnect>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
             "/libpod/networks/{name}/disconnect".to_string(),
@@ -154,7 +156,7 @@ where
     fn network_exists_libpod(
         &self,
         name: &str,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::GET,
             "/libpod/networks/{name}/exists".to_string(),
@@ -169,7 +171,7 @@ where
     fn network_inspect_libpod(
         &self,
         name: &str,
-    ) -> Pin<Box<dyn Future<Output = Result<models::NetworkInspectReport, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::NetworkInspectReport, Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::GET,
             "/libpod/networks/{name}/json".to_string(),
@@ -183,7 +185,7 @@ where
     fn network_list_libpod(
         &self,
         filters: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::Network>, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::Network>, Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::GET,
             "/libpod/networks/json".to_string(),
@@ -200,7 +202,7 @@ where
     fn network_prune_libpod(
         &self,
         filters: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::NetworkPruneReport>, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::NetworkPruneReport>, Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
             "/libpod/networks/prune".to_string(),
@@ -218,7 +220,7 @@ where
         &self,
         name: &str,
         update: Option<models::NetworkUpdateOptions>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
             "/libpod/networks/{name}/update".to_string(),

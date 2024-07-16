@@ -38,36 +38,37 @@ where
     }
 }
 
-pub trait NetworksCompatApi {
+pub trait NetworksCompatApi: Send {
     fn network_connect(
         &self,
         name: &str,
         create: Option<models::NetworkConnect>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>>;
     fn network_create(
         &self,
         create: Option<models::NetworkCreateRequest>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::NetworkCreate201Response, Error>>>>;
-    fn network_delete(&self, name: &str) -> Pin<Box<dyn Future<Output = Result<(), Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::NetworkCreate201Response, Error>> + Send>>;
+    fn network_delete(&self, name: &str)
+        -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>>;
     fn network_disconnect(
         &self,
         name: &str,
         create: Option<models::NetworkDisconnect>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>>;
     fn network_inspect(
         &self,
         name: &str,
         verbose: Option<bool>,
         scope: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::NetworkResource, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::NetworkResource, Error>> + Send>>;
     fn network_list(
         &self,
         filters: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::NetworkResource>, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::NetworkResource>, Error>> + Send>>;
     fn network_prune(
         &self,
         filters: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::NetworkPrune200Response, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::NetworkPrune200Response, Error>> + Send>>;
 }
 
 impl<C: Connect> NetworksCompatApi for NetworksCompatApiClient<C>
@@ -79,7 +80,7 @@ where
         &self,
         name: &str,
         create: Option<models::NetworkConnect>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
             "/networks/{name}/connect".to_string(),
@@ -95,7 +96,7 @@ where
     fn network_create(
         &self,
         create: Option<models::NetworkCreateRequest>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::NetworkCreate201Response, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::NetworkCreate201Response, Error>> + Send>> {
         let mut req =
             __internal_request::Request::new(hyper::Method::POST, "/networks/create".to_string());
         req = req.with_body_param(create);
@@ -104,7 +105,10 @@ where
     }
 
     #[allow(unused_mut)]
-    fn network_delete(&self, name: &str) -> Pin<Box<dyn Future<Output = Result<(), Error>>>> {
+    fn network_delete(
+        &self,
+        name: &str,
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>> {
         let mut req =
             __internal_request::Request::new(hyper::Method::DELETE, "/networks/{name}".to_string());
         req = req.with_path_param("name".to_string(), name.to_string());
@@ -118,7 +122,7 @@ where
         &self,
         name: &str,
         create: Option<models::NetworkDisconnect>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
             "/networks/{name}/disconnect".to_string(),
@@ -136,7 +140,7 @@ where
         name: &str,
         verbose: Option<bool>,
         scope: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::NetworkResource, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::NetworkResource, Error>> + Send>> {
         let mut req =
             __internal_request::Request::new(hyper::Method::GET, "/networks/{name}".to_string());
         if let Some(ref s) = verbose {
@@ -156,7 +160,7 @@ where
     fn network_list(
         &self,
         filters: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::NetworkResource>, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::NetworkResource>, Error>> + Send>> {
         let mut req = __internal_request::Request::new(hyper::Method::GET, "/networks".to_string());
         if let Some(ref s) = filters {
             let query_value = s.to_string();
@@ -170,7 +174,7 @@ where
     fn network_prune(
         &self,
         filters: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::NetworkPrune200Response, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::NetworkPrune200Response, Error>> + Send>> {
         let mut req =
             __internal_request::Request::new(hyper::Method::POST, "/networks/prune".to_string());
         if let Some(ref s) = filters {

@@ -38,28 +38,28 @@ where
     }
 }
 
-pub trait VolumesCompatApi {
+pub trait VolumesCompatApi: Send {
     fn volume_create(
         &self,
         create: Option<models::VolumeCreate>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::Volume, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::Volume, Error>> + Send>>;
     fn volume_delete(
         &self,
         name: &str,
         force: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>>;
     fn volume_inspect(
         &self,
         name: &str,
-    ) -> Pin<Box<dyn Future<Output = Result<models::Volume, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::Volume, Error>> + Send>>;
     fn volume_list(
         &self,
         filters: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::ListResponse, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::ListResponse, Error>> + Send>>;
     fn volume_prune(
         &self,
         filters: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::VolumesPruneReport, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::VolumesPruneReport, Error>> + Send>>;
 }
 
 impl<C: Connect> VolumesCompatApi for VolumesCompatApiClient<C>
@@ -70,7 +70,7 @@ where
     fn volume_create(
         &self,
         create: Option<models::VolumeCreate>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::Volume, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::Volume, Error>> + Send>> {
         let mut req =
             __internal_request::Request::new(hyper::Method::POST, "/volumes/create".to_string());
         req = req.with_body_param(create);
@@ -83,7 +83,7 @@ where
         &self,
         name: &str,
         force: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>> {
         let mut req =
             __internal_request::Request::new(hyper::Method::DELETE, "/volumes/{name}".to_string());
         if let Some(ref s) = force {
@@ -100,7 +100,7 @@ where
     fn volume_inspect(
         &self,
         name: &str,
-    ) -> Pin<Box<dyn Future<Output = Result<models::Volume, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::Volume, Error>> + Send>> {
         let mut req =
             __internal_request::Request::new(hyper::Method::GET, "/volumes/{name}".to_string());
         req = req.with_path_param("name".to_string(), name.to_string());
@@ -112,7 +112,7 @@ where
     fn volume_list(
         &self,
         filters: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::ListResponse, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::ListResponse, Error>> + Send>> {
         let mut req = __internal_request::Request::new(hyper::Method::GET, "/volumes".to_string());
         if let Some(ref s) = filters {
             let query_value = s.to_string();
@@ -126,7 +126,7 @@ where
     fn volume_prune(
         &self,
         filters: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::VolumesPruneReport, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::VolumesPruneReport, Error>> + Send>> {
         let mut req =
             __internal_request::Request::new(hyper::Method::POST, "/volumes/prune".to_string());
         if let Some(ref s) = filters {

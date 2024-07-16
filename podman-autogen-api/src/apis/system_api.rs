@@ -38,27 +38,27 @@ where
     }
 }
 
-pub trait SystemApi {
+pub trait SystemApi: Send {
     fn system_data_usage_libpod(
         &self,
-    ) -> Pin<Box<dyn Future<Output = Result<models::SystemDfReport, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::SystemDfReport, Error>> + Send>>;
     fn system_events_libpod(
         &self,
         since: Option<&str>,
         until: Option<&str>,
         filters: Option<&str>,
         stream: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>>;
     fn system_info_libpod(
         &self,
-    ) -> Pin<Box<dyn Future<Output = Result<models::LibpodInfo, Error>>>>;
-    fn system_ping(&self) -> Pin<Box<dyn Future<Output = Result<String, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::LibpodInfo, Error>> + Send>>;
+    fn system_ping(&self) -> Pin<Box<dyn Future<Output = Result<String, Error>> + Send>>;
     fn system_prune_libpod(
         &self,
-    ) -> Pin<Box<dyn Future<Output = Result<models::SystemPruneReport, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::SystemPruneReport, Error>> + Send>>;
     fn system_version_libpod(
         &self,
-    ) -> Pin<Box<dyn Future<Output = Result<models::SystemComponentVersion, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::SystemComponentVersion, Error>> + Send>>;
 }
 
 impl<C: Connect> SystemApi for SystemApiClient<C>
@@ -68,7 +68,7 @@ where
     #[allow(unused_mut)]
     fn system_data_usage_libpod(
         &self,
-    ) -> Pin<Box<dyn Future<Output = Result<models::SystemDfReport, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::SystemDfReport, Error>> + Send>> {
         let mut req =
             __internal_request::Request::new(hyper::Method::GET, "/libpod/system/df".to_string());
 
@@ -82,7 +82,7 @@ where
         until: Option<&str>,
         filters: Option<&str>,
         stream: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>> {
         let mut req =
             __internal_request::Request::new(hyper::Method::GET, "/libpod/events".to_string());
         if let Some(ref s) = since {
@@ -109,7 +109,7 @@ where
     #[allow(unused_mut)]
     fn system_info_libpod(
         &self,
-    ) -> Pin<Box<dyn Future<Output = Result<models::LibpodInfo, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::LibpodInfo, Error>> + Send>> {
         let mut req =
             __internal_request::Request::new(hyper::Method::GET, "/libpod/info".to_string());
 
@@ -117,7 +117,7 @@ where
     }
 
     #[allow(unused_mut)]
-    fn system_ping(&self) -> Pin<Box<dyn Future<Output = Result<String, Error>>>> {
+    fn system_ping(&self) -> Pin<Box<dyn Future<Output = Result<String, Error>> + Send>> {
         let mut req =
             __internal_request::Request::new(hyper::Method::GET, "/libpod/_ping".to_string());
 
@@ -127,7 +127,7 @@ where
     #[allow(unused_mut)]
     fn system_prune_libpod(
         &self,
-    ) -> Pin<Box<dyn Future<Output = Result<models::SystemPruneReport, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::SystemPruneReport, Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
             "/libpod/system/prune".to_string(),
@@ -139,7 +139,7 @@ where
     #[allow(unused_mut)]
     fn system_version_libpod(
         &self,
-    ) -> Pin<Box<dyn Future<Output = Result<models::SystemComponentVersion, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::SystemComponentVersion, Error>> + Send>> {
         let mut req =
             __internal_request::Request::new(hyper::Method::GET, "/libpod/version".to_string());
 

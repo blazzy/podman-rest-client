@@ -38,25 +38,25 @@ where
     }
 }
 
-pub trait SystemCompatApi {
+pub trait SystemCompatApi: Send {
     fn system_auth(
         &self,
         auth_config: Option<models::AuthConfig>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::AuthReport, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::AuthReport, Error>> + Send>>;
     fn system_data_usage(
         &self,
-    ) -> Pin<Box<dyn Future<Output = Result<models::SystemDfReport, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::SystemDfReport, Error>> + Send>>;
     fn system_events(
         &self,
         since: Option<&str>,
         until: Option<&str>,
         filters: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>>;
-    fn system_info(&self) -> Pin<Box<dyn Future<Output = Result<(), Error>>>>;
-    fn system_ping(&self) -> Pin<Box<dyn Future<Output = Result<String, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>>;
+    fn system_info(&self) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>>;
+    fn system_ping(&self) -> Pin<Box<dyn Future<Output = Result<String, Error>> + Send>>;
     fn system_version(
         &self,
-    ) -> Pin<Box<dyn Future<Output = Result<models::SystemComponentVersion, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::SystemComponentVersion, Error>> + Send>>;
 }
 
 impl<C: Connect> SystemCompatApi for SystemCompatApiClient<C>
@@ -67,7 +67,7 @@ where
     fn system_auth(
         &self,
         auth_config: Option<models::AuthConfig>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::AuthReport, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::AuthReport, Error>> + Send>> {
         let mut req = __internal_request::Request::new(hyper::Method::POST, "/auth".to_string());
         req = req.with_body_param(auth_config);
 
@@ -77,7 +77,7 @@ where
     #[allow(unused_mut)]
     fn system_data_usage(
         &self,
-    ) -> Pin<Box<dyn Future<Output = Result<models::SystemDfReport, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::SystemDfReport, Error>> + Send>> {
         let mut req =
             __internal_request::Request::new(hyper::Method::GET, "/system/df".to_string());
 
@@ -90,7 +90,7 @@ where
         since: Option<&str>,
         until: Option<&str>,
         filters: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>> {
         let mut req = __internal_request::Request::new(hyper::Method::GET, "/events".to_string());
         if let Some(ref s) = since {
             let query_value = s.to_string();
@@ -110,7 +110,7 @@ where
     }
 
     #[allow(unused_mut)]
-    fn system_info(&self) -> Pin<Box<dyn Future<Output = Result<(), Error>>>> {
+    fn system_info(&self) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>> {
         let mut req = __internal_request::Request::new(hyper::Method::GET, "/info".to_string());
         req = req.returns_nothing();
 
@@ -118,7 +118,7 @@ where
     }
 
     #[allow(unused_mut)]
-    fn system_ping(&self) -> Pin<Box<dyn Future<Output = Result<String, Error>>>> {
+    fn system_ping(&self) -> Pin<Box<dyn Future<Output = Result<String, Error>> + Send>> {
         let mut req =
             __internal_request::Request::new(hyper::Method::GET, "/libpod/_ping".to_string());
 
@@ -128,7 +128,7 @@ where
     #[allow(unused_mut)]
     fn system_version(
         &self,
-    ) -> Pin<Box<dyn Future<Output = Result<models::SystemComponentVersion, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::SystemComponentVersion, Error>> + Send>> {
         let mut req = __internal_request::Request::new(hyper::Method::GET, "/version".to_string());
 
         req.execute(self.configuration.borrow())

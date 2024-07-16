@@ -38,7 +38,7 @@ where
     }
 }
 
-pub trait ImagesApi {
+pub trait ImagesApi: Send {
     fn image_build_libpod(
         &self,
         dockerfile: Option<&str>,
@@ -72,13 +72,13 @@ pub trait ImagesApi {
         unsetenv: Option<Vec<String>>,
         unsetlabel: Option<Vec<String>>,
         volume: Option<Vec<String>>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::ImageBuildLibpod200Response, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::ImageBuildLibpod200Response, Error>> + Send>>;
     fn image_changes_libpod(
         &self,
         name: &str,
         parent: Option<&str>,
         diff_type: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>>;
     fn image_delete_all_libpod(
         &self,
         images: Option<Vec<String>>,
@@ -86,30 +86,33 @@ pub trait ImagesApi {
         force: Option<bool>,
         ignore: Option<bool>,
         lookup_manifest: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::LibpodImagesRemoveReport, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::LibpodImagesRemoveReport, Error>> + Send>>;
     fn image_delete_libpod(
         &self,
         name: &str,
         force: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::LibpodImagesRemoveReport, Error>>>>;
-    fn image_exists_libpod(&self, name: &str) -> Pin<Box<dyn Future<Output = Result<(), Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::LibpodImagesRemoveReport, Error>> + Send>>;
+    fn image_exists_libpod(
+        &self,
+        name: &str,
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>>;
     fn image_export_libpod(
         &self,
         format: Option<&str>,
         references: Option<Vec<String>>,
         compress: Option<bool>,
         oci_accept_uncompressed_layers: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<std::path::PathBuf, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<std::path::PathBuf, Error>> + Send>>;
     fn image_get_libpod(
         &self,
         name: &str,
         format: Option<&str>,
         compress: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<std::path::PathBuf, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<std::path::PathBuf, Error>> + Send>>;
     fn image_history_libpod(
         &self,
         name: &str,
-    ) -> Pin<Box<dyn Future<Output = Result<models::HistoryResponse, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::HistoryResponse, Error>> + Send>>;
     fn image_import_libpod(
         &self,
         upload: std::path::PathBuf,
@@ -118,26 +121,26 @@ pub trait ImagesApi {
         message: Option<&str>,
         reference: Option<&str>,
         url: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::ImageImportReport, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::ImageImportReport, Error>> + Send>>;
     fn image_inspect_libpod(
         &self,
         name: &str,
-    ) -> Pin<Box<dyn Future<Output = Result<models::ImageData, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::ImageData, Error>> + Send>>;
     fn image_list_libpod(
         &self,
         all: Option<bool>,
         filters: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::LibpodImageSummary>, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::LibpodImageSummary>, Error>> + Send>>;
     fn image_load_libpod(
         &self,
         upload: &str,
-    ) -> Pin<Box<dyn Future<Output = Result<models::ImageLoadReport, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::ImageLoadReport, Error>> + Send>>;
     fn image_prune_libpod(
         &self,
         all: Option<bool>,
         external: Option<bool>,
         filters: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::PruneReport>, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::PruneReport>, Error>> + Send>>;
     fn image_pull_libpod(
         &self,
         reference: Option<&str>,
@@ -150,7 +153,7 @@ pub trait ImagesApi {
         tls_verify: Option<bool>,
         all_tags: Option<bool>,
         x_registry_auth: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::LibpodImagesPullReport, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::LibpodImagesPullReport, Error>> + Send>>;
     fn image_push_libpod(
         &self,
         name: &str,
@@ -159,14 +162,17 @@ pub trait ImagesApi {
         tls_verify: Option<bool>,
         quiet: Option<bool>,
         x_registry_auth: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<std::path::PathBuf, Error>>>>;
-    fn image_resolve_libpod(&self, name: &str) -> Pin<Box<dyn Future<Output = Result<(), Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<std::path::PathBuf, Error>> + Send>>;
+    fn image_resolve_libpod(
+        &self,
+        name: &str,
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>>;
     fn image_scp_libpod(
         &self,
         name: &str,
         destination: Option<&str>,
         quiet: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::ScpReport, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::ScpReport, Error>> + Send>>;
     fn image_search_libpod(
         &self,
         term: Option<&str>,
@@ -174,24 +180,24 @@ pub trait ImagesApi {
         filters: Option<&str>,
         tls_verify: Option<bool>,
         list_tags: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::ImageSearch200Response, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::ImageSearch200Response, Error>> + Send>>;
     fn image_tag_libpod(
         &self,
         name: &str,
         repo: Option<&str>,
         tag: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>>;
     fn image_tree_libpod(
         &self,
         name: &str,
         whatrequires: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::ImageTreeReport, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::ImageTreeReport, Error>> + Send>>;
     fn image_untag_libpod(
         &self,
         name: &str,
         repo: Option<&str>,
         tag: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>>;
 }
 
 impl<C: Connect> ImagesApi for ImagesApiClient<C>
@@ -232,7 +238,8 @@ where
         unsetenv: Option<Vec<String>>,
         unsetlabel: Option<Vec<String>>,
         volume: Option<Vec<String>>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::ImageBuildLibpod200Response, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::ImageBuildLibpod200Response, Error>> + Send>>
+    {
         let mut req =
             __internal_request::Request::new(hyper::Method::POST, "/libpod/build".to_string());
         if let Some(ref s) = dockerfile {
@@ -385,7 +392,7 @@ where
         name: &str,
         parent: Option<&str>,
         diff_type: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::GET,
             "/libpod/images/{name}/changes".to_string(),
@@ -412,7 +419,7 @@ where
         force: Option<bool>,
         ignore: Option<bool>,
         lookup_manifest: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::LibpodImagesRemoveReport, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::LibpodImagesRemoveReport, Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::DELETE,
             "/libpod/images/remove".to_string(),
@@ -450,7 +457,7 @@ where
         &self,
         name: &str,
         force: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::LibpodImagesRemoveReport, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::LibpodImagesRemoveReport, Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::DELETE,
             "/libpod/images/{name}".to_string(),
@@ -465,7 +472,10 @@ where
     }
 
     #[allow(unused_mut)]
-    fn image_exists_libpod(&self, name: &str) -> Pin<Box<dyn Future<Output = Result<(), Error>>>> {
+    fn image_exists_libpod(
+        &self,
+        name: &str,
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::GET,
             "/libpod/images/{name}/exists".to_string(),
@@ -483,7 +493,7 @@ where
         references: Option<Vec<String>>,
         compress: Option<bool>,
         oci_accept_uncompressed_layers: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<std::path::PathBuf, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<std::path::PathBuf, Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::GET,
             "/libpod/images/export".to_string(),
@@ -518,7 +528,7 @@ where
         name: &str,
         format: Option<&str>,
         compress: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<std::path::PathBuf, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<std::path::PathBuf, Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::GET,
             "/libpod/images/{name}/get".to_string(),
@@ -540,7 +550,7 @@ where
     fn image_history_libpod(
         &self,
         name: &str,
-    ) -> Pin<Box<dyn Future<Output = Result<models::HistoryResponse, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::HistoryResponse, Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::GET,
             "/libpod/images/{name}/history".to_string(),
@@ -559,7 +569,7 @@ where
         message: Option<&str>,
         reference: Option<&str>,
         url: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::ImageImportReport, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::ImageImportReport, Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
             "/libpod/images/import".to_string(),
@@ -596,7 +606,7 @@ where
     fn image_inspect_libpod(
         &self,
         name: &str,
-    ) -> Pin<Box<dyn Future<Output = Result<models::ImageData, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::ImageData, Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::GET,
             "/libpod/images/{name}/json".to_string(),
@@ -611,7 +621,7 @@ where
         &self,
         all: Option<bool>,
         filters: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::LibpodImageSummary>, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::LibpodImageSummary>, Error>> + Send>> {
         let mut req =
             __internal_request::Request::new(hyper::Method::GET, "/libpod/images/json".to_string());
         if let Some(ref s) = all {
@@ -630,7 +640,7 @@ where
     fn image_load_libpod(
         &self,
         upload: &str,
-    ) -> Pin<Box<dyn Future<Output = Result<models::ImageLoadReport, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::ImageLoadReport, Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
             "/libpod/images/load".to_string(),
@@ -646,7 +656,7 @@ where
         all: Option<bool>,
         external: Option<bool>,
         filters: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::PruneReport>, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::PruneReport>, Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
             "/libpod/images/prune".to_string(),
@@ -680,7 +690,7 @@ where
         tls_verify: Option<bool>,
         all_tags: Option<bool>,
         x_registry_auth: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::LibpodImagesPullReport, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::LibpodImagesPullReport, Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
             "/libpod/images/pull".to_string(),
@@ -737,7 +747,7 @@ where
         tls_verify: Option<bool>,
         quiet: Option<bool>,
         x_registry_auth: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<std::path::PathBuf, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<std::path::PathBuf, Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
             "/libpod/images/{name}/push".to_string(),
@@ -767,7 +777,10 @@ where
     }
 
     #[allow(unused_mut)]
-    fn image_resolve_libpod(&self, name: &str) -> Pin<Box<dyn Future<Output = Result<(), Error>>>> {
+    fn image_resolve_libpod(
+        &self,
+        name: &str,
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::GET,
             "/libpod/images/{name}/resolve".to_string(),
@@ -784,7 +797,7 @@ where
         name: &str,
         destination: Option<&str>,
         quiet: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::ScpReport, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::ScpReport, Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
             "/libpod/images/scp/{name}".to_string(),
@@ -810,7 +823,7 @@ where
         filters: Option<&str>,
         tls_verify: Option<bool>,
         list_tags: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::ImageSearch200Response, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::ImageSearch200Response, Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::GET,
             "/libpod/images/search".to_string(),
@@ -845,7 +858,7 @@ where
         name: &str,
         repo: Option<&str>,
         tag: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
             "/libpod/images/{name}/tag".to_string(),
@@ -869,7 +882,7 @@ where
         &self,
         name: &str,
         whatrequires: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::ImageTreeReport, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::ImageTreeReport, Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::GET,
             "/libpod/images/{name}/tree".to_string(),
@@ -889,7 +902,7 @@ where
         name: &str,
         repo: Option<&str>,
         tag: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
             "/libpod/images/{name}/untag".to_string(),

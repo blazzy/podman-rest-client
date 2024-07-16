@@ -38,28 +38,28 @@ where
     }
 }
 
-pub trait ExecCompatApi {
+pub trait ExecCompatApi: Send {
     fn container_exec(
         &self,
         name: &str,
         control: Option<models::ContainerExecRequest>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>>;
     fn exec_inspect(
         &self,
         id: &str,
-    ) -> Pin<Box<dyn Future<Output = Result<models::InspectExecSession, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::InspectExecSession, Error>> + Send>>;
     fn exec_resize(
         &self,
         id: &str,
         h: Option<i32>,
         w: Option<i32>,
         running: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>>;
     fn exec_start(
         &self,
         id: &str,
         control: Option<models::ExecStartRequest>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>>;
 }
 
 impl<C: Connect> ExecCompatApi for ExecCompatApiClient<C>
@@ -71,7 +71,7 @@ where
         &self,
         name: &str,
         control: Option<models::ContainerExecRequest>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
             "/containers/{name}/exec".to_string(),
@@ -87,7 +87,7 @@ where
     fn exec_inspect(
         &self,
         id: &str,
-    ) -> Pin<Box<dyn Future<Output = Result<models::InspectExecSession, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::InspectExecSession, Error>> + Send>> {
         let mut req =
             __internal_request::Request::new(hyper::Method::GET, "/exec/{id}/json".to_string());
         req = req.with_path_param("id".to_string(), id.to_string());
@@ -102,7 +102,7 @@ where
         h: Option<i32>,
         w: Option<i32>,
         running: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>> {
         let mut req =
             __internal_request::Request::new(hyper::Method::POST, "/exec/{id}/resize".to_string());
         if let Some(ref s) = h {
@@ -128,7 +128,7 @@ where
         &self,
         id: &str,
         control: Option<models::ExecStartRequest>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>> {
         let mut req =
             __internal_request::Request::new(hyper::Method::POST, "/exec/{id}/start".to_string());
         req = req.with_path_param("id".to_string(), id.to_string());

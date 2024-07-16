@@ -40,18 +40,18 @@ where
     }
 }
 
-pub trait ContainersCompatApi {
+pub trait ContainersCompatApi: Send {
     fn container_archive(
         &self,
         name: &str,
         path: &str,
-    ) -> Pin<Box<dyn Future<Output = Result<std::path::PathBuf, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<std::path::PathBuf, Error>> + Send>>;
     fn container_archive_libpod(
         &self,
         name: &str,
         path: &str,
         rename: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<std::path::PathBuf, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<std::path::PathBuf, Error>> + Send>>;
     fn container_attach(
         &self,
         name: &str,
@@ -61,37 +61,40 @@ pub trait ContainersCompatApi {
         stdout: Option<bool>,
         stderr: Option<bool>,
         stdin: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>>;
     fn container_changes_libpod(
         &self,
         name: &str,
         parent: Option<&str>,
         diff_type: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>>;
     fn container_create(
         &self,
         body: models::CreateContainerConfig,
         name: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::ContainerCreateResponse, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::ContainerCreateResponse, Error>> + Send>>;
     fn container_delete(
         &self,
         name: &str,
         force: Option<bool>,
         v: Option<bool>,
         link: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>>;
-    fn container_export(&self, name: &str) -> Pin<Box<dyn Future<Output = Result<(), Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>>;
+    fn container_export(
+        &self,
+        name: &str,
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>>;
     fn container_inspect(
         &self,
         name: &str,
         size: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::ContainerJson, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::ContainerJson, Error>> + Send>>;
     fn container_kill(
         &self,
         name: &str,
         all: Option<bool>,
         signal: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>>;
     fn container_list(
         &self,
         all: Option<bool>,
@@ -99,7 +102,7 @@ pub trait ContainersCompatApi {
         limit: Option<i32>,
         size: Option<bool>,
         filters: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::Container>, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::Container>, Error>> + Send>>;
     fn container_logs(
         &self,
         name: &str,
@@ -110,62 +113,68 @@ pub trait ContainersCompatApi {
         until: Option<&str>,
         timestamps: Option<bool>,
         tail: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>>;
-    fn container_pause(&self, name: &str) -> Pin<Box<dyn Future<Output = Result<(), Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>>;
+    fn container_pause(
+        &self,
+        name: &str,
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>>;
     fn container_prune(
         &self,
         filters: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::ContainersPruneReport>, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::ContainersPruneReport>, Error>> + Send>>;
     fn container_rename(
         &self,
         name: &str,
         name2: &str,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>>;
     fn container_resize(
         &self,
         name: &str,
         h: Option<i32>,
         w: Option<i32>,
         running: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<serde_json::Value, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<serde_json::Value, Error>> + Send>>;
     fn container_restart(
         &self,
         name: &str,
         t: Option<i32>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>>;
     fn container_start(
         &self,
         name: &str,
         detach_keys: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>>;
     fn container_stats(
         &self,
         name: &str,
         stream: Option<bool>,
         one_shot: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<serde_json::Value, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<serde_json::Value, Error>> + Send>>;
     fn container_stop(
         &self,
         name: &str,
         t: Option<i32>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>>;
     fn container_top(
         &self,
         name: &str,
         ps_args: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::ContainerTopOkBody, Error>>>>;
-    fn container_unpause(&self, name: &str) -> Pin<Box<dyn Future<Output = Result<(), Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::ContainerTopOkBody, Error>> + Send>>;
+    fn container_unpause(
+        &self,
+        name: &str,
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>>;
     fn container_update(
         &self,
         name: &str,
         resources: Option<models::UpdateConfig>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>>;
     fn container_wait(
         &self,
         name: &str,
         condition: Option<&str>,
         interval: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::ContainerWait200Response, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::ContainerWait200Response, Error>> + Send>>;
     fn image_commit(
         &self,
         container: Option<&str>,
@@ -176,7 +185,7 @@ pub trait ContainersCompatApi {
         pause: Option<bool>,
         changes: Option<&str>,
         squash: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>>;
     fn put_container_archive(
         &self,
         name: &str,
@@ -184,7 +193,7 @@ pub trait ContainersCompatApi {
         no_overwrite_dir_non_dir: Option<&str>,
         copy_uidgid: Option<&str>,
         request: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>>;
 }
 
 impl<C: Connect> ContainersCompatApi for ContainersCompatApiClient<C>
@@ -196,7 +205,7 @@ where
         &self,
         name: &str,
         path: &str,
-    ) -> Pin<Box<dyn Future<Output = Result<std::path::PathBuf, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<std::path::PathBuf, Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::GET,
             "/containers/{name}/archive".to_string(),
@@ -213,7 +222,7 @@ where
         name: &str,
         path: &str,
         rename: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<std::path::PathBuf, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<std::path::PathBuf, Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::GET,
             "/libpod/containers/{name}/archive".to_string(),
@@ -238,7 +247,7 @@ where
         stdout: Option<bool>,
         stderr: Option<bool>,
         stdin: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
             "/containers/{name}/attach".to_string(),
@@ -279,7 +288,7 @@ where
         name: &str,
         parent: Option<&str>,
         diff_type: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::GET,
             "/libpod/containers/{name}/changes".to_string(),
@@ -303,7 +312,7 @@ where
         &self,
         body: models::CreateContainerConfig,
         name: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::ContainerCreateResponse, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::ContainerCreateResponse, Error>> + Send>> {
         let mut req =
             __internal_request::Request::new(hyper::Method::POST, "/containers/create".to_string());
         if let Some(ref s) = name {
@@ -322,7 +331,7 @@ where
         force: Option<bool>,
         v: Option<bool>,
         link: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::DELETE,
             "/containers/{name}".to_string(),
@@ -346,7 +355,10 @@ where
     }
 
     #[allow(unused_mut)]
-    fn container_export(&self, name: &str) -> Pin<Box<dyn Future<Output = Result<(), Error>>>> {
+    fn container_export(
+        &self,
+        name: &str,
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::GET,
             "/containers/{name}/export".to_string(),
@@ -362,7 +374,7 @@ where
         &self,
         name: &str,
         size: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::ContainerJson, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::ContainerJson, Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::GET,
             "/containers/{name}/json".to_string(),
@@ -382,7 +394,7 @@ where
         name: &str,
         all: Option<bool>,
         signal: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
             "/containers/{name}/kill".to_string(),
@@ -409,7 +421,7 @@ where
         limit: Option<i32>,
         size: Option<bool>,
         filters: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::Container>, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::Container>, Error>> + Send>> {
         let mut req =
             __internal_request::Request::new(hyper::Method::GET, "/containers/json".to_string());
         if let Some(ref s) = all {
@@ -447,7 +459,7 @@ where
         until: Option<&str>,
         timestamps: Option<bool>,
         tail: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::GET,
             "/containers/{name}/logs".to_string(),
@@ -487,7 +499,10 @@ where
     }
 
     #[allow(unused_mut)]
-    fn container_pause(&self, name: &str) -> Pin<Box<dyn Future<Output = Result<(), Error>>>> {
+    fn container_pause(
+        &self,
+        name: &str,
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
             "/containers/{name}/pause".to_string(),
@@ -502,7 +517,8 @@ where
     fn container_prune(
         &self,
         filters: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::ContainersPruneReport>, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::ContainersPruneReport>, Error>> + Send>>
+    {
         let mut req =
             __internal_request::Request::new(hyper::Method::POST, "/containers/prune".to_string());
         if let Some(ref s) = filters {
@@ -518,7 +534,7 @@ where
         &self,
         name: &str,
         name2: &str,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
             "/containers/{name}/rename".to_string(),
@@ -537,7 +553,7 @@ where
         h: Option<i32>,
         w: Option<i32>,
         running: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<serde_json::Value, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<serde_json::Value, Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
             "/containers/{name}/resize".to_string(),
@@ -564,7 +580,7 @@ where
         &self,
         name: &str,
         t: Option<i32>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
             "/containers/{name}/restart".to_string(),
@@ -584,7 +600,7 @@ where
         &self,
         name: &str,
         detach_keys: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
             "/containers/{name}/start".to_string(),
@@ -605,7 +621,7 @@ where
         name: &str,
         stream: Option<bool>,
         one_shot: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<serde_json::Value, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<serde_json::Value, Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::GET,
             "/containers/{name}/stats".to_string(),
@@ -628,7 +644,7 @@ where
         &self,
         name: &str,
         t: Option<i32>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
             "/containers/{name}/stop".to_string(),
@@ -648,7 +664,7 @@ where
         &self,
         name: &str,
         ps_args: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::ContainerTopOkBody, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::ContainerTopOkBody, Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::GET,
             "/containers/{name}/top".to_string(),
@@ -663,7 +679,10 @@ where
     }
 
     #[allow(unused_mut)]
-    fn container_unpause(&self, name: &str) -> Pin<Box<dyn Future<Output = Result<(), Error>>>> {
+    fn container_unpause(
+        &self,
+        name: &str,
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
             "/containers/{name}/unpause".to_string(),
@@ -679,7 +698,7 @@ where
         &self,
         name: &str,
         resources: Option<models::UpdateConfig>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
             "/containers/{name}/update".to_string(),
@@ -697,7 +716,7 @@ where
         name: &str,
         condition: Option<&str>,
         interval: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::ContainerWait200Response, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::ContainerWait200Response, Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
             "/containers/{name}/wait".to_string(),
@@ -726,7 +745,7 @@ where
         pause: Option<bool>,
         changes: Option<&str>,
         squash: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>> {
         let mut req = __internal_request::Request::new(hyper::Method::POST, "/commit".to_string());
         if let Some(ref s) = container {
             let query_value = s.to_string();
@@ -773,7 +792,7 @@ where
         no_overwrite_dir_non_dir: Option<&str>,
         copy_uidgid: Option<&str>,
         request: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::PUT,
             "/containers/{name}/archive".to_string(),

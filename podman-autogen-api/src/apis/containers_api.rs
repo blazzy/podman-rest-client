@@ -38,7 +38,7 @@ where
     }
 }
 
-pub trait ContainersApi {
+pub trait ContainersApi: Send {
     fn container_attach_libpod(
         &self,
         name: &str,
@@ -48,13 +48,13 @@ pub trait ContainersApi {
         stdout: Option<bool>,
         stderr: Option<bool>,
         stdin: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>>;
     fn container_changes_libpod(
         &self,
         name: &str,
         parent: Option<&str>,
         diff_type: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>>;
     fn container_checkpoint_libpod(
         &self,
         name: &str,
@@ -68,11 +68,11 @@ pub trait ContainersApi {
         with_previous: Option<bool>,
         file_locks: Option<bool>,
         print_stats: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>>;
     fn container_create_libpod(
         &self,
         create: models::SpecGenerator,
-    ) -> Pin<Box<dyn Future<Output = Result<models::ContainerCreateResponse, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::ContainerCreateResponse, Error>> + Send>>;
     fn container_delete_libpod(
         &self,
         name: &str,
@@ -81,31 +81,33 @@ pub trait ContainersApi {
         ignore: Option<bool>,
         timeout: Option<i32>,
         v: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::LibpodContainersRmReport>, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::LibpodContainersRmReport>, Error>> + Send>>;
     fn container_exists_libpod(
         &self,
         name: &str,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>>;
     fn container_export_libpod(
         &self,
         name: &str,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>>;
     fn container_healthcheck_libpod(
         &self,
         name: &str,
-    ) -> Pin<Box<dyn Future<Output = Result<models::HealthCheckResults, Error>>>>;
-    fn container_init_libpod(&self, name: &str)
-        -> Pin<Box<dyn Future<Output = Result<(), Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::HealthCheckResults, Error>> + Send>>;
+    fn container_init_libpod(
+        &self,
+        name: &str,
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>>;
     fn container_inspect_libpod(
         &self,
         name: &str,
         size: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::InspectContainerData, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::InspectContainerData, Error>> + Send>>;
     fn container_kill_libpod(
         &self,
         name: &str,
         signal: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>>;
     fn container_list_libpod(
         &self,
         all: Option<bool>,
@@ -115,7 +117,7 @@ pub trait ContainersApi {
         size: Option<bool>,
         sync: Option<bool>,
         filters: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::ListContainer>, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::ListContainer>, Error>> + Send>>;
     fn container_logs_libpod(
         &self,
         name: &str,
@@ -126,35 +128,35 @@ pub trait ContainersApi {
         until: Option<&str>,
         timestamps: Option<bool>,
         tail: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>>;
     fn container_mount_libpod(
         &self,
         name: &str,
-    ) -> Pin<Box<dyn Future<Output = Result<String, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<String, Error>> + Send>>;
     fn container_pause_libpod(
         &self,
         name: &str,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>>;
     fn container_prune_libpod(
         &self,
         filters: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::ContainersPruneReportLibpod>, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::ContainersPruneReportLibpod>, Error>> + Send>>;
     fn container_rename_libpod(
         &self,
         name: &str,
         name2: &str,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>>;
     fn container_resize_libpod(
         &self,
         name: &str,
         h: Option<i32>,
         w: Option<i32>,
-    ) -> Pin<Box<dyn Future<Output = Result<serde_json::Value, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<serde_json::Value, Error>> + Send>>;
     fn container_restart_libpod(
         &self,
         name: &str,
         t: Option<i32>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>>;
     fn container_restore_libpod(
         &self,
         name: &str,
@@ -169,60 +171,62 @@ pub trait ContainersApi {
         file_locks: Option<bool>,
         print_stats: Option<bool>,
         pod: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>>;
     fn container_show_mounted_libpod(
         &self,
-    ) -> Pin<Box<dyn Future<Output = Result<std::collections::HashMap<String, String>, Error>>>>;
+    ) -> Pin<
+        Box<dyn Future<Output = Result<std::collections::HashMap<String, String>, Error>> + Send>,
+    >;
     fn container_start_libpod(
         &self,
         name: &str,
         detach_keys: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>>;
     fn container_stats_libpod(
         &self,
         name: &str,
         stream: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>>;
     fn container_stop_libpod(
         &self,
         name: &str,
         timeout: Option<i32>,
         ignore: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>>;
     fn container_top_libpod(
         &self,
         name: &str,
         stream: Option<bool>,
         delay: Option<i32>,
         ps_args: Option<Vec<String>>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::ContainerTopOkBody, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::ContainerTopOkBody, Error>> + Send>>;
     fn container_unmount_libpod(
         &self,
         name: &str,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>>;
     fn container_unpause_libpod(
         &self,
         name: &str,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>>;
     fn container_update_libpod(
         &self,
         name: &str,
         restart_policy: Option<&str>,
         restart_retries: Option<i32>,
         config: Option<models::UpdateEntities>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>>;
     fn container_wait_libpod(
         &self,
         name: &str,
         condition: Option<Vec<String>>,
         interval: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<i32, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<i32, Error>> + Send>>;
     fn containers_stats_all_libpod(
         &self,
         containers: Option<Vec<String>>,
         stream: Option<bool>,
         interval: Option<i32>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::ContainerStats, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::ContainerStats, Error>> + Send>>;
     fn generate_kube_libpod(
         &self,
         names: Vec<String>,
@@ -231,7 +235,7 @@ pub trait ContainersApi {
         replicas: Option<i32>,
         no_trunc: Option<bool>,
         podman_only: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<std::path::PathBuf, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<std::path::PathBuf, Error>> + Send>>;
     fn generate_systemd_libpod(
         &self,
         name: &str,
@@ -249,7 +253,9 @@ pub trait ContainersApi {
         after: Option<Vec<String>>,
         requires: Option<Vec<String>>,
         additional_env_variables: Option<Vec<String>>,
-    ) -> Pin<Box<dyn Future<Output = Result<std::collections::HashMap<String, String>, Error>>>>;
+    ) -> Pin<
+        Box<dyn Future<Output = Result<std::collections::HashMap<String, String>, Error>> + Send>,
+    >;
     fn image_commit_libpod(
         &self,
         container: &str,
@@ -262,7 +268,7 @@ pub trait ContainersApi {
         repo: Option<&str>,
         stream: Option<bool>,
         tag: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>>;
     fn kube_apply_libpod(
         &self,
         ca_cert_file: Option<&str>,
@@ -271,11 +277,11 @@ pub trait ContainersApi {
         service: Option<bool>,
         file: Option<&str>,
         request: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<std::path::PathBuf, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<std::path::PathBuf, Error>> + Send>>;
     fn play_kube_down_libpod(
         &self,
         force: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::PlayKubeReport, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::PlayKubeReport, Error>> + Send>>;
     fn play_kube_libpod(
         &self,
         annotations: Option<&str>,
@@ -295,14 +301,14 @@ pub trait ContainersApi {
         userns: Option<&str>,
         wait: Option<bool>,
         request: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::PlayKubeReport, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::PlayKubeReport, Error>> + Send>>;
     fn put_container_archive_libpod(
         &self,
         name: &str,
         path: &str,
         pause: Option<bool>,
         request: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>>;
 }
 
 impl<C: Connect> ContainersApi for ContainersApiClient<C>
@@ -319,7 +325,7 @@ where
         stdout: Option<bool>,
         stderr: Option<bool>,
         stdin: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
             "/libpod/containers/{name}/attach".to_string(),
@@ -360,7 +366,7 @@ where
         name: &str,
         parent: Option<&str>,
         diff_type: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::GET,
             "/libpod/containers/{name}/changes".to_string(),
@@ -393,7 +399,7 @@ where
         with_previous: Option<bool>,
         file_locks: Option<bool>,
         print_stats: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
             "/libpod/containers/{name}/checkpoint".to_string(),
@@ -448,7 +454,7 @@ where
     fn container_create_libpod(
         &self,
         create: models::SpecGenerator,
-    ) -> Pin<Box<dyn Future<Output = Result<models::ContainerCreateResponse, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::ContainerCreateResponse, Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
             "/libpod/containers/create".to_string(),
@@ -467,7 +473,8 @@ where
         ignore: Option<bool>,
         timeout: Option<i32>,
         v: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::LibpodContainersRmReport>, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::LibpodContainersRmReport>, Error>> + Send>>
+    {
         let mut req = __internal_request::Request::new(
             hyper::Method::DELETE,
             "/libpod/containers/{name}".to_string(),
@@ -501,7 +508,7 @@ where
     fn container_exists_libpod(
         &self,
         name: &str,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::GET,
             "/libpod/containers/{name}/exists".to_string(),
@@ -516,7 +523,7 @@ where
     fn container_export_libpod(
         &self,
         name: &str,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::GET,
             "/libpod/containers/{name}/export".to_string(),
@@ -531,7 +538,7 @@ where
     fn container_healthcheck_libpod(
         &self,
         name: &str,
-    ) -> Pin<Box<dyn Future<Output = Result<models::HealthCheckResults, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::HealthCheckResults, Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::GET,
             "/libpod/containers/{name}/healthcheck".to_string(),
@@ -545,7 +552,7 @@ where
     fn container_init_libpod(
         &self,
         name: &str,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
             "/libpod/containers/{name}/init".to_string(),
@@ -561,7 +568,7 @@ where
         &self,
         name: &str,
         size: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::InspectContainerData, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::InspectContainerData, Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::GET,
             "/libpod/containers/{name}/json".to_string(),
@@ -580,7 +587,7 @@ where
         &self,
         name: &str,
         signal: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
             "/libpod/containers/{name}/kill".to_string(),
@@ -605,7 +612,7 @@ where
         size: Option<bool>,
         sync: Option<bool>,
         filters: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::ListContainer>, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::ListContainer>, Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::GET,
             "/libpod/containers/json".to_string(),
@@ -653,7 +660,7 @@ where
         until: Option<&str>,
         timestamps: Option<bool>,
         tail: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::GET,
             "/libpod/containers/{name}/logs".to_string(),
@@ -696,7 +703,7 @@ where
     fn container_mount_libpod(
         &self,
         name: &str,
-    ) -> Pin<Box<dyn Future<Output = Result<String, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<String, Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
             "/libpod/containers/{name}/mount".to_string(),
@@ -710,7 +717,7 @@ where
     fn container_pause_libpod(
         &self,
         name: &str,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
             "/libpod/containers/{name}/pause".to_string(),
@@ -725,7 +732,7 @@ where
     fn container_prune_libpod(
         &self,
         filters: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::ContainersPruneReportLibpod>, Error>>>>
+    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::ContainersPruneReportLibpod>, Error>> + Send>>
     {
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
@@ -744,7 +751,7 @@ where
         &self,
         name: &str,
         name2: &str,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
             "/libpod/containers/{name}/rename".to_string(),
@@ -762,7 +769,7 @@ where
         name: &str,
         h: Option<i32>,
         w: Option<i32>,
-    ) -> Pin<Box<dyn Future<Output = Result<serde_json::Value, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<serde_json::Value, Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
             "/libpod/containers/{name}/resize".to_string(),
@@ -785,7 +792,7 @@ where
         &self,
         name: &str,
         t: Option<i32>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
             "/libpod/containers/{name}/restart".to_string(),
@@ -815,7 +822,7 @@ where
         file_locks: Option<bool>,
         print_stats: Option<bool>,
         pod: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
             "/libpod/containers/{name}/restore".to_string(),
@@ -873,8 +880,9 @@ where
     #[allow(unused_mut)]
     fn container_show_mounted_libpod(
         &self,
-    ) -> Pin<Box<dyn Future<Output = Result<std::collections::HashMap<String, String>, Error>>>>
-    {
+    ) -> Pin<
+        Box<dyn Future<Output = Result<std::collections::HashMap<String, String>, Error>> + Send>,
+    > {
         let mut req = __internal_request::Request::new(
             hyper::Method::GET,
             "/libpod/containers/showmounted".to_string(),
@@ -888,7 +896,7 @@ where
         &self,
         name: &str,
         detach_keys: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
             "/libpod/containers/{name}/start".to_string(),
@@ -908,7 +916,7 @@ where
         &self,
         name: &str,
         stream: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::GET,
             "/libpod/containers/{name}/stats".to_string(),
@@ -929,7 +937,7 @@ where
         name: &str,
         timeout: Option<i32>,
         ignore: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
             "/libpod/containers/{name}/stop".to_string(),
@@ -955,7 +963,7 @@ where
         stream: Option<bool>,
         delay: Option<i32>,
         ps_args: Option<Vec<String>>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::ContainerTopOkBody, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::ContainerTopOkBody, Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::GET,
             "/libpod/containers/{name}/top".to_string(),
@@ -985,7 +993,7 @@ where
     fn container_unmount_libpod(
         &self,
         name: &str,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
             "/libpod/containers/{name}/unmount".to_string(),
@@ -1000,7 +1008,7 @@ where
     fn container_unpause_libpod(
         &self,
         name: &str,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
             "/libpod/containers/{name}/unpause".to_string(),
@@ -1018,7 +1026,7 @@ where
         restart_policy: Option<&str>,
         restart_retries: Option<i32>,
         config: Option<models::UpdateEntities>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
             "/libpod/containers/{name}/update".to_string(),
@@ -1044,7 +1052,7 @@ where
         name: &str,
         condition: Option<Vec<String>>,
         interval: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<i32, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<i32, Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
             "/libpod/containers/{name}/wait".to_string(),
@@ -1072,7 +1080,7 @@ where
         containers: Option<Vec<String>>,
         stream: Option<bool>,
         interval: Option<i32>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::ContainerStats, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::ContainerStats, Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::GET,
             "/libpod/containers/stats".to_string(),
@@ -1106,7 +1114,7 @@ where
         replicas: Option<i32>,
         no_trunc: Option<bool>,
         podman_only: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<std::path::PathBuf, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<std::path::PathBuf, Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::GET,
             "/libpod/generate/kube".to_string(),
@@ -1154,8 +1162,9 @@ where
         after: Option<Vec<String>>,
         requires: Option<Vec<String>>,
         additional_env_variables: Option<Vec<String>>,
-    ) -> Pin<Box<dyn Future<Output = Result<std::collections::HashMap<String, String>, Error>>>>
-    {
+    ) -> Pin<
+        Box<dyn Future<Output = Result<std::collections::HashMap<String, String>, Error>> + Send>,
+    > {
         let mut req = __internal_request::Request::new(
             hyper::Method::GET,
             "/libpod/generate/{name}/systemd".to_string(),
@@ -1250,7 +1259,7 @@ where
         repo: Option<&str>,
         stream: Option<bool>,
         tag: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>> {
         let mut req =
             __internal_request::Request::new(hyper::Method::POST, "/libpod/commit".to_string());
         req = req.with_query_param("container".to_string(), container.to_string());
@@ -1308,7 +1317,7 @@ where
         service: Option<bool>,
         file: Option<&str>,
         request: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<std::path::PathBuf, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<std::path::PathBuf, Error>> + Send>> {
         let mut req =
             __internal_request::Request::new(hyper::Method::POST, "/libpod/kube/apply".to_string());
         if let Some(ref s) = ca_cert_file {
@@ -1340,7 +1349,7 @@ where
     fn play_kube_down_libpod(
         &self,
         force: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::PlayKubeReport, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::PlayKubeReport, Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::DELETE,
             "/libpod/play/kube".to_string(),
@@ -1373,7 +1382,7 @@ where
         userns: Option<&str>,
         wait: Option<bool>,
         request: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::PlayKubeReport, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::PlayKubeReport, Error>> + Send>> {
         let mut req =
             __internal_request::Request::new(hyper::Method::POST, "/libpod/play/kube".to_string());
         if let Some(ref s) = annotations {
@@ -1472,7 +1481,7 @@ where
         path: &str,
         pause: Option<bool>,
         request: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::PUT,
             "/libpod/containers/{name}/archive".to_string(),

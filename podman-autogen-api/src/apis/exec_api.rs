@@ -38,24 +38,27 @@ where
     }
 }
 
-pub trait ExecApi {
+pub trait ExecApi: Send {
     fn container_exec_libpod(
         &self,
         name: &str,
         control: Option<models::ContainerExecRequest>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>>;
-    fn exec_inspect_libpod(&self, id: &str) -> Pin<Box<dyn Future<Output = Result<(), Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>>;
+    fn exec_inspect_libpod(
+        &self,
+        id: &str,
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>>;
     fn exec_resize_libpod(
         &self,
         id: &str,
         h: Option<i32>,
         w: Option<i32>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>>;
     fn exec_start_libpod(
         &self,
         id: &str,
         control: Option<models::ExecStartLibpodRequest>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>>;
 }
 
 impl<C: Connect> ExecApi for ExecApiClient<C>
@@ -67,7 +70,7 @@ where
         &self,
         name: &str,
         control: Option<models::ContainerExecRequest>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
             "/libpod/containers/{name}/exec".to_string(),
@@ -80,7 +83,10 @@ where
     }
 
     #[allow(unused_mut)]
-    fn exec_inspect_libpod(&self, id: &str) -> Pin<Box<dyn Future<Output = Result<(), Error>>>> {
+    fn exec_inspect_libpod(
+        &self,
+        id: &str,
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::GET,
             "/libpod/exec/{id}/json".to_string(),
@@ -97,7 +103,7 @@ where
         id: &str,
         h: Option<i32>,
         w: Option<i32>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
             "/libpod/exec/{id}/resize".to_string(),
@@ -121,7 +127,7 @@ where
         &self,
         id: &str,
         control: Option<models::ExecStartLibpodRequest>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
             "/libpod/exec/{id}/start".to_string(),

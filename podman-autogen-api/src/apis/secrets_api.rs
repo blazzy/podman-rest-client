@@ -38,7 +38,7 @@ where
     }
 }
 
-pub trait SecretsApi {
+pub trait SecretsApi: Send {
     fn secret_create_libpod(
         &self,
         name: &str,
@@ -46,22 +46,25 @@ pub trait SecretsApi {
         driveropts: Option<&str>,
         labels: Option<&str>,
         request: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::SecretCreateLibpod201Response, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::SecretCreateLibpod201Response, Error>> + Send>>;
     fn secret_delete_libpod(
         &self,
         name: &str,
         all: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>>;
-    fn secret_exists_libpod(&self, name: &str) -> Pin<Box<dyn Future<Output = Result<(), Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>>;
+    fn secret_exists_libpod(
+        &self,
+        name: &str,
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>>;
     fn secret_inspect_libpod(
         &self,
         name: &str,
         showsecret: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::SecretInfoReport, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::SecretInfoReport, Error>> + Send>>;
     fn secret_list_libpod(
         &self,
         filters: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::SecretInfoReport>, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::SecretInfoReport>, Error>> + Send>>;
 }
 
 impl<C: Connect> SecretsApi for SecretsApiClient<C>
@@ -76,7 +79,8 @@ where
         driveropts: Option<&str>,
         labels: Option<&str>,
         request: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::SecretCreateLibpod201Response, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::SecretCreateLibpod201Response, Error>> + Send>>
+    {
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
             "/libpod/secrets/create".to_string(),
@@ -104,7 +108,7 @@ where
         &self,
         name: &str,
         all: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::DELETE,
             "/libpod/secrets/{name}".to_string(),
@@ -120,7 +124,10 @@ where
     }
 
     #[allow(unused_mut)]
-    fn secret_exists_libpod(&self, name: &str) -> Pin<Box<dyn Future<Output = Result<(), Error>>>> {
+    fn secret_exists_libpod(
+        &self,
+        name: &str,
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::GET,
             "/libpod/secrets/{name}/exists".to_string(),
@@ -136,7 +143,7 @@ where
         &self,
         name: &str,
         showsecret: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::SecretInfoReport, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::SecretInfoReport, Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::GET,
             "/libpod/secrets/{name}/json".to_string(),
@@ -154,7 +161,7 @@ where
     fn secret_list_libpod(
         &self,
         filters: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::SecretInfoReport>, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::SecretInfoReport>, Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::GET,
             "/libpod/secrets/json".to_string(),

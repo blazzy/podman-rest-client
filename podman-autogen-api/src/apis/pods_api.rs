@@ -38,7 +38,7 @@ where
     }
 }
 
-pub trait PodsApi {
+pub trait PodsApi: Send {
     fn generate_kube_libpod(
         &self,
         names: Vec<String>,
@@ -47,7 +47,7 @@ pub trait PodsApi {
         replicas: Option<i32>,
         no_trunc: Option<bool>,
         podman_only: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<std::path::PathBuf, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<std::path::PathBuf, Error>> + Send>>;
     fn generate_systemd_libpod(
         &self,
         name: &str,
@@ -65,7 +65,9 @@ pub trait PodsApi {
         after: Option<Vec<String>>,
         requires: Option<Vec<String>>,
         additional_env_variables: Option<Vec<String>>,
-    ) -> Pin<Box<dyn Future<Output = Result<std::collections::HashMap<String, String>, Error>>>>;
+    ) -> Pin<
+        Box<dyn Future<Output = Result<std::collections::HashMap<String, String>, Error>> + Send>,
+    >;
     fn kube_apply_libpod(
         &self,
         ca_cert_file: Option<&str>,
@@ -74,11 +76,11 @@ pub trait PodsApi {
         service: Option<bool>,
         file: Option<&str>,
         request: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<std::path::PathBuf, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<std::path::PathBuf, Error>> + Send>>;
     fn play_kube_down_libpod(
         &self,
         force: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::PlayKubeReport, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::PlayKubeReport, Error>> + Send>>;
     fn play_kube_libpod(
         &self,
         annotations: Option<&str>,
@@ -98,66 +100,69 @@ pub trait PodsApi {
         userns: Option<&str>,
         wait: Option<bool>,
         request: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::PlayKubeReport, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::PlayKubeReport, Error>> + Send>>;
     fn pod_create_libpod(
         &self,
         create: Option<models::PodSpecGenerator>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::IdResponse, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::IdResponse, Error>> + Send>>;
     fn pod_delete_libpod(
         &self,
         name: &str,
         force: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::PodRmReport, Error>>>>;
-    fn pod_exists_libpod(&self, name: &str) -> Pin<Box<dyn Future<Output = Result<(), Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::PodRmReport, Error>> + Send>>;
+    fn pod_exists_libpod(
+        &self,
+        name: &str,
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>>;
     fn pod_inspect_libpod(
         &self,
         name: &str,
-    ) -> Pin<Box<dyn Future<Output = Result<models::InspectPodData, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::InspectPodData, Error>> + Send>>;
     fn pod_kill_libpod(
         &self,
         name: &str,
         signal: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::PodKillReport, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::PodKillReport, Error>> + Send>>;
     fn pod_list_libpod(
         &self,
         filters: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::ListPodsReport>, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::ListPodsReport>, Error>> + Send>>;
     fn pod_pause_libpod(
         &self,
         name: &str,
-    ) -> Pin<Box<dyn Future<Output = Result<models::PodPauseReport, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::PodPauseReport, Error>> + Send>>;
     fn pod_prune_libpod(
         &self,
-    ) -> Pin<Box<dyn Future<Output = Result<models::PodPruneReport, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::PodPruneReport, Error>> + Send>>;
     fn pod_restart_libpod(
         &self,
         name: &str,
-    ) -> Pin<Box<dyn Future<Output = Result<models::PodRestartReport, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::PodRestartReport, Error>> + Send>>;
     fn pod_start_libpod(
         &self,
         name: &str,
-    ) -> Pin<Box<dyn Future<Output = Result<models::PodStartReport, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::PodStartReport, Error>> + Send>>;
     fn pod_stats_all_libpod(
         &self,
         all: Option<bool>,
         names_or_ids: Option<Vec<String>>,
-    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::PodStatsReport>, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::PodStatsReport>, Error>> + Send>>;
     fn pod_stop_libpod(
         &self,
         name: &str,
         t: Option<i32>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::PodStopReport, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::PodStopReport, Error>> + Send>>;
     fn pod_top_libpod(
         &self,
         name: &str,
         stream: Option<bool>,
         delay: Option<i32>,
         ps_args: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::PodTopOkBody, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::PodTopOkBody, Error>> + Send>>;
     fn pod_unpause_libpod(
         &self,
         name: &str,
-    ) -> Pin<Box<dyn Future<Output = Result<models::PodUnpauseReport, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::PodUnpauseReport, Error>> + Send>>;
 }
 
 impl<C: Connect> PodsApi for PodsApiClient<C>
@@ -173,7 +178,7 @@ where
         replicas: Option<i32>,
         no_trunc: Option<bool>,
         podman_only: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<std::path::PathBuf, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<std::path::PathBuf, Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::GET,
             "/libpod/generate/kube".to_string(),
@@ -221,8 +226,9 @@ where
         after: Option<Vec<String>>,
         requires: Option<Vec<String>>,
         additional_env_variables: Option<Vec<String>>,
-    ) -> Pin<Box<dyn Future<Output = Result<std::collections::HashMap<String, String>, Error>>>>
-    {
+    ) -> Pin<
+        Box<dyn Future<Output = Result<std::collections::HashMap<String, String>, Error>> + Send>,
+    > {
         let mut req = __internal_request::Request::new(
             hyper::Method::GET,
             "/libpod/generate/{name}/systemd".to_string(),
@@ -313,7 +319,7 @@ where
         service: Option<bool>,
         file: Option<&str>,
         request: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<std::path::PathBuf, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<std::path::PathBuf, Error>> + Send>> {
         let mut req =
             __internal_request::Request::new(hyper::Method::POST, "/libpod/kube/apply".to_string());
         if let Some(ref s) = ca_cert_file {
@@ -345,7 +351,7 @@ where
     fn play_kube_down_libpod(
         &self,
         force: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::PlayKubeReport, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::PlayKubeReport, Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::DELETE,
             "/libpod/play/kube".to_string(),
@@ -378,7 +384,7 @@ where
         userns: Option<&str>,
         wait: Option<bool>,
         request: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::PlayKubeReport, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::PlayKubeReport, Error>> + Send>> {
         let mut req =
             __internal_request::Request::new(hyper::Method::POST, "/libpod/play/kube".to_string());
         if let Some(ref s) = annotations {
@@ -474,7 +480,7 @@ where
     fn pod_create_libpod(
         &self,
         create: Option<models::PodSpecGenerator>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::IdResponse, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::IdResponse, Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
             "/libpod/pods/create".to_string(),
@@ -489,7 +495,7 @@ where
         &self,
         name: &str,
         force: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::PodRmReport, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::PodRmReport, Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::DELETE,
             "/libpod/pods/{name}".to_string(),
@@ -504,7 +510,10 @@ where
     }
 
     #[allow(unused_mut)]
-    fn pod_exists_libpod(&self, name: &str) -> Pin<Box<dyn Future<Output = Result<(), Error>>>> {
+    fn pod_exists_libpod(
+        &self,
+        name: &str,
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::GET,
             "/libpod/pods/{name}/exists".to_string(),
@@ -519,7 +528,7 @@ where
     fn pod_inspect_libpod(
         &self,
         name: &str,
-    ) -> Pin<Box<dyn Future<Output = Result<models::InspectPodData, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::InspectPodData, Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::GET,
             "/libpod/pods/{name}/json".to_string(),
@@ -534,7 +543,7 @@ where
         &self,
         name: &str,
         signal: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::PodKillReport, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::PodKillReport, Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
             "/libpod/pods/{name}/kill".to_string(),
@@ -552,7 +561,7 @@ where
     fn pod_list_libpod(
         &self,
         filters: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::ListPodsReport>, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::ListPodsReport>, Error>> + Send>> {
         let mut req =
             __internal_request::Request::new(hyper::Method::GET, "/libpod/pods/json".to_string());
         if let Some(ref s) = filters {
@@ -567,7 +576,7 @@ where
     fn pod_pause_libpod(
         &self,
         name: &str,
-    ) -> Pin<Box<dyn Future<Output = Result<models::PodPauseReport, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::PodPauseReport, Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
             "/libpod/pods/{name}/pause".to_string(),
@@ -580,7 +589,7 @@ where
     #[allow(unused_mut)]
     fn pod_prune_libpod(
         &self,
-    ) -> Pin<Box<dyn Future<Output = Result<models::PodPruneReport, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::PodPruneReport, Error>> + Send>> {
         let mut req =
             __internal_request::Request::new(hyper::Method::POST, "/libpod/pods/prune".to_string());
 
@@ -591,7 +600,7 @@ where
     fn pod_restart_libpod(
         &self,
         name: &str,
-    ) -> Pin<Box<dyn Future<Output = Result<models::PodRestartReport, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::PodRestartReport, Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
             "/libpod/pods/{name}/restart".to_string(),
@@ -605,7 +614,7 @@ where
     fn pod_start_libpod(
         &self,
         name: &str,
-    ) -> Pin<Box<dyn Future<Output = Result<models::PodStartReport, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::PodStartReport, Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
             "/libpod/pods/{name}/start".to_string(),
@@ -620,7 +629,7 @@ where
         &self,
         all: Option<bool>,
         names_or_ids: Option<Vec<String>>,
-    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::PodStatsReport>, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::PodStatsReport>, Error>> + Send>> {
         let mut req =
             __internal_request::Request::new(hyper::Method::GET, "/libpod/pods/stats".to_string());
         if let Some(ref s) = all {
@@ -644,7 +653,7 @@ where
         &self,
         name: &str,
         t: Option<i32>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::PodStopReport, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::PodStopReport, Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
             "/libpod/pods/{name}/stop".to_string(),
@@ -665,7 +674,7 @@ where
         stream: Option<bool>,
         delay: Option<i32>,
         ps_args: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::PodTopOkBody, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::PodTopOkBody, Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::GET,
             "/libpod/pods/{name}/top".to_string(),
@@ -691,7 +700,7 @@ where
     fn pod_unpause_libpod(
         &self,
         name: &str,
-    ) -> Pin<Box<dyn Future<Output = Result<models::PodUnpauseReport, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::PodUnpauseReport, Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
             "/libpod/pods/{name}/unpause".to_string(),

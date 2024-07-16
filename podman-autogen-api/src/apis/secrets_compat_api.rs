@@ -38,20 +38,20 @@ where
     }
 }
 
-pub trait SecretsCompatApi {
+pub trait SecretsCompatApi: Send {
     fn secret_create(
         &self,
         create: Option<models::SecretCreate>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::SecretCreateLibpod201Response, Error>>>>;
-    fn secret_delete(&self, name: &str) -> Pin<Box<dyn Future<Output = Result<(), Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::SecretCreateLibpod201Response, Error>> + Send>>;
+    fn secret_delete(&self, name: &str) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>>;
     fn secret_inspect(
         &self,
         name: &str,
-    ) -> Pin<Box<dyn Future<Output = Result<models::SecretInfoReportCompat, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::SecretInfoReportCompat, Error>> + Send>>;
     fn secret_list(
         &self,
         filters: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::SecretInfoReportCompat>, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::SecretInfoReportCompat>, Error>> + Send>>;
 }
 
 impl<C: Connect> SecretsCompatApi for SecretsCompatApiClient<C>
@@ -62,7 +62,8 @@ where
     fn secret_create(
         &self,
         create: Option<models::SecretCreate>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::SecretCreateLibpod201Response, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::SecretCreateLibpod201Response, Error>> + Send>>
+    {
         let mut req =
             __internal_request::Request::new(hyper::Method::POST, "/secrets/create".to_string());
         req = req.with_body_param(create);
@@ -71,7 +72,7 @@ where
     }
 
     #[allow(unused_mut)]
-    fn secret_delete(&self, name: &str) -> Pin<Box<dyn Future<Output = Result<(), Error>>>> {
+    fn secret_delete(&self, name: &str) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>> {
         let mut req =
             __internal_request::Request::new(hyper::Method::DELETE, "/secrets/{name}".to_string());
         req = req.with_path_param("name".to_string(), name.to_string());
@@ -84,7 +85,7 @@ where
     fn secret_inspect(
         &self,
         name: &str,
-    ) -> Pin<Box<dyn Future<Output = Result<models::SecretInfoReportCompat, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::SecretInfoReportCompat, Error>> + Send>> {
         let mut req =
             __internal_request::Request::new(hyper::Method::GET, "/secrets/{name}".to_string());
         req = req.with_path_param("name".to_string(), name.to_string());
@@ -96,7 +97,8 @@ where
     fn secret_list(
         &self,
         filters: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::SecretInfoReportCompat>, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::SecretInfoReportCompat>, Error>> + Send>>
+    {
         let mut req = __internal_request::Request::new(hyper::Method::GET, "/secrets".to_string());
         if let Some(ref s) = filters {
             let query_value = s.to_string();

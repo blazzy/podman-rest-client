@@ -38,7 +38,7 @@ where
     }
 }
 
-pub trait ImagesCompatApi {
+pub trait ImagesCompatApi: Send {
     fn image_build(
         &self,
         content_type: Option<&str>,
@@ -68,7 +68,7 @@ pub trait ImagesCompatApi {
         target: Option<&str>,
         outputs: Option<&str>,
         input_stream: Option<std::path::PathBuf>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::ImageBuild200Response, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::ImageBuild200Response, Error>> + Send>>;
     fn image_create(
         &self,
         x_registry_auth: Option<&str>,
@@ -79,44 +79,44 @@ pub trait ImagesCompatApi {
         message: Option<&str>,
         platform: Option<&str>,
         input_image: Option<std::path::PathBuf>,
-    ) -> Pin<Box<dyn Future<Output = Result<std::path::PathBuf, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<std::path::PathBuf, Error>> + Send>>;
     fn image_delete(
         &self,
         name: &str,
         force: Option<bool>,
         noprune: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::ImageDelete200ResponseInner>, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::ImageDelete200ResponseInner>, Error>> + Send>>;
     fn image_get(
         &self,
         name: &str,
-    ) -> Pin<Box<dyn Future<Output = Result<std::path::PathBuf, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<std::path::PathBuf, Error>> + Send>>;
     fn image_get_all(
         &self,
         names: &str,
-    ) -> Pin<Box<dyn Future<Output = Result<std::path::PathBuf, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<std::path::PathBuf, Error>> + Send>>;
     fn image_history(
         &self,
         name: &str,
-    ) -> Pin<Box<dyn Future<Output = Result<models::HistoryResponse, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::HistoryResponse, Error>> + Send>>;
     fn image_inspect(
         &self,
         name: &str,
-    ) -> Pin<Box<dyn Future<Output = Result<models::ImageInspect, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::ImageInspect, Error>> + Send>>;
     fn image_list(
         &self,
         all: Option<bool>,
         filters: Option<&str>,
         digests: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::Summary>, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::Summary>, Error>> + Send>>;
     fn image_load(
         &self,
         quiet: Option<bool>,
         request: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>>;
     fn image_prune(
         &self,
         filters: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::ImageDelete200ResponseInner>, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::ImageDelete200ResponseInner>, Error>> + Send>>;
     fn image_push(
         &self,
         name: &str,
@@ -125,7 +125,7 @@ pub trait ImagesCompatApi {
         compress: Option<bool>,
         destination: Option<&str>,
         x_registry_auth: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<std::path::PathBuf, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<std::path::PathBuf, Error>> + Send>>;
     fn image_search(
         &self,
         term: Option<&str>,
@@ -133,13 +133,13 @@ pub trait ImagesCompatApi {
         filters: Option<&str>,
         tls_verify: Option<bool>,
         list_tags: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::ImageSearch200Response, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::ImageSearch200Response, Error>> + Send>>;
     fn image_tag(
         &self,
         name: &str,
         repo: Option<&str>,
         tag: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>>;
 }
 
 impl<C: Connect> ImagesCompatApi for ImagesCompatApiClient<C>
@@ -176,7 +176,7 @@ where
         target: Option<&str>,
         outputs: Option<&str>,
         input_stream: Option<std::path::PathBuf>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::ImageBuild200Response, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::ImageBuild200Response, Error>> + Send>> {
         let mut req = __internal_request::Request::new(hyper::Method::POST, "/build".to_string());
         if let Some(ref s) = dockerfile {
             let query_value = s.to_string();
@@ -296,7 +296,7 @@ where
         message: Option<&str>,
         platform: Option<&str>,
         input_image: Option<std::path::PathBuf>,
-    ) -> Pin<Box<dyn Future<Output = Result<std::path::PathBuf, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<std::path::PathBuf, Error>> + Send>> {
         let mut req =
             __internal_request::Request::new(hyper::Method::POST, "/images/create".to_string());
         if let Some(ref s) = from_image {
@@ -337,7 +337,7 @@ where
         name: &str,
         force: Option<bool>,
         noprune: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::ImageDelete200ResponseInner>, Error>>>>
+    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::ImageDelete200ResponseInner>, Error>> + Send>>
     {
         let mut req =
             __internal_request::Request::new(hyper::Method::DELETE, "/images/{name}".to_string());
@@ -358,7 +358,7 @@ where
     fn image_get(
         &self,
         name: &str,
-    ) -> Pin<Box<dyn Future<Output = Result<std::path::PathBuf, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<std::path::PathBuf, Error>> + Send>> {
         let mut req =
             __internal_request::Request::new(hyper::Method::GET, "/images/{name}/get".to_string());
         req = req.with_path_param("name".to_string(), name.to_string());
@@ -370,7 +370,7 @@ where
     fn image_get_all(
         &self,
         names: &str,
-    ) -> Pin<Box<dyn Future<Output = Result<std::path::PathBuf, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<std::path::PathBuf, Error>> + Send>> {
         let mut req =
             __internal_request::Request::new(hyper::Method::GET, "/images/get".to_string());
         req = req.with_query_param("names".to_string(), names.to_string());
@@ -382,7 +382,7 @@ where
     fn image_history(
         &self,
         name: &str,
-    ) -> Pin<Box<dyn Future<Output = Result<models::HistoryResponse, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::HistoryResponse, Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::GET,
             "/images/{name}/history".to_string(),
@@ -396,7 +396,7 @@ where
     fn image_inspect(
         &self,
         name: &str,
-    ) -> Pin<Box<dyn Future<Output = Result<models::ImageInspect, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::ImageInspect, Error>> + Send>> {
         let mut req =
             __internal_request::Request::new(hyper::Method::GET, "/images/{name}/json".to_string());
         req = req.with_path_param("name".to_string(), name.to_string());
@@ -410,7 +410,7 @@ where
         all: Option<bool>,
         filters: Option<&str>,
         digests: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::Summary>, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::Summary>, Error>> + Send>> {
         let mut req =
             __internal_request::Request::new(hyper::Method::GET, "/images/json".to_string());
         if let Some(ref s) = all {
@@ -434,7 +434,7 @@ where
         &self,
         quiet: Option<bool>,
         request: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>> {
         let mut req =
             __internal_request::Request::new(hyper::Method::POST, "/images/load".to_string());
         if let Some(ref s) = quiet {
@@ -451,7 +451,7 @@ where
     fn image_prune(
         &self,
         filters: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::ImageDelete200ResponseInner>, Error>>>>
+    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::ImageDelete200ResponseInner>, Error>> + Send>>
     {
         let mut req =
             __internal_request::Request::new(hyper::Method::POST, "/images/prune".to_string());
@@ -472,7 +472,7 @@ where
         compress: Option<bool>,
         destination: Option<&str>,
         x_registry_auth: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<std::path::PathBuf, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<std::path::PathBuf, Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
             "/images/{name}/push".to_string(),
@@ -509,7 +509,7 @@ where
         filters: Option<&str>,
         tls_verify: Option<bool>,
         list_tags: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::ImageSearch200Response, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::ImageSearch200Response, Error>> + Send>> {
         let mut req =
             __internal_request::Request::new(hyper::Method::GET, "/images/search".to_string());
         if let Some(ref s) = term {
@@ -542,7 +542,7 @@ where
         name: &str,
         repo: Option<&str>,
         tag: Option<&str>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>> {
         let mut req =
             __internal_request::Request::new(hyper::Method::POST, "/images/{name}/tag".to_string());
         if let Some(ref s) = repo {

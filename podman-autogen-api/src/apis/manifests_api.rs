@@ -38,12 +38,12 @@ where
     }
 }
 
-pub trait ManifestsApi {
+pub trait ManifestsApi: Send {
     fn manifest_add_libpod(
         &self,
         name: &str,
         options: Option<models::ManifestAddOptions>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::IdResponse, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::IdResponse, Error>> + Send>>;
     fn manifest_create_libpod(
         &self,
         name: &str,
@@ -51,26 +51,26 @@ pub trait ManifestsApi {
         all: Option<bool>,
         amend: Option<bool>,
         options: Option<models::ManifestModifyOptions>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::IdResponse, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::IdResponse, Error>> + Send>>;
     fn manifest_delete_libpod(
         &self,
         name: &str,
-    ) -> Pin<Box<dyn Future<Output = Result<models::LibpodImagesRemoveReport, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::LibpodImagesRemoveReport, Error>> + Send>>;
     fn manifest_exists_libpod(
         &self,
         name: &str,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>>;
     fn manifest_inspect_libpod(
         &self,
         name: &str,
         tls_verify: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::Schema2ListPublic, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::Schema2ListPublic, Error>> + Send>>;
     fn manifest_modify_libpod(
         &self,
         name: &str,
         options: models::ManifestModifyOptions,
         tls_verify: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::ManifestModifyReport, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::ManifestModifyReport, Error>> + Send>>;
     fn manifest_push_libpod(
         &self,
         name: &str,
@@ -80,13 +80,13 @@ pub trait ManifestsApi {
         all: Option<bool>,
         tls_verify: Option<bool>,
         quiet: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::IdResponse, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::IdResponse, Error>> + Send>>;
     fn manifest_push_v3_libpod(
         &self,
         name: &str,
         destination: &str,
         all: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::IdResponse, Error>>>>;
+    ) -> Pin<Box<dyn Future<Output = Result<models::IdResponse, Error>> + Send>>;
 }
 
 impl<C: Connect> ManifestsApi for ManifestsApiClient<C>
@@ -98,7 +98,7 @@ where
         &self,
         name: &str,
         options: Option<models::ManifestAddOptions>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::IdResponse, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::IdResponse, Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
             "/libpod/manifests/{name}/add".to_string(),
@@ -117,7 +117,7 @@ where
         all: Option<bool>,
         amend: Option<bool>,
         options: Option<models::ManifestModifyOptions>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::IdResponse, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::IdResponse, Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
             "/libpod/manifests/{name}".to_string(),
@@ -141,7 +141,7 @@ where
     fn manifest_delete_libpod(
         &self,
         name: &str,
-    ) -> Pin<Box<dyn Future<Output = Result<models::LibpodImagesRemoveReport, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::LibpodImagesRemoveReport, Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::DELETE,
             "/libpod/manifests/{name}".to_string(),
@@ -155,7 +155,7 @@ where
     fn manifest_exists_libpod(
         &self,
         name: &str,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::GET,
             "/libpod/manifests/{name}/exists".to_string(),
@@ -171,7 +171,7 @@ where
         &self,
         name: &str,
         tls_verify: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::Schema2ListPublic, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::Schema2ListPublic, Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::GET,
             "/libpod/manifests/{name}/json".to_string(),
@@ -191,7 +191,7 @@ where
         name: &str,
         options: models::ManifestModifyOptions,
         tls_verify: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::ManifestModifyReport, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::ManifestModifyReport, Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::PUT,
             "/libpod/manifests/{name}".to_string(),
@@ -216,7 +216,7 @@ where
         all: Option<bool>,
         tls_verify: Option<bool>,
         quiet: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::IdResponse, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::IdResponse, Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
             "/libpod/manifests/{name}/registry/{destination}".to_string(),
@@ -257,7 +257,7 @@ where
         name: &str,
         destination: &str,
         all: Option<bool>,
-    ) -> Pin<Box<dyn Future<Output = Result<models::IdResponse, Error>>>> {
+    ) -> Pin<Box<dyn Future<Output = Result<models::IdResponse, Error>> + Send>> {
         let mut req = __internal_request::Request::new(
             hyper::Method::POST,
             "/libpod/manifests/{name}/push".to_string(),
