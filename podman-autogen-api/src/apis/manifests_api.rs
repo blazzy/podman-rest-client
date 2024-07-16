@@ -12,7 +12,7 @@ use std::borrow::Borrow;
 #[allow(unused_imports)]
 use std::option::Option;
 use std::pin::Pin;
-use std::rc::Rc;
+use std::sync::Arc;
 
 use futures::Future;
 use hyper;
@@ -26,14 +26,14 @@ pub struct ManifestsApiClient<C: Connect>
 where
     C: Clone + std::marker::Send + Sync + 'static,
 {
-    configuration: Rc<configuration::Configuration<C>>,
+    configuration: Arc<configuration::Configuration<C>>,
 }
 
 impl<C: Connect> ManifestsApiClient<C>
 where
     C: Clone + std::marker::Send + Sync,
 {
-    pub fn new(configuration: Rc<configuration::Configuration<C>>) -> ManifestsApiClient<C> {
+    pub fn new(configuration: Arc<configuration::Configuration<C>>) -> ManifestsApiClient<C> {
         ManifestsApiClient { configuration }
     }
 }
