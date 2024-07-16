@@ -68,7 +68,7 @@ impl PodmanRestClient {
 
         let configuration = APIConfiguration {
             base_path: BASE_PATH.to_string(),
-            ..APIConfiguration::new(client)
+            ..APIConfiguration::with_client(client)
         };
         let api_client = APIClient::new(configuration);
 
