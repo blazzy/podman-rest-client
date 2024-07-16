@@ -51,6 +51,7 @@ mod unix_socket;
 pub use error::Error;
 pub use podman_rest_client::Config;
 pub use podman_rest_client::PodmanRestClient;
+pub use podman_autogen_api::models;
 
 #[derive(thiserror::Error, Debug)]
 pub enum GuessError {
