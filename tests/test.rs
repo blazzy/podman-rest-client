@@ -84,11 +84,13 @@ async fn it_can_create_a_container() {
         image: Some("docker.io/library/nginx:latest".into()),
         ..podman_rest_client::models::SpecGenerator::default()
     };
+
     let response = client
         .containers_api()
         .container_create_libpod(create)
         .await;
-    assert!(response.is_ok());
+
+    response.expect("Failed to create pod");
 
     // Clean up container. This cleanup is probably fragile and might need someone to manually delete
     // containers to fix this test
@@ -103,7 +105,8 @@ async fn it_can_create_a_container() {
             None,
         )
         .await;
-    assert!(response.is_ok());
+
+    response.expect("Failed to delete pod");
 }
 
 #[tokio::test]
@@ -138,16 +141,15 @@ async fn it_can_inspect_a_container() {
         .containers_api()
         .container_create_libpod(create)
         .await;
-    println!("{:?}", response);
-    assert!(response.is_ok());
+
+    response.expect("Failed to create pod");
 
     let response = client
         .containers_api()
         .container_inspect_libpod("podman_rest_client_inspect_test", None)
         .await;
-    println!("{:?}", response);
 
-    assert!(response.is_ok());
+    response.expect("Failed to inspect pod");
 
     // Clean up container. This cleanup is probably fragile and might need someone to manually delete
     // containers to fix this test
@@ -162,7 +164,8 @@ async fn it_can_inspect_a_container() {
             None,
         )
         .await;
-    assert!(response.is_ok());
+
+    response.expect("Failed to delete pod");
 }
 
 #[tokio::test]
