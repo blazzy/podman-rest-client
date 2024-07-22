@@ -81,9 +81,26 @@ pub async fn guess_configuration() -> Result<Config, GuessError> {
         })
     } else {
         let uid = nix::unistd::getuid();
-        Ok(Config {
-            uri: format!("unix:///run/user/{}/podman/podman.sock", uid),
-            identity_file: None,
-        })
+        let user_socket_path = format!("unix:///run/user/{}/podman/podman.sock", uid);
+
+        let user_socket_exists = std::path::Path::new(&user_socket_path).exists();
+
+        if user_socket_exists {
+            return Ok(Config {
+                uri: user_socket_path,
+                identity_file: None,
+            });
+        }
+
+        let system_socket_path = "/run/podman/podman.sock";
+        let system_socket_exists = std::path::Path::new(&system_socket_path).exists();
+        if system_socket_exists {
+            return Ok(Config {
+                uri: system_socket_path.to_string(),
+                identity_file: None,
+            });
+        }
+
+        Err(GuessError::NoDefault)
     }
 }
