@@ -1,8 +1,15 @@
-//! Provides an interface for querying the podman rest api. Most of the interface is generated from
-//! the the official podman swagger file. This crate adds a layer to make it possible to connect to
-//! the podman rest api over ssh to a unix socket and directl to a unix socket. Connections over
+//! Provides an interface for querying the Podman REST API. Most of the interface is generated from
+//! the the official Podman swagger file. This crate adds a layer to make it possible to connect to
+//! the podman rest api over ssh to a unix socket and directly to a unix socket. Connections over
 //! ssh are  commonly necessary on macOs where the container runtime runs in a virtual machine
 //! accessible over ssh.
+//!
+//!
+//! ### API Compatibility
+//!
+//! This crate currently only works with version 5 of the podman API. There are suffucient
+//! differences between version 3, 4, and 5 that a lot of calls will not work in an older version.
+//! `podman --version` will reveal what version you are using.
 //!
 //! ## Usage
 //!
