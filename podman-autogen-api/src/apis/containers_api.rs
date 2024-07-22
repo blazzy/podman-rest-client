@@ -81,12 +81,7 @@ pub trait ContainersApi: Send + Sync {
         ignore: Option<bool>,
         timeout: Option<i32>,
         v: Option<bool>,
-    ) -> Pin<
-        Box<
-            dyn Future<Output = Result<Option<Vec<models::LibpodContainersRmReport>>, Error>>
-                + Send,
-        >,
-    >;
+    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::LibpodContainersRmReport>, Error>> + Send>>;
     fn container_exists_libpod(
         &self,
         name: &str,
@@ -478,12 +473,8 @@ where
         ignore: Option<bool>,
         timeout: Option<i32>,
         v: Option<bool>,
-    ) -> Pin<
-        Box<
-            dyn Future<Output = Result<Option<Vec<models::LibpodContainersRmReport>>, Error>>
-                + Send,
-        >,
-    > {
+    ) -> Pin<Box<dyn Future<Output = Result<Vec<models::LibpodContainersRmReport>, Error>> + Send>>
+    {
         let mut req = __internal_request::Request::new(
             hyper::Method::DELETE,
             "/libpod/containers/{name}".to_string(),
