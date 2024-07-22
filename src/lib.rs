@@ -49,6 +49,7 @@ mod ssh;
 mod unix_socket;
 
 pub use error::Error;
+pub use podman_autogen_api::apis;
 pub use podman_autogen_api::models;
 pub use podman_rest_client::Config;
 pub use podman_rest_client::PodmanRestClient;
