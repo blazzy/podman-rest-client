@@ -15,30 +15,23 @@ ssh are  commonly necessary on macOs where the container runtime runs in a virtu
 accessible over ssh.
 
 
-#### API Compatibility
+### API Compatibility
 
 This crate currently only works with version 5 of the podman API. There are suffucient
 differences between version 3, 4, and 5 that a lot of calls will not work in an older version.
 `podman --version` will reveal what version you are using.
 
-### Usage
+### Podman Socket
 
-```rust
-use podman_rest_client::PodmanRestClient;
-use podman_rest_client::guess_configuration;
+Note that podman does not run in a client/server model like docker does so there usually isn't
+a socket you can connect to by default. You would need to enable the socket for the library to
+connect to. For example on linux you might need to run something like this:
 
-// Setup the default configuration
-let config = guess_configuration().await.unwrap();
-
-// Initialize a client
-let client = PodmanRestClient::new(config).await.unwrap();
-
-// Fetch a list of container images
-let images = client.images_api().image_list_libpod(None,None).await.unwrap();
+```sh
+systemctl --user enable --now podman.socket
 ```
 
-`guess_configuration` tries to find the default path to the podman socket depending on the
-platform you are on. You can also manually create clients configurations:
+### Usage
 
 ```rust
 use podman_rest_client::PodmanRestClient;
@@ -55,4 +48,34 @@ let unix_client = PodmanRestClient::new(Config {
 }).await.unwrap();
 ```
 
+You can also use `Config::guess()` which tries to find the default path to the podman
+socket depending on the platform you are on.
+
+```rust
+use podman_rest_client::PodmanRestClient;
+use podman_rest_client::Config;
+
+// Setup the default configuration
+let config = Config::guess().await.unwrap();
+
+// Initialize a client
+let client = PodmanRestClient::new(config).await.unwrap();
+
+// Fetch a list of container images
+let images = client.images_api().image_list_libpod(None,None).await.unwrap();
+```
+
 <!-- cargo-rdme end -->
+
+## Changelog
+
+### v0.9.0
+
+* Config guessing logic on linux will return an error if a socket is not found
+* Config guessing logic will also try to use the system socket if there is no
+user socket
+* README.md documents some notes on initializing the podman socket
+
+#### Breaking Changes
+
+* `guess_configuration` is now `Config::guess`

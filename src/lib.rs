@@ -40,7 +40,7 @@
 //! # })
 //! ```
 //!
-//! You can also use `guess_configuration` which tries to find the default path to the podman
+//! You can also use `Config::guess()` which tries to find the default path to the podman
 //! socket depending on the platform you are on.
 //!
 //! ```no_run
