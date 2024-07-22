@@ -38,7 +38,7 @@ where
     }
 }
 
-pub trait ContainersApi: Send {
+pub trait ContainersApi: Send + Sync {
     fn container_attach_libpod(
         &self,
         name: &str,

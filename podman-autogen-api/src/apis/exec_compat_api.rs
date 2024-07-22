@@ -38,7 +38,7 @@ where
     }
 }
 
-pub trait ExecCompatApi: Send {
+pub trait ExecCompatApi: Send + Sync {
     fn container_exec(
         &self,
         name: &str,

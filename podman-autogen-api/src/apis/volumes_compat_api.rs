@@ -38,7 +38,7 @@ where
     }
 }
 
-pub trait VolumesCompatApi: Send {
+pub trait VolumesCompatApi: Send + Sync {
     fn volume_create(
         &self,
         create: Option<models::VolumeCreate>,

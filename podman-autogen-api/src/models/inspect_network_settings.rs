@@ -65,7 +65,7 @@ pub struct InspectNetworkSettings {
     #[serde(rename = "Networks", skip_serializing_if = "Option::is_none")]
     pub networks: Option<std::collections::HashMap<String, models::InspectAdditionalNetwork>>,
     #[serde(rename = "Ports", skip_serializing_if = "Option::is_none")]
-    pub ports: Option<std::collections::HashMap<String, Vec<models::InspectHostPort>>>,
+    pub ports: Option<std::collections::HashMap<String, Option<Vec<models::InspectHostPort>>>>,
     #[serde(rename = "SandboxID", skip_serializing_if = "Option::is_none")]
     pub sandbox_id: Option<String>,
     #[serde(rename = "SandboxKey", skip_serializing_if = "Option::is_none")]

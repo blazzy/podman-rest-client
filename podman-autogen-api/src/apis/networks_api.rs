@@ -38,7 +38,7 @@ where
     }
 }
 
-pub trait NetworksApi: Send {
+pub trait NetworksApi: Send + Sync {
     fn network_connect_libpod(
         &self,
         name: &str,

@@ -38,7 +38,7 @@ where
     }
 }
 
-pub trait VolumesApi: Send {
+pub trait VolumesApi: Send + Sync {
     fn volume_create_libpod(
         &self,
         create: Option<models::VolumeCreateOptions>,

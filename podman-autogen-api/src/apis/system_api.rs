@@ -38,7 +38,7 @@ where
     }
 }
 
-pub trait SystemApi: Send {
+pub trait SystemApi: Send + Sync {
     fn system_data_usage_libpod(
         &self,
     ) -> Pin<Box<dyn Future<Output = Result<models::SystemDfReport, Error>> + Send>>;

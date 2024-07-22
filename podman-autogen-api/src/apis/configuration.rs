@@ -44,10 +44,11 @@ impl Configuration<HttpConnector> {
     /// # Example
     ///
     /// ```
-    /// let api_config = {
-    ///   api_key: "my-api-key",
-    ///   ...Configuration::new()
-    /// }
+    /// # use podman_autogen_api::apis::configuration::Configuration;
+    /// let api_config = Configuration {
+    ///   basic_auth: Some(("user".into(), None)),
+    ///   ..Configuration::new()
+    /// };
     /// ```
     pub fn new() -> Configuration<HttpConnector> {
         Configuration::default()
@@ -63,6 +64,11 @@ where
     /// # Example
     ///
     /// ```
+    /// # use core::time::Duration;
+    /// # use podman_autogen_api::apis::configuration::Configuration;
+    /// use hyper_util::client::legacy::Client;
+    /// use hyper_util::rt::TokioExecutor;
+    ///
     /// let client = Client::builder(TokioExecutor::new())
     ///   .pool_idle_timeout(Duration::from_secs(30))
     ///   .build_http();

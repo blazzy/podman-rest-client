@@ -38,7 +38,7 @@ where
     }
 }
 
-pub trait SecretsApi: Send {
+pub trait SecretsApi: Send + Sync {
     fn secret_create_libpod(
         &self,
         name: &str,

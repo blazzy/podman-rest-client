@@ -38,7 +38,7 @@ where
     }
 }
 
-pub trait SecretsCompatApi: Send {
+pub trait SecretsCompatApi: Send + Sync {
     fn secret_create(
         &self,
         create: Option<models::SecretCreate>,

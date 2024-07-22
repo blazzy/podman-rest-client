@@ -38,7 +38,7 @@ where
     }
 }
 
-pub trait ManifestsApi: Send {
+pub trait ManifestsApi: Send + Sync {
     fn manifest_add_libpod(
         &self,
         name: &str,

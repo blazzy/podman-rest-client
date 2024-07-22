@@ -38,7 +38,7 @@ where
     }
 }
 
-pub trait ExecApi: Send {
+pub trait ExecApi: Send + Sync {
     fn container_exec_libpod(
         &self,
         name: &str,

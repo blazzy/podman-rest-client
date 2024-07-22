@@ -38,7 +38,7 @@ where
     }
 }
 
-pub trait NetworksCompatApi: Send {
+pub trait NetworksCompatApi: Send + Sync {
     fn network_connect(
         &self,
         name: &str,

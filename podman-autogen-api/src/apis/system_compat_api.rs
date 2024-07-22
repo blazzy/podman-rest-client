@@ -38,7 +38,7 @@ where
     }
 }
 
-pub trait SystemCompatApi: Send {
+pub trait SystemCompatApi: Send + Sync {
     fn system_auth(
         &self,
         auth_config: Option<models::AuthConfig>,

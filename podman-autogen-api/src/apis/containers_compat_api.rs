@@ -40,7 +40,7 @@ where
     }
 }
 
-pub trait ContainersCompatApi: Send {
+pub trait ContainersCompatApi: Send + Sync {
     fn container_archive(
         &self,
         name: &str,

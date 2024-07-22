@@ -38,7 +38,7 @@ where
     }
 }
 
-pub trait PodsApi: Send {
+pub trait PodsApi: Send + Sync {
     fn generate_kube_libpod(
         &self,
         names: Vec<String>,

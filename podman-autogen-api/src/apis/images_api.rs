@@ -38,7 +38,7 @@ where
     }
 }
 
-pub trait ImagesApi: Send {
+pub trait ImagesApi: Send + Sync {
     fn image_build_libpod(
         &self,
         dockerfile: Option<&str>,

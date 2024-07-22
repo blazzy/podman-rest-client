@@ -38,7 +38,7 @@ where
     }
 }
 
-pub trait ImagesCompatApi: Send {
+pub trait ImagesCompatApi: Send + Sync {
     fn image_build(
         &self,
         content_type: Option<&str>,
