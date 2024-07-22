@@ -21,6 +21,19 @@ async fn it_can_list_images() {
 }
 
 #[tokio::test]
+async fn it_can_run_in_a_thread() {
+    let config = guess_configuration().await.unwrap();
+    let client = PodmanRestClient::new(config).await.unwrap();
+
+    let handle = tokio::spawn(async move {
+        let result = client.images_api().image_list_libpod(None, None).await;
+        assert!(result.is_ok());
+    });
+
+    assert!(handle.await.is_ok());
+}
+
+#[tokio::test]
 async fn it_can_pull_images() {
     let config = guess_configuration().await.unwrap();
     let client = PodmanRestClient::new(config).await.unwrap();
@@ -48,8 +61,26 @@ async fn it_can_pull_images() {
 async fn it_can_create_a_container() {
     let config = guess_configuration().await.unwrap();
     let client = PodmanRestClient::new(config).await.unwrap();
+
+    let _ = client
+        .images_api()
+        .image_pull_libpod(
+            Some("docker.io/library/nginx:latest"),
+            Some(true),
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+        )
+        .await
+        .unwrap();
+
     let create = podman_rest_client::models::SpecGenerator {
-        name: Some("podman_rest_client_test".into()),
+        name: Some("podman_rest_client_creation_test".into()),
         image: Some("docker.io/library/nginx:latest".into()),
         ..podman_rest_client::models::SpecGenerator::default()
     };
@@ -63,7 +94,73 @@ async fn it_can_create_a_container() {
     // containers to fix this test
     let response = client
         .containers_api()
-        .container_delete_libpod("podman_rest_client_test", None, None, None, None, None)
+        .container_delete_libpod(
+            "podman_rest_client_creation_test",
+            None,
+            None,
+            None,
+            None,
+            None,
+        )
+        .await;
+    assert!(response.is_ok());
+}
+
+#[tokio::test]
+async fn it_can_inspect_a_container() {
+    let config = guess_configuration().await.unwrap();
+    let client = PodmanRestClient::new(config).await.unwrap();
+
+    let _ = client
+        .images_api()
+        .image_pull_libpod(
+            Some("docker.io/library/nginx:latest"),
+            Some(true),
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+        )
+        .await
+        .unwrap();
+
+    let create = podman_rest_client::models::SpecGenerator {
+        name: Some("podman_rest_client_inspect_test".into()),
+        image: Some("docker.io/library/nginx:latest".into()),
+        ..podman_rest_client::models::SpecGenerator::default()
+    };
+
+    let response = client
+        .containers_api()
+        .container_create_libpod(create)
+        .await;
+    println!("{:?}", response);
+    assert!(response.is_ok());
+
+    let response = client
+        .containers_api()
+        .container_inspect_libpod("podman_rest_client_inspect_test", None)
+        .await;
+    println!("{:?}", response);
+
+    assert!(response.is_ok());
+
+    // Clean up container. This cleanup is probably fragile and might need someone to manually delete
+    // containers to fix this test
+    let response = client
+        .containers_api()
+        .container_delete_libpod(
+            "podman_rest_client_inspect_test",
+            None,
+            None,
+            None,
+            None,
+            None,
+        )
         .await;
     assert!(response.is_ok());
 }
