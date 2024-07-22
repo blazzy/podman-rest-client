@@ -12,7 +12,7 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v4
 
@@ -35,7 +35,7 @@ jobs:
 
     - name: Set up Podman
       run: |
-        sudo apt-get install -y podman
+        # sudo apt-get install -y podman
         sudo systemctl enable --now podman.socket
         sudo systemctl status podman.socket
 
