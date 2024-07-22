@@ -7,6 +7,7 @@ use hyper_util::rt::TokioExecutor;
 use podman_autogen_api::apis::client::APIClient;
 use podman_autogen_api::apis::configuration::Configuration as APIConfiguration;
 
+use crate::config::Config;
 use crate::error::Error;
 use crate::ssh;
 use crate::unix_socket;
@@ -14,11 +15,6 @@ use crate::unix_socket;
 const BASE_PATH: &str = "http://d/v5.1.0";
 
 pub struct PodmanRestClient(pub APIClient);
-
-pub struct Config {
-    pub uri: String,
-    pub identity_file: Option<String>,
-}
 
 impl PodmanRestClient {
     pub async fn new(config: Config) -> Result<PodmanRestClient, Error> {

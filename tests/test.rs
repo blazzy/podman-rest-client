@@ -1,6 +1,6 @@
 use assert_matches::assert_matches;
 use podman_rest_client::Error;
-use podman_rest_client::{guess_configuration, Config, PodmanRestClient};
+use podman_rest_client::{Config, PodmanRestClient};
 
 #[tokio::test]
 async fn it_connects_to_a_unix_socket() {
@@ -14,7 +14,7 @@ async fn it_connects_to_a_unix_socket() {
 
 #[tokio::test]
 async fn it_can_list_images() {
-    let config = guess_configuration().await.unwrap();
+    let config = Config::guess().await.unwrap();
     let client = PodmanRestClient::new(config).await.unwrap();
     let result = client.images_api().image_list_libpod(None, None).await;
     assert!(result.is_ok());
@@ -22,7 +22,7 @@ async fn it_can_list_images() {
 
 #[tokio::test]
 async fn it_can_run_in_a_thread() {
-    let config = guess_configuration().await.unwrap();
+    let config = Config::guess().await.unwrap();
     let client = PodmanRestClient::new(config).await.unwrap();
 
     let handle = tokio::spawn(async move {
@@ -35,7 +35,7 @@ async fn it_can_run_in_a_thread() {
 
 #[tokio::test]
 async fn it_can_pull_images() {
-    let config = guess_configuration().await.unwrap();
+    let config = Config::guess().await.unwrap();
     let client = PodmanRestClient::new(config).await.unwrap();
     let pull_report = client
         .images_api()
@@ -59,7 +59,7 @@ async fn it_can_pull_images() {
 
 #[tokio::test]
 async fn it_can_create_a_container() {
-    let config = guess_configuration().await.unwrap();
+    let config = Config::guess().await.unwrap();
     let client = PodmanRestClient::new(config).await.unwrap();
 
     let _ = client
@@ -111,7 +111,7 @@ async fn it_can_create_a_container() {
 
 #[tokio::test]
 async fn it_can_inspect_a_container() {
-    let config = guess_configuration().await.unwrap();
+    let config = Config::guess().await.unwrap();
     let client = PodmanRestClient::new(config).await.unwrap();
 
     let _ = client
