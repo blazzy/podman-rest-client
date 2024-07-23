@@ -26,13 +26,11 @@ impl Config {
             })
         } else {
             let uid = nix::unistd::getuid();
-            let user_socket_path = format!("unix:///run/user/{}/podman/podman.sock", uid);
+            let user_socket_path = format!("/run/user/{}/podman/podman.sock", uid);
 
-            let user_socket_exists = std::path::Path::new(&user_socket_path).exists();
-
-            if user_socket_exists {
+            if std::path::Path::new(&user_socket_path).exists() {
                 return Ok(Config {
-                    uri: user_socket_path,
+                    uri: format!("unix://{user_socket_path}"),
                     identity_file: None,
                 });
             }
