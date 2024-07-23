@@ -25,23 +25,16 @@ impl Config {
                 identity_file: default.identity,
             })
         } else {
-            let uid = nix::unistd::getuid();
-            let user_socket_path = format!("/run/user/{}/podman/podman.sock", uid);
-
-            if std::path::Path::new(&user_socket_path).exists() {
-                return Ok(Config {
-                    uri: format!("unix://{user_socket_path}"),
-                    identity_file: None,
-                });
-            }
-
-            let system_socket_path = "/run/podman/podman.sock";
-            let system_socket_exists = std::path::Path::new(&system_socket_path).exists();
-            if system_socket_exists {
-                return Ok(Config {
-                    uri: system_socket_path.to_string(),
-                    identity_file: None,
-                });
+            for path_socket in [
+                &format!("/run/user/{}/podman/podman.sock", nix::unistd::getuid()),
+                "/run/podman/podman.sock",
+            ] {
+                if std::path::Path::new(path_socket).exists() {
+                    return Ok(Config {
+                        uri: format!("unix://{path_socket}"),
+                        identity_file: None,
+                    });
+                }
             }
 
             Err(GuessError::NoDefault)
