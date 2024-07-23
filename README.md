@@ -14,67 +14,80 @@ ssh are  commonly necessary on macOs where the container runtime runs in a virtu
 accessible over ssh.
 
 
-### API Compatibility
+## API Compatibility
 
 This crate currently only works with version 5 of the podman API. There are suffucient
 differences between version 3, 4, and 5 that a lot of calls will not work in an older version.
 `podman --version` will reveal what version you are using.
 
-### Podman Socket
+## Podman Socket
 
 Note that podman does not run in a client/server model like docker does so there usually isn't
-a socket you can connect to by default. You would need to enable the socket for the library to
+a socket you can connect to by default. You might need to enable the socket for the library to
 connect to. For example on linux you might need to run something like this:
 
 ```sh
 systemctl --user enable --now podman.socket
 ```
 
-### Usage
+## Usage
+
+### Linux
+
+On linux you might initialize a client like this
 
 ```rust
 use podman_rest_client::PodmanRestClient;
 use podman_rest_client::Config;
 
-let ssh_client = PodmanRestClient::new(Config {
-    uri: "ssh://core@127.0.0.1:63169/run/user/501/podman/podman.sock".to_string(),
-    identity_file: Some("/path/to/identity_file".into()),
-}).await.unwrap();
-
-let unix_client = PodmanRestClient::new(Config {
+// Initialize a client
+let client = PodmanRestClient::new(Config {
     uri: "unix:///run/user/501/podman/podman.sock".to_string(),
     identity_file: None,
 }).await.unwrap();
+
+// Fetch a list of container images
+let images = client.images_api().image_list_libpod(None,None).await.unwrap();
 ```
+### MacOs
+
+On macOs you might initialize a client like this with an ssh url and identity file
+
+```rust
+let client = PodmanRestClient::new(Config {
+    uri: "ssh://core@127.0.0.1:63169/run/user/501/podman/podman.sock".to_string(),
+    identity_file: Some("/path/to/identity_file".into()),
+}).await.unwrap();
+```
+
+### Config::guess
 
 You can also use `Config::guess()` which tries to find the default path to the podman
 socket depending on the platform you are on.
 
 ```rust
-use podman_rest_client::PodmanRestClient;
-use podman_rest_client::Config;
-
 // Setup the default configuration
 let config = Config::guess().await.unwrap();
 
 // Initialize a client
 let client = PodmanRestClient::new(config).await.unwrap();
-
-// Fetch a list of container images
-let images = client.images_api().image_list_libpod(None,None).await.unwrap();
 ```
 
 <!-- cargo-rdme end -->
 
 ## Changelog
 
+### v0.10.1
+
+* Fix issue creating containers with mounted volumes [#12](https://github.com/blazzy/podman-rest-client/pull/12)
+
 ### v0.10.0
 
-* Parse error bodies whe encountering API errors https://github.com/blazzy/podman-rest-client/pull/11
+* Parse error bodies whe encountering API errors [#11](https://github.com/blazzy/podman-rest-client/pull/11)
 
 ### v0.9.1
 
-* Fix for Config::guess on Linux https://github.com/blazzy/podman-rest-client/pull/7
+* Fix for Config::guess on Linux [#7](https://github.com/blazzy/podman-rest-client/pull/7)
 
 ### v0.9.0
 

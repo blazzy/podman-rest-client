@@ -14,7 +14,7 @@
 //! ## Podman Socket
 //!
 //! Note that podman does not run in a client/server model like docker does so there usually isn't
-//! a socket you can connect to by default. You would need to enable the socket for the library to
+//! a socket you can connect to by default. You might need to enable the socket for the library to
 //! connect to. For example on linux you might need to run something like this:
 //!
 //! ```sh
@@ -23,39 +23,53 @@
 //!
 //! ## Usage
 //!
+//! ### Linux
+//!
+//! On linux you might initialize a client like this
+//!
 //! ```no_run
 //! # tokio_test::block_on(async {
 //! use podman_rest_client::PodmanRestClient;
 //! use podman_rest_client::Config;
 //!
-//! let ssh_client = PodmanRestClient::new(Config {
-//!     uri: "ssh://core@127.0.0.1:63169/run/user/501/podman/podman.sock".to_string(),
-//!     identity_file: Some("/path/to/identity_file".into()),
-//! }).await.unwrap();
-//!
-//! let unix_client = PodmanRestClient::new(Config {
+//! // Initialize a client
+//! let client = PodmanRestClient::new(Config {
 //!     uri: "unix:///run/user/501/podman/podman.sock".to_string(),
 //!     identity_file: None,
 //! }).await.unwrap();
+//!
+//! // Fetch a list of container images
+//! let images = client.images_api().image_list_libpod(None,None).await.unwrap();
 //! # })
 //! ```
+//! ### MacOs
+//!
+//! On macOs you might initialize a client like this with an ssh url and identity file
+//!
+//! ```no_run
+//! # tokio_test::block_on(async {
+//! # use podman_rest_client::PodmanRestClient;
+//! # use podman_rest_client::Config;
+//! let client = PodmanRestClient::new(Config {
+//!     uri: "ssh://core@127.0.0.1:63169/run/user/501/podman/podman.sock".to_string(),
+//!     identity_file: Some("/path/to/identity_file".into()),
+//! }).await.unwrap();
+//! ```
+//!
+//! ### Config::guess
 //!
 //! You can also use `Config::guess()` which tries to find the default path to the podman
 //! socket depending on the platform you are on.
 //!
 //! ```no_run
 //! # tokio_test::block_on(async {
-//! use podman_rest_client::PodmanRestClient;
-//! use podman_rest_client::Config;
-//!
+//! # use podman_rest_client::PodmanRestClient;
+//! # use podman_rest_client::Config;
 //! // Setup the default configuration
 //! let config = Config::guess().await.unwrap();
 //!
 //! // Initialize a client
 //! let client = PodmanRestClient::new(config).await.unwrap();
-//!
-//! // Fetch a list of container images
-//! let images = client.images_api().image_list_libpod(None,None).await.unwrap();
 //! # })
 //! ```
 
