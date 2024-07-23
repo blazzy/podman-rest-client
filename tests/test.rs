@@ -1,6 +1,9 @@
 use assert_matches::assert_matches;
+use podman_rest_client::models;
 use podman_rest_client::Error;
 use podman_rest_client::{Config, PodmanRestClient};
+
+mod common;
 
 #[tokio::test]
 async fn it_connects_to_a_unix_socket() {
@@ -18,6 +21,24 @@ async fn it_can_list_images() {
     let client = PodmanRestClient::new(config).await.unwrap();
     let result = client.images_api().image_list_libpod(None, None).await;
     assert!(result.is_ok());
+}
+
+#[tokio::test]
+async fn it_can_create_a_volume() {
+    let config = Config::guess().await.unwrap();
+    let client = PodmanRestClient::new(config).await.unwrap();
+
+    let create = models::VolumeCreateOptions {
+        name: Some("podman_rest_client_volume_test".into()),
+        ..models::VolumeCreateOptions::default()
+    };
+    let result = client
+        .volumes_api()
+        .volume_create_libpod(Some(create))
+        .await;
+    result.expect("Failed to create a volume");
+
+    common::delete_volume(&client, "podman_rest_client_volume_test").await;
 }
 
 #[tokio::test]
@@ -62,110 +83,68 @@ async fn it_can_create_a_container() {
     let config = Config::guess().await.unwrap();
     let client = PodmanRestClient::new(config).await.unwrap();
 
-    let _ = client
-        .images_api()
-        .image_pull_libpod(
-            Some("docker.io/library/nginx:latest"),
-            Some(true),
-            None,
-            None,
-            None,
-            None,
-            None,
-            None,
-            None,
-            None,
-        )
-        .await
-        .unwrap();
+    common::pull_nginx_image(&client).await;
 
-    let create = podman_rest_client::models::SpecGenerator {
+    let create = models::SpecGenerator {
         name: Some("podman_rest_client_creation_test".into()),
         image: Some("docker.io/library/nginx:latest".into()),
-        ..podman_rest_client::models::SpecGenerator::default()
+        ..models::SpecGenerator::default()
     };
 
-    let response = client
+    client
         .containers_api()
         .container_create_libpod(create)
-        .await;
+        .await
+        .expect("Failed to create pod");
 
-    response.expect("Failed to create pod");
-
-    // Clean up container. This cleanup is probably fragile and might need someone to manually delete
-    // containers to fix this test
-    let response = client
-        .containers_api()
-        .container_delete_libpod(
-            "podman_rest_client_creation_test",
-            None,
-            None,
-            None,
-            None,
-            None,
-        )
-        .await;
-
-    response.expect("Failed to delete pod");
+    common::delete_container(&client, "podman_rest_client_creation_test").await;
 }
 
+#[ignore = "Spec seems to broken. Possible related issue: https://github.com/containers/podman/issues/13092"]
+#[tokio::test]
+async fn it_can_create_a_container_with_a_volume_mounted() {
+    let config = Config::guess().await.unwrap();
+    let client = PodmanRestClient::new(config).await.unwrap();
+
+    common::pull_nginx_image(&client).await;
+    common::create_volume(&client, "podman_rest_client_container_volume_test").await;
+
+    let create = models::SpecGenerator {
+        name: Some("podman_rest_client_container_volume_test".into()),
+        image: Some("docker.io/library/nginx:latest".into()),
+        mounts: Some(vec![models::Mount {
+            source: Some("podman_rest_client_container_volume_test".into()),
+            target: Some("/foo".into()),
+            ..models::Mount::default()
+        }]),
+        ..models::SpecGenerator::default()
+    };
+
+    client
+        .containers_api()
+        .container_create_libpod(create)
+        .await
+        .expect("Failed to create pod");
+
+    common::delete_volume(&client, "podman_rest_client_container_volume_test").await;
+}
+
+#[ignore = "Breaking on ci server because its running an older podman version need to upgrade"]
 #[tokio::test]
 async fn it_can_inspect_a_container() {
     let config = Config::guess().await.unwrap();
     let client = PodmanRestClient::new(config).await.unwrap();
 
-    let _ = client
-        .images_api()
-        .image_pull_libpod(
-            Some("docker.io/library/nginx:latest"),
-            Some(true),
-            None,
-            None,
-            None,
-            None,
-            None,
-            None,
-            None,
-            None,
-        )
-        .await
-        .unwrap();
+    common::pull_nginx_image(&client).await;
+    common::create_nginx_container(&client, "podman_rest_client_inspect_test").await;
 
-    let create = podman_rest_client::models::SpecGenerator {
-        name: Some("podman_rest_client_inspect_test".into()),
-        image: Some("docker.io/library/nginx:latest".into()),
-        ..podman_rest_client::models::SpecGenerator::default()
-    };
-
-    let response = client
-        .containers_api()
-        .container_create_libpod(create)
-        .await;
-
-    response.expect("Failed to create pod");
-
-    let response = client
+    client
         .containers_api()
         .container_inspect_libpod("podman_rest_client_inspect_test", None)
-        .await;
+        .await
+        .expect("Failed to inspect pod");
 
-    response.expect("Failed to inspect pod");
-
-    // Clean up container. This cleanup is probably fragile and might need someone to manually delete
-    // containers to fix this test
-    let response = client
-        .containers_api()
-        .container_delete_libpod(
-            "podman_rest_client_inspect_test",
-            None,
-            None,
-            None,
-            None,
-            None,
-        )
-        .await;
-
-    response.expect("Failed to delete pod");
+    common::delete_container(&client, "podman_rest_client_inspect_test").await;
 }
 
 #[tokio::test]

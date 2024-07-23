@@ -11,7 +11,7 @@ use hyper_util::client::legacy::connect::Connect;
 use serde;
 use serde_json;
 
-use super::{configuration, Error};
+use super::{configuration, ApiErrorBody, Error};
 
 pub(crate) struct ApiKey {
     pub in_header: bool,
@@ -230,11 +230,26 @@ impl Request {
                 .and_then(move |response| {
                     let status = response.status();
                     if !status.is_success() {
-                        futures::future::err::<U, Error>(Error::from((
-                            status,
-                            response.into_body(),
-                        )))
-                        .boxed()
+                        let body = response.into_body();
+                        let collect = body.collect().map_err(Error::from);
+
+                        collect
+                            .map(move |collected| {
+                                collected.and_then(|collected| {
+                                    let bytes = collected.to_bytes();
+                                    let body: ApiErrorBody = serde_json::from_slice(&bytes)
+                                        .map(ApiErrorBody::Json)
+                                        // If we can't parse the body as json just treat it as a
+                                        // string
+                                        .unwrap_or_else(|_| {
+                                            ApiErrorBody::String(
+                                                String::from_utf8_lossy(&bytes).to_string(),
+                                            )
+                                        });
+                                    Result::<U, Error>::Err(Error::from((status, body)))
+                                })
+                            })
+                            .boxed()
                     } else if no_return_type {
                         // This is a hack; if there's no_ret_type, U is (), but serde_json gives an
                         // error when deserializing "" into (), so deserialize 'null' into it
