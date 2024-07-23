@@ -100,7 +100,6 @@ async fn it_can_create_a_container() {
     common::delete_container(&client, "podman_rest_client_creation_test").await;
 }
 
-#[ignore = "Spec seems to broken. Possible related issue: https://github.com/containers/podman/issues/13092"]
 #[tokio::test]
 async fn it_can_create_a_container_with_a_volume_mounted() {
     let config = Config::guess().await.unwrap();
@@ -114,7 +113,7 @@ async fn it_can_create_a_container_with_a_volume_mounted() {
         image: Some("docker.io/library/nginx:latest".into()),
         mounts: Some(vec![models::Mount {
             source: Some("podman_rest_client_container_volume_test".into()),
-            target: Some("/foo".into()),
+            destination: Some("/my-volume".into()),
             ..models::Mount::default()
         }]),
         ..models::SpecGenerator::default()
