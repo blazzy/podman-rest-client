@@ -55,7 +55,7 @@ jobs:
           uidmap
 
         cd podman
-        make BUILDTAGS="systemd" PREFIX=/usr
+        make BUILDTAGS="systemd seccomp" PREFIX=/usr
         sudo make install PREFIX=/usr
 
     - name: Start Podman

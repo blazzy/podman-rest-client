@@ -5,7 +5,6 @@
 [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
 [![Build](https://img.shields.io/github/actions/workflow/status/blazzy/podman-rest-client/main.yml?branch=main)](https://github.com/blazzy/podman-rest-client/actions)
 
-
 <!-- cargo-rdme start -->
 
 Provides an interface for querying the Podman REST API. Most of the interface is generated from
