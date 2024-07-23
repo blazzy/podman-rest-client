@@ -17,12 +17,9 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    #- name: Set up Homebrew
-    #  uses: Homebrew/actions/setup-homebrew@master
-
-    - name: Remove Podman
+    - name: Remove Default Podman
       run: |
-        sudo apt-get remove crun podman
+        sudo apt-get remove podman
 
     - uses: actions/checkout@v4
       with:
@@ -34,8 +31,6 @@ jobs:
       run: |
         sudo apt-get install \
           btrfs-progs \
-          crun \
-          git \
           golang-go \
           go-md2man \
           iptables \
@@ -63,17 +58,6 @@ jobs:
         podman --version
         systemctl --user enable --now podman.socket
         systemctl --user status podman.socket
-
-    #- name: Install Podman
-    #    brew install crun podman
-
-    #- name: Versions
-    #  run: |
-    #    crun --version
-    #    podman version
-
-    #- name: Start Podman
-    #  run: brew services start podman
 
     - uses: dtolnay/rust-toolchain@stable
       with:
