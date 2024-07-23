@@ -13,16 +13,25 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v4
 
-    - name: Set up Podman
+    - name: Set up Homebrew
+      uses: Homebrew/actions/setup-homebrew@master
+
+    - name: Install Podman
       run: |
-        # sudo apt-get install -y podman
-        podman --version
-        systemctl --user enable --now podman.socket
-        systemctl --user status podman.socket
+        sudo apt-get remove crun podman
+        brew install crun podman
+
+    - name: Versions
+      run: |
+        crun --version
+        podman version
+
+    - name: Start Podman
+      run: brew services start podman
 
     - uses: dtolnay/rust-toolchain@stable
       with:
