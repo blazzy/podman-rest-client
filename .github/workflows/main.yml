@@ -71,7 +71,7 @@ jobs:
       run: cargo fmt --check
 
     - name: README sync 
-      run: cargo rdme --check
+      run: cargo rdme --check --heading-base-level 0
 
     - name: Build
       run: cargo build --verbose
