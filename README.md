@@ -69,6 +69,10 @@ let images = client.images_api().image_list_libpod(None,None).await.unwrap();
 
 ## Changelog
 
+### v0.9.1
+
+* Fix for Config::guess on Linux https://github.com/blazzy/podman-rest-client/pull/7
+
 ### v0.9.0
 
 * Config guessing logic on linux will return an error if a socket is not found
