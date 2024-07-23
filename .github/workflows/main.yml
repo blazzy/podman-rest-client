@@ -17,21 +17,41 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Set up Homebrew
-      uses: Homebrew/actions/setup-homebrew@master
+    #- name: Set up Homebrew
+    #  uses: Homebrew/actions/setup-homebrew@master
 
-    - name: Install Podman
+    - name: Remove Podman
       run: |
         sudo apt-get remove crun podman
-        brew install crun podman
 
-    - name: Versions
+    - uses: actions/checkout@v4
+      with:
+        repository: containers/podman
+        ref: v5.1.2
+        path: ./podman
+
+    - name: Build Podman
       run: |
-        crun --version
-        podman version
+        cd podman
+        make PREFIX=/usr
+        sudo make install PREFIX=/usr
 
     - name: Start Podman
-      run: brew services start podman
+      run: |
+        podman --version
+        systemctl --user enable --now podman.socket
+        systemctl --user status podman.socket
+
+    #- name: Install Podman
+    #    brew install crun podman
+
+    #- name: Versions
+    #  run: |
+    #    crun --version
+    #    podman version
+
+    #- name: Start Podman
+    #  run: brew services start podman
 
     - uses: dtolnay/rust-toolchain@stable
       with:
