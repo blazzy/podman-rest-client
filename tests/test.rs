@@ -128,7 +128,6 @@ async fn it_can_create_a_container_with_a_volume_mounted() {
     common::delete_volume(&client, "podman_rest_client_container_volume_test").await;
 }
 
-#[ignore = "Breaking on ci server because its running an older podman version need to upgrade"]
 #[tokio::test]
 async fn it_can_inspect_a_container() {
     let config = Config::guess().await.unwrap();
