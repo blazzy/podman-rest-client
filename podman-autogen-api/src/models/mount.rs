@@ -24,8 +24,8 @@ pub struct Mount {
     /// Source specifies the name of the mount. Depending on mount type, this may be a volume name or a host path, or even ignored. Source is not supported for tmpfs (must be an empty value)
     #[serde(rename = "Source", skip_serializing_if = "Option::is_none")]
     pub source: Option<String>,
-    #[serde(rename = "Target", skip_serializing_if = "Option::is_none")]
-    pub target: Option<String>,
+    #[serde(rename = "Destination", skip_serializing_if = "Option::is_none")]
+    pub destination: Option<String>,
     #[serde(rename = "TmpfsOptions", skip_serializing_if = "Option::is_none")]
     pub tmpfs_options: Option<Box<models::TmpfsOptions>>,
     #[serde(rename = "Type", skip_serializing_if = "Option::is_none")]
@@ -42,7 +42,7 @@ impl Mount {
             consistency: None,
             read_only: None,
             source: None,
-            target: None,
+            destination: None,
             tmpfs_options: None,
             r#type: None,
             volume_options: None,
