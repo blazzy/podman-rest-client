@@ -71,6 +71,9 @@ let config = Config::guess().await.unwrap();
 
 // Initialize a client
 let client = PodmanRestClient::new(config).await.unwrap();
+
+// Fetch a list of container images
+let images = client.images_api().image_list_libpod(None,None).await.unwrap();
 ```
 
 <!-- cargo-rdme end -->

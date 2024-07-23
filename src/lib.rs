@@ -54,6 +54,7 @@
 //!     uri: "ssh://core@127.0.0.1:63169/run/user/501/podman/podman.sock".to_string(),
 //!     identity_file: Some("/path/to/identity_file".into()),
 //! }).await.unwrap();
+//! # })
 //! ```
 //!
 //! ### Config::guess
@@ -70,6 +71,9 @@
 //!
 //! // Initialize a client
 //! let client = PodmanRestClient::new(config).await.unwrap();
+//!
+//! // Fetch a list of container images
+//! let images = client.images_api().image_list_libpod(None,None).await.unwrap();
 //! # })
 //! ```
 

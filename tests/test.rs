@@ -123,8 +123,9 @@ async fn it_can_create_a_container_with_a_volume_mounted() {
         .containers_api()
         .container_create_libpod(create)
         .await
-        .expect("Failed to create pod");
+        .expect("Failed to create container");
 
+    common::delete_container(&client, "podman_rest_client_container_volume_test").await;
     common::delete_volume(&client, "podman_rest_client_container_volume_test").await;
 }
 
