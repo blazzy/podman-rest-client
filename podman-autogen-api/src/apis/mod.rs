@@ -1,6 +1,8 @@
 use std::fmt;
 use std::fmt::Debug;
 
+use futures::future::{FutureExt, TryFuture, TryFutureExt, *};
+use http_body_util::BodyExt;
 use hyper;
 use hyper::http;
 use hyper_util::client::legacy::connect::Connect;
@@ -17,22 +19,21 @@ pub enum Error {
     UriError(http::uri::InvalidUri),
 }
 
+#[derive(Debug)]
+pub enum ApiErrorBody {
+    Json(serde_json::Value),
+    String(String),
+    Unparseable,
+}
+
+#[derive(Debug)]
 pub struct ApiError {
     pub code: hyper::StatusCode,
-    pub body: hyper::body::Incoming,
+    pub body: ApiErrorBody,
 }
 
-impl Debug for ApiError {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.debug_struct("ApiError")
-            .field("code", &self.code)
-            .field("body", &"hyper::body::Incoming")
-            .finish()
-    }
-}
-
-impl From<(hyper::StatusCode, hyper::body::Incoming)> for Error {
-    fn from(e: (hyper::StatusCode, hyper::body::Incoming)) -> Self {
+impl From<(hyper::StatusCode, ApiErrorBody)> for Error {
+    fn from(e: (hyper::StatusCode, ApiErrorBody)) -> Self {
         Error::Api(ApiError {
             code: e.0,
             body: e.1,
@@ -42,6 +43,7 @@ impl From<(hyper::StatusCode, hyper::body::Incoming)> for Error {
 
 impl From<http::Error> for Error {
     fn from(e: http::Error) -> Self {
+        use http_body_util::BodyExt;
         Error::Http(e)
     }
 }
