@@ -141,9 +141,28 @@ async fn it_can_inspect_a_container() {
         .containers_api()
         .container_inspect_libpod("podman_rest_client_inspect_test", None)
         .await
-        .expect("Failed to inspect pod");
+        .expect("Failed to inspect container");
 
     common::delete_container(&client, "podman_rest_client_inspect_test").await;
+}
+
+#[tokio::test]
+async fn it_can_create_a_pod() {
+    let config = Config::guess().await.unwrap();
+    let client = PodmanRestClient::new(config).await.unwrap();
+
+    let create = models::PodSpecGenerator {
+        name: Some("podman_rest_client_create_pod_test".into()),
+        ..models::PodSpecGenerator::default()
+    };
+
+    client
+        .pods_api()
+        .pod_create_libpod(Some(create))
+        .await
+        .expect("Failed to create pod");
+
+    common::delete_pod(&client, "podman_rest_client_create_pod_test").await;
 }
 
 #[tokio::test]

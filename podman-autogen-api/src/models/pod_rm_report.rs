@@ -18,7 +18,7 @@ pub struct PodRmReport {
     #[serde(rename = "Id", skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     #[serde(rename = "RemovedCtrs", skip_serializing_if = "Option::is_none")]
-    pub removed_ctrs: Option<std::collections::HashMap<String, String>>,
+    pub removed_ctrs: Option<std::collections::HashMap<String, Option<String>>>,
 }
 
 impl PodRmReport {
