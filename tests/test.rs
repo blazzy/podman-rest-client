@@ -95,7 +95,7 @@ async fn it_can_create_a_container() {
         .containers_api()
         .container_create_libpod(create)
         .await
-        .expect("Failed to create pod");
+        .expect("Failed to create container");
 
     common::delete_container(&client, "podman_rest_client_creation_test").await;
 }
