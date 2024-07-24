@@ -43,6 +43,14 @@ pub async fn delete_container(client: &PodmanRestClient, container_name: &str) {
         .expect("Failed to clean up container");
 }
 
+pub async fn delete_pod(client: &PodmanRestClient, pod_name: &str) {
+    client
+        .pods_api()
+        .pod_delete_libpod(pod_name, None)
+        .await
+        .expect("Failed to clean up pod");
+}
+
 pub async fn create_volume(client: &PodmanRestClient, volume_name: &str) {
     let create = VolumeCreateOptions {
         name: Some(volume_name.into()),
