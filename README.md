@@ -80,17 +80,21 @@ let images = client.images_api().image_list_libpod(None,None).await.unwrap();
 
 ## Changelog
 
+### v0.10.2
+
+* Fix issue parsing error on pod deletion ([#14](https://github.com/blazzy/podman-rest-client/pull/14))
+
 ### v0.10.1
 
-* Fix issue creating containers with mounted volumes [#12](https://github.com/blazzy/podman-rest-client/pull/12)
+* Fix issue creating containers with mounted volumes ([#12](https://github.com/blazzy/podman-rest-client/pull/12))
 
 ### v0.10.0
 
-* Parse error bodies whe encountering API errors [#11](https://github.com/blazzy/podman-rest-client/pull/11)
+* Parse error bodies whe encountering API errors ([#11](https://github.com/blazzy/podman-rest-client/pull/11))
 
 ### v0.9.1
 
-* Fix for Config::guess on Linux [#7](https://github.com/blazzy/podman-rest-client/pull/7)
+* Fix for Config::guess on Linux ([#7](https://github.com/blazzy/podman-rest-client/pull/7))
 
 ### v0.9.0
 
