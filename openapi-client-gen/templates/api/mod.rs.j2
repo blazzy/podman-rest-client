@@ -1,0 +1,7 @@
+{%- for tag in tags.values() -%}
+mod {{tag.var_name()}};
+{% endfor %}
+
+{%~ for tag in tags.values() -%}
+pub use {{tag.var_name()}}::{{tag.struct_name()}};
+{% endfor %}

@@ -1,0 +1,63 @@
+use http_body_util::BodyExt;
+use hyper_util::client::legacy::connect::Connect;
+use hyper_util::client::legacy::connect::HttpConnector;
+use hyper_util::client::legacy::Client;
+use hyper_util::rt::TokioExecutor;
+
+use super::Error;
+use super::error::ApiErrorBody;
+
+pub struct Config<C: Connect = HttpConnector>
+where
+    C: Clone + Send + Sync + 'static,
+{
+    pub base_path: String,
+    pub user_agent: Option<String>,
+    pub client: Client<C, String>,
+}
+
+impl Config<HttpConnector> {
+    pub fn new() -> Config<HttpConnector> {
+        Config::default()
+    }
+}
+
+impl<C: Connect> Config<C>
+where
+    C: Clone + Send + Sync,
+{
+    pub fn with_client(client: Client<C, String>) -> Config<C> {
+        Config {
+            base_path: "{{spec.base_path}}".to_owned(),
+            user_agent: Some("openapi-client-gen".to_owned()),
+            client,
+        }
+    }
+
+    pub async fn execute_request<U>(&self, request: http::request::Request<String>) -> Result<U, Error>
+    where
+        for<'a> U: serde::Deserialize<'a>,
+    {
+        let response = self.client.request(request).await?;
+        let status = response.status();
+        let collected = response.into_body().collect().await?;
+        if status.is_success() {
+            Ok(serde_json::from_slice(&collected.to_bytes())?)
+        } else {
+            let bytes = collected.to_bytes();
+            let body: ApiErrorBody = serde_json::from_slice(&bytes)
+                .map(ApiErrorBody::Json)
+                .unwrap_or_else(|_| {
+                    ApiErrorBody::Plain(String::from_utf8_lossy(&bytes).to_string())
+                });
+            Err(Error::Api { code: status, body })
+        }
+    }
+}
+
+impl Default for Config<HttpConnector> {
+    fn default() -> Self {
+        let client = Client::builder(TokioExecutor::new()).build_http();
+        Config::with_client(client)
+    }
+}

@@ -1,0 +1,96 @@
+use std::sync::Arc;
+
+use super::super::config::Config;
+use super::super::Error;
+
+/// {{tag.description}}
+/// {{tag.description}}
+pub struct {{tag.struct_name()}} {
+  config: Arc<Config>,
+}
+
+impl {{tag.struct_name()}} {
+    pub fn new(config: Arc<Config>) -> {{tag.struct_name()}} {
+      {{tag.struct_name()}} {
+        config,
+      }
+    }
+
+    {%~ for operation in tag.operations %}
+    /// {{operation.method}} {{operation.path-}}
+    {% if let Some(summary) = operation.summary -%}
+    {% for line in summary.trim().lines() %}
+    /// {{line-}}
+    {% endfor -%}
+    {% endif -%}
+    {% if let Some(description) = operation.description -%}
+    {% for line in description.trim().lines() %}
+    /// {{line-}}
+    {% endfor -%}
+    {% endif %}
+    pub async fn {{operation.operation_id}}(
+        &self,
+    {%- if let Some(params) = params.get(operation.operation_id) %}
+    {%- for param in params %}
+        {{param.0}}: {{param.1}},
+    {%- endfor %}
+    {%- endif %}
+    ) -> Result<{{operation.success_type(models)}}, Error> {
+        {%- let query_params = operation.query_params() %}
+        {%- let path_params = operation.path_params() %}
+        {%- let header_params = operation.header_params() %}
+        {%- let body_params = operation.body_params() %}
+        let mut request_url = url::Url::parse(&self.config.base_path)?;
+
+        let {% if !path_params.is_empty() %}mut {% endif %}request_path = "{{operation.path}}".to_string();
+        {%- if !path_params.is_empty() %}
+        {%- for param in path_params  %}
+        request_path = request_path.replace(&format!("{{"{{{}}}"}}", {{param.spec_name}}), &{{param.var_name()}});
+        {%- endfor %}
+        {%- endif %}
+
+        request_url.set_path(&request_path);
+
+        {%~ if !query_params.is_empty() %}
+        {
+          let mut query_pairs = request_url.query_pairs_mut();
+          {%- for param in query_params %}
+          {%- if param.is_required() %}
+          query_pairs.append_pair("{{param.spec_name}}", &{{param.to_string_string()}});
+          {%- else %}
+          if let Some({{param.var_name()}}) = {{param.var_name()}} {
+              query_pairs.append_pair("{{param.spec_name}}", &{{param.to_string_string()}});
+          }
+          {%- endif %}
+          {%- endfor %}
+        }
+        {%- endif %}
+
+        {%~ let mut_builder = !body_params.is_empty() || !header_params.is_empty() %}
+        let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
+        let {% if mut_builder %}mut {% endif %}req_builder = hyper::Request::builder().uri(hyper_uri).method("{{operation.method}}");
+
+        {%~ if !header_params.is_empty() %}
+        {%- for param in header_params %}
+        {%- if param.is_required() %}
+        req_builder = req_builder.header("{{param.spec_name}}", {{param.var_name()}});
+        {%- else %}
+        if let Some({{param.var_name()}}) = {{param.var_name()}} {
+          req_builder = req_builder.header("{{param.spec_name}}", {{param.var_name()}});
+        }
+        {%- endif %}
+        {%- endfor %}
+        {%- endif %}
+
+        {%- if !body_params.is_empty() %}
+        let body = serde_json::to_string(&{{body_params[0].var_name()}})?;
+        req_builder = req_builder.header(hyper::header::CONTENT_TYPE, "application/json");
+        req_builder = req_builder.header(hyper::header::CONTENT_LENGTH, body.len());
+        let request = req_builder.body(body)?;
+        {%- else %}
+        let request = req_builder.body(String::new())?;
+        {%- endif %}
+
+        self.config.execute_request(request).await
+    }
+    {%~ endfor %}}

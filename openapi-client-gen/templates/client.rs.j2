@@ -1,0 +1,23 @@
+use std::sync::Arc;
+
+use super::config::Config;
+use super::api;
+
+pub struct Client {
+  config: Arc<Config>
+}
+
+impl Client {
+    pub fn new(config: Config) -> Client {
+        Client {
+          config: Arc::new(config),
+        }
+    }
+
+    {%~ for tag in tags.values() %}
+    /// {{tag.description}}
+    pub fn {{tag.var_name()}}(&self) -> api::{{tag.struct_name()}} {
+        api::{{tag.struct_name()}}::new(self.config.clone())
+    }
+    {% endfor %}
+}
