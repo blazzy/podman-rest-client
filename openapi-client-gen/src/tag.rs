@@ -184,7 +184,7 @@ pub enum BaseType {
 impl BaseType {
     pub fn type_string(&self) -> String {
         match &self {
-            BaseType::String => "String".into(),
+            BaseType::String => "&str".into(),
             BaseType::Boolean => "bool".into(),
             BaseType::Integer => "i64".into(),
         }
