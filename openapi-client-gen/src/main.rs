@@ -1,5 +1,6 @@
 use std::collections::BTreeMap;
 use std::fs;
+use std::path::PathBuf;
 
 use askama::Template;
 use clap::Parser;
@@ -47,10 +48,10 @@ fn main() -> Result<(), ParseError> {
             .collect();
         let params = params?;
 
-        let api_path = format!("{}/api", cli.target_directory);
+        let api_path = format!("{}/apis", cli.target_directory);
         fs::create_dir_all(api_path)?;
         for tag in spec.tags.values() {
-            let path = format!("{}/api/{}", cli.target_directory, tag.file_name());
+            let path = format!("{}/apis/{}", cli.target_directory, tag.file_name());
             let template = template::ApiTemplate {
                 tag,
                 params: &params,
@@ -59,11 +60,11 @@ fn main() -> Result<(), ParseError> {
             fs::write(path, template.render()?)?;
         }
 
-        let model_path = format!("{}/model", cli.target_directory);
+        let model_path = format!("{}/models", cli.target_directory);
         fs::create_dir_all(model_path)?;
         for model in models.values() {
             if let ModelData::Object(properties) = &model.data {
-                let path = format!("{}/model/{}", cli.target_directory, model.file_name());
+                let path = format!("{}/models/{}", cli.target_directory, model.file_name());
                 let properties: Result<Vec<_>, ParseError> = properties
                     .iter()
                     .map(|property| {
@@ -82,29 +83,26 @@ fn main() -> Result<(), ParseError> {
             }
         }
 
-        let client_path = format!("{}/client.rs", cli.target_directory);
+        let target_directory = PathBuf::from(cli.target_directory);
+        let target_file = |name: &str| target_directory.join(name);
+
         let client_template = template::ClientTemplate { tags: &spec.tags };
-        fs::write(client_path, client_template.render()?)?;
+        fs::write(target_file("client.rs"), client_template.render()?)?;
 
-        let config_path = format!("{}/config.rs", cli.target_directory);
         let config_template = template::ConfigTemplate { spec: &spec };
-        fs::write(config_path, config_template.render()?)?;
+        fs::write(target_file("config.rs"), config_template.render()?)?;
 
-        let api_mod_path = format!("{}/api/mod.rs", cli.target_directory);
         let api_mod_template = template::ApiModTemplate { tags: &spec.tags };
-        fs::write(api_mod_path, api_mod_template.render()?)?;
+        fs::write(target_file("apis/mod.rs"), api_mod_template.render()?)?;
 
-        let model_mod_path = format!("{}/model/mod.rs", cli.target_directory);
         let model_mod_template = template::ModelModTemplate { models: &models };
-        fs::write(model_mod_path, model_mod_template.render()?)?;
+        fs::write(target_file("models/mod.rs"), model_mod_template.render()?)?;
 
-        let mod_path = format!("{}/mod.rs", cli.target_directory);
         let mod_template = template::ModTemplate;
-        fs::write(mod_path, mod_template.render()?)?;
+        fs::write(target_file("lib.rs"), mod_template.render()?)?;
 
-        let error_path = format!("{}/error.rs", cli.target_directory);
-        let error_template = fs::read_to_string("templates/error.rs")?;
-        fs::write(error_path, error_template)?;
+        let error_template = include_str!("../templates/error.rs");
+        fs::write(target_file("error.rs"), error_template)?;
     }
 
     Ok(())

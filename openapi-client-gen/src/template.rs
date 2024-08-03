@@ -2,12 +2,12 @@ use std::collections::BTreeMap;
 
 use askama::Template;
 
-use crate::tag;
 use crate::model::Model;
 use crate::spec::Spec;
+use crate::tag;
 
 #[derive(Template)]
-#[template(path = "api/api.rs.j2", escape = "none")]
+#[template(path = "apis/api.rs.j2", escape = "none")]
 pub struct ApiTemplate<'a> {
     pub tag: &'a tag::Tag,
     pub params: &'a BTreeMap<String, Vec<(String, String)>>,
@@ -15,20 +15,20 @@ pub struct ApiTemplate<'a> {
 }
 
 #[derive(Template)]
-#[template(path = "model/model.rs.j2", escape = "none")]
+#[template(path = "models/model.rs.j2", escape = "none")]
 pub struct ModelTemplate<'a> {
     pub model: &'a Model,
     pub properties: Vec<(&'a Model, String, String)>,
 }
 
 #[derive(Template)]
-#[template(path = "api/mod.rs.j2", escape = "none")]
+#[template(path = "apis/mod.rs.j2", escape = "none")]
 pub struct ApiModTemplate<'a> {
     pub tags: &'a BTreeMap<String, tag::Tag>,
 }
 
 #[derive(Template)]
-#[template(path = "model/mod.rs.j2", escape = "none")]
+#[template(path = "models/mod.rs.j2", escape = "none")]
 pub struct ModelModTemplate<'a> {
     pub models: &'a BTreeMap<&'a String, &'a Model>,
 }

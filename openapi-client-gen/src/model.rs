@@ -133,7 +133,7 @@ impl Model {
             ModelData::Array(items) => format!("Vec<{}>", items.type_string(models)?),
             ModelData::ArbitraryValue => "serde_json::Value".into(),
             ModelData::Object(_) => {
-                format!("super::super::model::{}", self.struct_name())
+                format!("super::super::models::{}", self.struct_name())
             }
             ModelData::HashMap(value) => {
                 format!(
