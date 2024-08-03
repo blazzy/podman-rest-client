@@ -14,8 +14,8 @@ pub enum ParseError {
     UnrecognizedTag(String),
     #[error("Cannot open file {0}")]
     CannotOpenFile(#[from] std::io::Error),
-    #[error("Cannot find reference model {0}")]
-    MissingModel(String),
+    #[error("Unrecognized Integer Format {0}")]
+    UnrecognizedIntegerFormat(String),
     #[error("Cannot write template {0}")]
     WriteError(#[from] askama::Error),
 }

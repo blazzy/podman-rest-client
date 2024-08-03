@@ -18,13 +18,60 @@ pub struct Model {
 pub enum ModelData {
     Object(Vec<Property>),
     String,
-    Integer,
+    Integer(IntegerFormat),
     Number,
     Boolean,
     Array(Box<Model>),
     HashMap(Box<Model>),
     ArbitraryValue,
     Ref(String),
+}
+
+#[derive(Clone)]
+pub enum IntegerFormat {
+    INT64,
+    UINT64,
+    INT32,
+    UINT32,
+    INT16,
+    UINT16,
+    INT8,
+    UINT8,
+}
+
+impl TryFrom<&str> for IntegerFormat {
+    type Error = ParseError;
+
+    fn try_from(value: &str) -> Result<IntegerFormat, Self::Error> {
+        use IntegerFormat::*;
+        match value {
+            "int64" => Ok(INT64),
+            "uint64" => Ok(UINT64),
+            "int32" => Ok(INT32),
+            "uint32" => Ok(UINT32),
+            "int16" => Ok(INT16),
+            "uint16" => Ok(UINT16),
+            "int8" => Ok(INT8),
+            "uint8" => Ok(UINT8),
+            _ => Err(ParseError::UnrecognizedIntegerFormat(value.into())),
+        }
+    }
+}
+
+impl std::fmt::Display for IntegerFormat {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        use IntegerFormat::*;
+        match self {
+            INT64 => write!(f, "i64"),
+            UINT64 => write!(f, "u64"),
+            INT32 => write!(f, "i32"),
+            UINT32 => write!(f, "u32"),
+            INT16 => write!(f, "i16"),
+            UINT16 => write!(f, "u16"),
+            INT8 => write!(f, "i8"),
+            UINT8 => write!(f, "u8"),
+        }
+    }
 }
 
 #[derive(Clone)]
@@ -127,7 +174,7 @@ impl Model {
     pub fn type_string(&self, models: &BTreeMap<String, Model>) -> String {
         match &self.data {
             ModelData::String => "String".into(),
-            ModelData::Integer => "i64".into(),
+            ModelData::Integer(format) => format.to_string(),
             ModelData::Number => "f64".into(),
             ModelData::Boolean => "bool".into(),
             ModelData::Array(items) => format!("Vec<{}>", items.type_string(models)),
@@ -226,7 +273,13 @@ fn from_yaml(
             Ok(ModelData::ArbitraryValue)
         }
         "string" => Ok(ModelData::String),
-        "integer" => Ok(ModelData::Integer),
+        "integer" => {
+            if let Some(format) = yaml["format"].as_str() {
+                Ok(ModelData::Integer(format.try_into()?))
+            } else {
+                Ok(ModelData::Integer(IntegerFormat::INT64))
+            }
+        }
         "array" => {
             let items: Box<Model> = Box::new(Model::new(
                 format!("{}{}", parent_name, "_items"),
