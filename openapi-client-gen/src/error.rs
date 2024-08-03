@@ -1,7 +1,7 @@
 #[derive(Debug, thiserror::Error)]
-pub enum ParseError {
+pub enum Error {
     #[error("Invalid String {0}")]
-    StringParseError(String),
+    StringParse(String),
     #[error("Unrecognized ModelType {0}")]
     UnrecognizedModelType(String),
     #[error("Unsupported Method {0}")]
@@ -17,5 +17,7 @@ pub enum ParseError {
     #[error("Unrecognized Integer Format {0}")]
     UnrecognizedIntegerFormat(String),
     #[error("Cannot write template {0}")]
-    WriteError(#[from] askama::Error),
+    Write(#[from] askama::Error),
+    #[error("Yaml scan error {0}")]
+    YamlScan(#[from] yaml_rust2::ScanError),
 }

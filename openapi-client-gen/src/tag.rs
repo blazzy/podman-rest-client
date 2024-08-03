@@ -4,7 +4,7 @@ use std::fmt;
 use convert_case::{Case, Casing};
 use yaml_rust2::Yaml;
 
-use crate::error::ParseError;
+use crate::error::Error;
 use crate::model::Model;
 use crate::parse;
 
@@ -89,8 +89,8 @@ impl Parameter {
         match &self.request_part {
             RequestPart::Path(field) | RequestPart::Query(field) | RequestPart::Header(field) => {
                 let base_type = match &field.r#type {
-                    Type::Just(base_type) => base_type.type_string(),
-                    Type::Array(base_type) => format!("Vec<{}>", base_type.type_string()),
+                    Type::Just(base_type) => base_type.to_string(),
+                    Type::Array(base_type) => format!("Vec<{}>", base_type),
                 };
                 if field.required {
                     base_type
@@ -165,7 +165,7 @@ pub struct RequestPartField {
 }
 
 impl TryFrom<&Yaml> for RequestPartField {
-    type Error = ParseError;
+    type Error = Error;
 
     fn try_from(value: &Yaml) -> Result<Self, Self::Error> {
         Ok(RequestPartField {
@@ -181,18 +181,19 @@ pub enum BaseType {
     Integer,
 }
 
-impl BaseType {
-    pub fn type_string(&self) -> String {
-        match &self {
-            BaseType::String => "&str".into(),
-            BaseType::Boolean => "bool".into(),
-            BaseType::Integer => "i64".into(),
+impl std::fmt::Display for BaseType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        use BaseType::*;
+        match self {
+            String => write!(f, "&str"),
+            Boolean => write!(f, "bool"),
+            Integer => write!(f, "i64"),
         }
     }
 }
 
 impl TryFrom<&Yaml> for BaseType {
-    type Error = ParseError;
+    type Error = Error;
 
     fn try_from(yaml: &Yaml) -> Result<Self, Self::Error> {
         let value: &str = parse::string(yaml, "request part type")?;
@@ -201,7 +202,7 @@ impl TryFrom<&Yaml> for BaseType {
             "string" => Ok(BaseType::String),
             "boolean" => Ok(BaseType::Boolean),
             "integer" => Ok(BaseType::Integer),
-            _ => Err(ParseError::UnrecognizedRequestPartType(value.into())),
+            _ => Err(Error::UnrecognizedRequestPartType(value.into())),
         }
     }
 }
@@ -212,7 +213,7 @@ pub enum Type {
 }
 
 impl TryFrom<&Yaml> for Type {
-    type Error = ParseError;
+    type Error = Error;
 
     fn try_from(yaml: &Yaml) -> Result<Self, Self::Error> {
         let value: &str = parse::string(&yaml["type"], "request part type")?;
@@ -233,7 +234,7 @@ impl RequestPart {
         base_name: &str,
         path_ref: String,
         models: &mut BTreeMap<String, Model>,
-    ) -> Result<Self, ParseError> {
+    ) -> Result<Self, Error> {
         let part_name = parse::string(&yaml["in"], "parameter in:")?;
 
         match part_name {
@@ -246,7 +247,7 @@ impl RequestPart {
             "path" => Ok(RequestPart::Path(yaml.try_into()?)),
             "header" => Ok(RequestPart::Header(yaml.try_into()?)),
             "query" => Ok(RequestPart::Query(yaml.try_into()?)),
-            _ => Err(ParseError::UnrecognizedRequestPart(part_name.into())),
+            _ => Err(Error::UnrecognizedRequestPart(part_name.into())),
         }
     }
 }
@@ -270,7 +271,7 @@ impl fmt::Display for Method {
 }
 
 impl TryFrom<&str> for Method {
-    type Error = ParseError;
+    type Error = Error;
 
     fn try_from(value: &str) -> Result<Self, Self::Error> {
         match value {
@@ -278,7 +279,7 @@ impl TryFrom<&str> for Method {
             "put" => Ok(Method::Put),
             "post" => Ok(Method::Post),
             "delete" => Ok(Method::Delete),
-            _ => Err(ParseError::UnsupportedMethod(value.into())),
+            _ => Err(Error::UnsupportedMethod(value.into())),
         }
     }
 }

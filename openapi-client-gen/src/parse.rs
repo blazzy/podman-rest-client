@@ -1,26 +1,26 @@
 use yaml_rust2::Yaml;
 
-use crate::error::ParseError;
+use crate::error::Error;
 
 pub fn is_keyword(var: &str) -> bool {
     RUST_KEYWORDS.iter().any(|k| k == &var)
 }
 
-pub fn string<'a, T>(yaml: &'a Yaml, context: &str) -> Result<T, ParseError>
+pub fn string<'a, T>(yaml: &'a Yaml, context: &str) -> Result<T, Error>
 where
     T: From<&'a str>,
 {
     yaml.as_str()
         .map(|s| T::from(s))
-        .ok_or_else(|| ParseError::StringParseError(context.into()))
+        .ok_or_else(|| Error::StringParse(context.into()))
 }
 
-pub fn try_string<T>(yaml: &Yaml, context: &str) -> Result<T, ParseError>
+pub fn try_string<T>(yaml: &Yaml, context: &str) -> Result<T, Error>
 where
-    for<'a> T: TryFrom<&'a str, Error = ParseError>,
+    for<'a> T: TryFrom<&'a str, Error = Error>,
 {
     yaml.as_str()
-        .ok_or_else(|| ParseError::StringParseError(context.into()))?
+        .ok_or_else(|| Error::StringParse(context.into()))?
         .try_into()
 }
 

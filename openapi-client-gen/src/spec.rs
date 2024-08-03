@@ -4,8 +4,9 @@ use std::collections::HashSet;
 use convert_case::{Case, Casing};
 use hashlink::LinkedHashMap;
 use yaml_rust2::Yaml;
+use yaml_rust2::YamlLoader;
 
-use crate::error::ParseError;
+use crate::error::Error;
 use crate::model::Model;
 use crate::parse;
 use crate::tag;
@@ -18,7 +19,12 @@ pub struct Spec {
 }
 
 impl Spec {
-    pub fn from_yaml(yaml: &Yaml) -> Result<Spec, ParseError> {
+    pub fn from_yaml_string(string: &str) -> Result<Spec, Error> {
+        let yaml = YamlLoader::load_from_str(&string)?;
+        Spec::from_yaml(&yaml[0])
+    }
+
+    pub fn from_yaml(yaml: &Yaml) -> Result<Spec, Error> {
         let mut spec = Spec::default();
 
         let host: String = parse::string(&yaml["host"], "host")?;
@@ -52,7 +58,7 @@ impl Spec {
         Ok(spec)
     }
 
-    fn load_tags(&mut self, yaml: &Vec<Yaml>) -> Result<(), ParseError> {
+    fn load_tags(&mut self, yaml: &Vec<Yaml>) -> Result<(), Error> {
         for tag in yaml {
             let name: String = parse::string(&tag["name"], "tag name")?;
             let description: String = parse::string(&tag["description"], "tag description")?;
@@ -74,7 +80,7 @@ impl Spec {
         Ok(())
     }
 
-    fn load_response_models(&mut self, yaml: &LinkedHashMap<Yaml, Yaml>) -> Result<(), ParseError> {
+    fn load_response_models(&mut self, yaml: &LinkedHashMap<Yaml, Yaml>) -> Result<(), Error> {
         for (key, value) in yaml {
             let name: String = parse::string(key, "response name")?;
             let model_ref = format!("#/responses/{}", name);
@@ -83,10 +89,7 @@ impl Spec {
         Ok(())
     }
 
-    fn load_definition_models(
-        &mut self,
-        yaml: &LinkedHashMap<Yaml, Yaml>,
-    ) -> Result<(), ParseError> {
+    fn load_definition_models(&mut self, yaml: &LinkedHashMap<Yaml, Yaml>) -> Result<(), Error> {
         for (key, value) in yaml {
             let name: String = parse::string(key, "definition name")?;
             let model_ref = format!("#/definitions/{}", name);
@@ -95,7 +98,7 @@ impl Spec {
         Ok(())
     }
 
-    fn load_paths(&mut self, yaml: &LinkedHashMap<Yaml, Yaml>) -> Result<(), ParseError> {
+    fn load_paths(&mut self, yaml: &LinkedHashMap<Yaml, Yaml>) -> Result<(), Error> {
         for (key, value) in yaml {
             let path: String = parse::string(key, "path key")?;
 
@@ -169,7 +172,7 @@ impl Spec {
 
                     self.tags
                         .get_mut(&tag)
-                        .ok_or(ParseError::UnrecognizedTag(tag))?
+                        .ok_or(Error::UnrecognizedTag(tag))?
                         .operations
                         .push(operation);
                 }

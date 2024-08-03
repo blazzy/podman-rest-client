@@ -3,7 +3,7 @@ use std::collections::{BTreeMap, HashSet};
 use convert_case::{Case, Casing};
 use yaml_rust2::Yaml;
 
-use crate::error::ParseError;
+use crate::error::Error;
 use crate::parse;
 
 #[derive(Clone)]
@@ -40,7 +40,7 @@ pub enum IntegerFormat {
 }
 
 impl TryFrom<&str> for IntegerFormat {
-    type Error = ParseError;
+    type Error = Error;
 
     fn try_from(value: &str) -> Result<IntegerFormat, Self::Error> {
         use IntegerFormat::*;
@@ -53,7 +53,7 @@ impl TryFrom<&str> for IntegerFormat {
             "uint16" => Ok(UINT16),
             "int8" => Ok(INT8),
             "uint8" => Ok(UINT8),
-            _ => Err(ParseError::UnrecognizedIntegerFormat(value.into())),
+            _ => Err(Error::UnrecognizedIntegerFormat(value.into())),
         }
     }
 }
@@ -113,7 +113,7 @@ impl Model {
         yaml: &Yaml,
         model_ref: &String,
         models: &mut BTreeMap<String, Model>,
-    ) -> Result<Model, ParseError> {
+    ) -> Result<Model, Error> {
         let data: ModelData = from_yaml(yaml, &name, model_ref, models)?;
         let model = Model {
             name,
@@ -192,6 +192,7 @@ impl Model {
                 if let Some(ref_model) = models.get(ref_str) {
                     ref_model.type_string(models)
                 } else {
+                    log::warn!("Could not find model reference: {}", ref_str,);
                     "serde_json::Value".into()
                 }
             }
@@ -207,7 +208,7 @@ fn from_yaml(
     parent_name: &String,
     model_ref: &String,
     models: &mut BTreeMap<String, Model>,
-) -> Result<ModelData, ParseError> {
+) -> Result<ModelData, Error> {
     if !yaml["$ref"].is_badvalue() && !yaml["$ref"].is_null() {
         return Ok(ModelData::Ref(parse::string(
             &yaml["$ref"],
@@ -216,17 +217,17 @@ fn from_yaml(
     }
 
     if yaml["type"].is_badvalue() || yaml["type"].is_null() {
-        log::warn!(
-            "no ref or type found for property {} {}",
-            parent_name,
-            model_ref
-        );
+        //log::warn!(
+        //    "no ref or type found for property {} {}",
+        //    parent_name,
+        //    model_ref
+        //);
         return Ok(ModelData::ArbitraryValue);
     }
 
     let type_name = yaml["type"]
         .as_str()
-        .ok_or(ParseError::StringParseError("definition type".into()))?;
+        .ok_or(Error::StringParse("definition type".into()))?;
 
     match type_name {
         "object" => {
@@ -291,6 +292,6 @@ fn from_yaml(
         }
         "boolean" => Ok(ModelData::Boolean),
         "number" => Ok(ModelData::Number),
-        _ => Err(ParseError::UnrecognizedModelType(type_name.into())),
+        _ => Err(Error::UnrecognizedModelType(type_name.into())),
     }
 }
