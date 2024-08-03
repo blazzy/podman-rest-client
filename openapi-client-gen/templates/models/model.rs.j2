@@ -1,6 +1,6 @@
 use serde::{Serialize, Deserialize};
 
-#[derive(Serialize, Deserialize)]
+#[derive(Default, Serialize, Deserialize)]
 {%- if let Some(title) = model.title -%}
 {% for line in title.trim().lines() %}
 /// {{line-}}
@@ -23,6 +23,6 @@ pub struct {{model.struct_name()}} {
     /// {{line-}}
     {% endfor -%}
     {% endif %}
-    {{var_name}}: {{type}},
+    pub {{var_name}}: {{type}},
   {% endfor -%}
 }

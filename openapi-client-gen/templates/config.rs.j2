@@ -1,16 +1,31 @@
+use http::request::Request;
+use http::Response;
 use http_body_util::BodyExt;
+use hyper::body::Incoming;
 use hyper_util::client::legacy::connect::Connect;
 use hyper_util::client::legacy::connect::HttpConnector;
 use hyper_util::client::legacy::Client;
+use hyper_util::client::legacy::Error as HyperError;
 use hyper_util::rt::TokioExecutor;
+use std::future::Future;
+use std::pin::Pin;
 
-use super::Error;
 use super::error::ApiErrorBody;
+use super::Error;
 
-pub struct Config<C: Connect = HttpConnector>
-where
-    C: Clone + Send + Sync + 'static,
-{
+pub trait Connector: Connect + Clone + Send + Sync + 'static {}
+impl Connector for HttpConnector {}
+
+pub trait ClientConfig {
+    fn get_base_path(&self) -> &String;
+    fn get_user_agent(&self) -> &Option<String>;
+    fn request<'a>(
+        &self,
+        request: Request<String>,
+    ) -> Pin<Box<dyn Future<Output = Result<Response<Incoming>, HyperError>> + 'a + Send>>;
+}
+
+pub struct Config<C: Connector = HttpConnector> {
     pub base_path: String,
     pub user_agent: Option<String>,
     pub client: Client<C, String>,
@@ -22,10 +37,14 @@ impl Config<HttpConnector> {
     }
 }
 
-impl<C: Connect> Config<C>
-where
-    C: Clone + Send + Sync,
-{
+impl Default for Config<HttpConnector> {
+    fn default() -> Self {
+        let client = Client::builder(TokioExecutor::new()).build_http();
+        Config::with_client(client)
+    }
+}
+
+impl<C: Connector> Config<C> {
     pub fn with_client(client: Client<C, String>) -> Config<C> {
         Config {
             base_path: "{{spec.base_path}}".to_owned(),
@@ -33,31 +52,42 @@ where
             client,
         }
     }
+}
 
-    pub async fn execute_request<U>(&self, request: http::request::Request<String>) -> Result<U, Error>
-    where
-        for<'a> U: serde::Deserialize<'a>,
-    {
-        let response = self.client.request(request).await?;
-        let status = response.status();
-        let collected = response.into_body().collect().await?;
-        if status.is_success() {
-            Ok(serde_json::from_slice(&collected.to_bytes())?)
-        } else {
-            let bytes = collected.to_bytes();
-            let body: ApiErrorBody = serde_json::from_slice(&bytes)
-                .map(ApiErrorBody::Json)
-                .unwrap_or_else(|_| {
-                    ApiErrorBody::Plain(String::from_utf8_lossy(&bytes).to_string())
-                });
-            Err(Error::Api { code: status, body })
-        }
+impl<C: Connector> ClientConfig for Config<C> {
+    fn get_base_path(&self) -> &String {
+        &self.base_path
+    }
+
+    fn get_user_agent(&self) -> &Option<String> {
+        &self.user_agent
+    }
+
+    fn request<'a>(
+        &self,
+        request: Request<String>,
+    ) -> Pin<Box<dyn Future<Output = Result<Response<Incoming>, HyperError>> + 'a + Send>> {
+        Box::pin(self.client.request(request))
     }
 }
 
-impl Default for Config<HttpConnector> {
-    fn default() -> Self {
-        let client = Client::builder(TokioExecutor::new()).build_http();
-        Config::with_client(client)
+pub async fn execute_request<U>(
+    config: &dyn ClientConfig,
+    request: http::request::Request<String>,
+) -> Result<U, Error>
+where
+    for<'a> U: serde::Deserialize<'a>,
+{
+    let response = config.request(request).await?;
+    let status = response.status();
+    let collected = response.into_body().collect().await?;
+    if status.is_success() {
+        Ok(serde_json::from_slice(&collected.to_bytes())?)
+    } else {
+        let bytes = collected.to_bytes();
+        let body: ApiErrorBody = serde_json::from_slice(&bytes)
+            .map(ApiErrorBody::Json)
+            .unwrap_or_else(|_| ApiErrorBody::Plain(String::from_utf8_lossy(&bytes).to_string()));
+        Err(Error::Api { code: status, body })
     }
 }

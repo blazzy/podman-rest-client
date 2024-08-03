@@ -19,4 +19,3 @@ pub enum ParseError {
     #[error("Cannot write template {0}")]
     WriteError(#[from] askama::Error),
 }
-

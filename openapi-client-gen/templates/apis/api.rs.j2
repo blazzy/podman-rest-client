@@ -1,16 +1,17 @@
 use std::sync::Arc;
 
-use super::super::config::Config;
+use super::super::config::execute_request;
+use super::super::config::ClientConfig;
 use super::super::Error;
 
 /// {{tag.description}}
 /// {{tag.description}}
 pub struct {{tag.struct_name()}} {
-  config: Arc<Config>,
+  config: Arc<dyn ClientConfig>,
 }
 
 impl {{tag.struct_name()}} {
-    pub fn new(config: Arc<Config>) -> {{tag.struct_name()}} {
+    pub fn new(config: Arc<dyn ClientConfig>) -> {{tag.struct_name()}} {
       {{tag.struct_name()}} {
         config,
       }
@@ -40,7 +41,7 @@ impl {{tag.struct_name()}} {
         {%- let path_params = operation.path_params() %}
         {%- let header_params = operation.header_params() %}
         {%- let body_params = operation.body_params() %}
-        let mut request_url = url::Url::parse(&self.config.base_path)?;
+        let mut request_url = url::Url::parse(self.config.get_base_path())?;
 
         let {% if !path_params.is_empty() %}mut {% endif %}request_path = "{{operation.path}}".to_string();
         {%- if !path_params.is_empty() %}
@@ -91,6 +92,6 @@ impl {{tag.struct_name()}} {
         let request = req_builder.body(String::new())?;
         {%- endif %}
 
-        self.config.execute_request(request).await
+        execute_request(&*self.config, request).await
     }
     {%~ endfor %}}

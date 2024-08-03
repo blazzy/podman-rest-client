@@ -1,14 +1,16 @@
 use std::sync::Arc;
 
+use super::config::Connector;
+use super::config::ClientConfig;
 use super::config::Config;
 use super::api;
 
 pub struct Client {
-  config: Arc<Config>
+  config: Arc<dyn ClientConfig>
 }
 
 impl Client {
-    pub fn new(config: Config) -> Client {
+    pub fn new<C: Connector>(config: Config<C>) -> Client {
         Client {
           config: Arc::new(config),
         }
