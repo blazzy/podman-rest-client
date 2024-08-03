@@ -1,6 +1,6 @@
 use serde::{Serialize, Deserialize};
 
-#[derive(Default, Serialize, Deserialize)]
+#[derive(Default, Debug, Serialize, Deserialize)]
 {%- if let Some(title) = model.title -%}
 {% for line in title.trim().lines() %}
 /// {{line-}}
@@ -12,17 +12,17 @@ use serde::{Serialize, Deserialize};
 {% endfor -%}
 {% endif %}
 pub struct {{model.struct_name()}} {
-  {%~ for (model, var_name, type) in properties %}
-    {%- if let Some(title) = model.title -%}
+  {%~ for property in properties %}
+    {%- if let Some(title) = property.model.title -%}
     {% for line in title.trim().lines() %}
     /// {{line-}}
     {% endfor -%}
     {% endif %}
-    {%- if let Some(description) = model.description -%}
+    {%- if let Some(description) = property.model.description -%}
     {% for line in description.trim().lines() %}
     /// {{line-}}
     {% endfor -%}
     {% endif %}
-    pub {{var_name}}: {{type}},
+    pub {{property.var_name()}}: {{property.type_string(models)}},
   {% endfor -%}
 }

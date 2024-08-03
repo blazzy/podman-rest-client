@@ -3,7 +3,7 @@ use std::sync::Arc;
 use super::config::Connector;
 use super::config::ClientConfig;
 use super::config::Config;
-use super::api;
+use super::apis;
 
 pub struct Client {
   config: Arc<dyn ClientConfig>
@@ -18,8 +18,8 @@ impl Client {
 
     {%~ for tag in tags.values() %}
     /// {{tag.description}}
-    pub fn {{tag.var_name()}}(&self) -> api::{{tag.struct_name()}} {
-        api::{{tag.struct_name()}}::new(self.config.clone())
+    pub fn {{tag.var_name()}}(&self) -> apis::{{tag.struct_name()}} {
+        apis::{{tag.struct_name()}}::new(self.config.clone())
     }
     {% endfor %}
 }

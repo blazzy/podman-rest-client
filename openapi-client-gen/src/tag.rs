@@ -35,7 +35,7 @@ pub struct Operation {
     pub description: Option<String>,
     pub summary: Option<String>,
     pub responses: BTreeMap<String, Model>,
-    pub params: std::rc::Rc<Vec<Parameter>>,
+    pub params: Vec<Parameter>,
 }
 
 impl Operation {
@@ -72,10 +72,7 @@ impl Operation {
         if successes.len() != 1 {
             "serde_json::Value".into()
         } else {
-            successes[0]
-                .1
-                .type_string(models)
-                .unwrap_or_else(|_| "serde_json::Value".into())
+            successes[0].1.type_string(models)
         }
     }
 }
@@ -88,7 +85,7 @@ pub struct Parameter {
 }
 
 impl Parameter {
-    pub fn type_string(&self, models: &BTreeMap<String, Model>) -> Result<String, ParseError> {
+    pub fn type_string(&self, models: &BTreeMap<String, Model>) -> String {
         match &self.request_part {
             RequestPart::Path(field) | RequestPart::Query(field) | RequestPart::Header(field) => {
                 let base_type = match &field.r#type {
@@ -96,9 +93,9 @@ impl Parameter {
                     Type::Array(base_type) => format!("Vec<{}>", base_type.type_string()),
                 };
                 if field.required {
-                    Ok(base_type)
+                    base_type
                 } else {
-                    Ok(format!("Option<{}>", base_type))
+                    format!("Option<{}>", base_type)
                 }
             }
             RequestPart::Body(model) => model.type_string(models),

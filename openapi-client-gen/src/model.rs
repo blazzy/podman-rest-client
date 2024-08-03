@@ -51,11 +51,11 @@ impl Property {
         }
     }
 
-    pub fn type_string(&self, models: &BTreeMap<String, Model>) -> Result<String, ParseError> {
+    pub fn type_string(&self, models: &BTreeMap<String, Model>) -> String {
         if self.required {
             self.model.type_string(models)
         } else {
-            Ok(format!("Option<{}>", self.model.type_string(models)?))
+            format!("Option<{}>", self.model.type_string(models))
         }
     }
 }
@@ -124,13 +124,13 @@ impl Model {
         matches!(self.data, ModelData::Ref(_))
     }
 
-    pub fn type_string(&self, models: &BTreeMap<String, Model>) -> Result<String, ParseError> {
-        Ok(match &self.data {
+    pub fn type_string(&self, models: &BTreeMap<String, Model>) -> String {
+        match &self.data {
             ModelData::String => "String".into(),
             ModelData::Integer => "i64".into(),
             ModelData::Number => "f64".into(),
             ModelData::Boolean => "bool".into(),
-            ModelData::Array(items) => format!("Vec<{}>", items.type_string(models)?),
+            ModelData::Array(items) => format!("Vec<{}>", items.type_string(models)),
             ModelData::ArbitraryValue => "serde_json::Value".into(),
             ModelData::Object(_) => {
                 format!("super::super::models::{}", self.struct_name())
@@ -138,16 +138,17 @@ impl Model {
             ModelData::HashMap(value) => {
                 format!(
                     "std::collections::HashMap::<String, {}>",
-                    value.type_string(models)?
+                    value.type_string(models)
                 )
             }
             ModelData::Ref(ref_str) => {
-                let ref_model = models
-                    .get(ref_str)
-                    .ok_or_else(|| ParseError::MissingModel(ref_str.into()))?;
-                ref_model.type_string(models)?
+                if let Some(ref_model) = models.get(ref_str) {
+                    ref_model.type_string(models)
+                } else {
+                    "serde_json::Value".into()
+                }
             }
-        })
+        }
     }
 }
 

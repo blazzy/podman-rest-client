@@ -2,7 +2,7 @@ use std::collections::BTreeMap;
 
 use askama::Template;
 
-use crate::model::Model;
+use crate::model::{Model, Property};
 use crate::spec::Spec;
 use crate::tag;
 
@@ -10,7 +10,6 @@ use crate::tag;
 #[template(path = "apis/api.rs.j2", escape = "none")]
 pub struct ApiTemplate<'a> {
     pub tag: &'a tag::Tag,
-    pub params: &'a BTreeMap<String, Vec<(String, String)>>,
     pub models: &'a BTreeMap<String, Model>,
 }
 
@@ -18,7 +17,8 @@ pub struct ApiTemplate<'a> {
 #[template(path = "models/model.rs.j2", escape = "none")]
 pub struct ModelTemplate<'a> {
     pub model: &'a Model,
-    pub properties: Vec<(&'a Model, String, String)>,
+    pub properties: &'a Vec<Property>,
+    pub models: &'a BTreeMap<String, Model>,
 }
 
 #[derive(Template)]

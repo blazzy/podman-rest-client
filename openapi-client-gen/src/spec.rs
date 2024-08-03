@@ -1,6 +1,5 @@
 use std::collections::BTreeMap;
 use std::collections::HashSet;
-use std::rc::Rc;
 
 use convert_case::{Case, Casing};
 use hashlink::LinkedHashMap;
@@ -16,7 +15,6 @@ pub struct Spec {
     pub base_path: String,
     pub models: BTreeMap<String, Model>,
     pub tags: BTreeMap<String, tag::Tag>,
-    pub params: BTreeMap<String, Rc<Vec<tag::Parameter>>>,
 }
 
 impl Spec {
@@ -138,8 +136,6 @@ impl Spec {
                             });
                         }
                     }
-                    let params = Rc::new(params);
-                    self.params.insert(operation_id.clone(), params.clone());
 
                     let mut operation = tag::Operation {
                         path: path.clone(),
@@ -148,7 +144,7 @@ impl Spec {
                         description: parse::maybe_string(&spec["description"]),
                         summary: parse::maybe_string(&spec["summary"]),
                         responses: BTreeMap::new(),
-                        params: params.clone(),
+                        params,
                     };
 
                     if let Some(responses) = spec["responses"].as_hash() {

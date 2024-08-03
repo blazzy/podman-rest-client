@@ -31,11 +31,9 @@ impl {{tag.struct_name()}} {
     {% endif %}
     pub async fn {{operation.operation_id}}(
         &self,
-    {%- if let Some(params) = params.get(operation.operation_id) %}
-    {%- for param in params %}
-        {{param.0}}: {{param.1}},
+    {%- for param in operation.params %}
+        {{param.var_name()}}: {{param.type_string(models)}},
     {%- endfor %}
-    {%- endif %}
     ) -> Result<{{operation.success_type(models)}}, Error> {
         {%- let query_params = operation.query_params() %}
         {%- let path_params = operation.path_params() %}

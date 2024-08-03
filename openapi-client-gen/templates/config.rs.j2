@@ -16,7 +16,7 @@ use super::Error;
 pub trait Connector: Connect + Clone + Send + Sync + 'static {}
 impl Connector for HttpConnector {}
 
-pub trait ClientConfig {
+pub trait ClientConfig: Send + Sync {
     fn get_base_path(&self) -> &String;
     fn get_user_agent(&self) -> &Option<String>;
     fn request<'a>(
