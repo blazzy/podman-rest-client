@@ -9,6 +9,8 @@ use model::ModelData;
 
 mod error;
 mod model;
+mod operation;
+mod parameter;
 mod parse;
 mod spec;
 mod tag;

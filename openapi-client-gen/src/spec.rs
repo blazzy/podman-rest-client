@@ -1,26 +1,27 @@
 use std::collections::BTreeMap;
 use std::collections::HashSet;
 
-use convert_case::{Case, Casing};
 use hashlink::LinkedHashMap;
 use yaml_rust2::Yaml;
 use yaml_rust2::YamlLoader;
 
 use crate::error::Error;
 use crate::model::Model;
+use crate::operation::{Method, Operation};
+use crate::parameter::{Parameter, RequestPart};
 use crate::parse;
-use crate::tag;
+use crate::tag::Tag;
 
 #[derive(Default)]
 pub struct Spec {
     pub base_path: String,
     pub models: BTreeMap<String, Model>,
-    pub tags: BTreeMap<String, tag::Tag>,
+    pub tags: BTreeMap<String, Tag>,
 }
 
 impl Spec {
     pub fn from_yaml_string(string: &str) -> Result<Spec, Error> {
-        let yaml = YamlLoader::load_from_str(&string)?;
+        let yaml = YamlLoader::load_from_str(string)?;
         Spec::from_yaml(&yaml[0])
     }
 
@@ -50,6 +51,7 @@ impl Spec {
         }
         log::info!("{} models", spec.models.len());
 
+        log::info!("looking for paths");
         if let Some(paths) = yaml["paths"].as_hash() {
             spec.load_paths(paths)?;
         }
@@ -70,7 +72,7 @@ impl Spec {
 
             self.tags.insert(
                 name,
-                tag::Tag {
+                Tag {
                     safe_name,
                     description,
                     operations: Vec::new(),
@@ -104,13 +106,12 @@ impl Spec {
 
             if let Some(operations) = value.as_hash() {
                 for (operation, spec) in operations {
-                    let method: tag::Method = parse::try_string(operation, "missing path method")?;
+                    let method: Method = parse::try_string(operation, "missing path method")?;
 
                     let tag: String = parse::string(&spec["tags"][0], "Bad or missing tag")?;
 
                     let operation_id: &str =
                         parse::string(&spec["operationId"], "Bad or missing operation Id")?;
-                    let operation_id = operation_id.to_case(Case::Snake);
 
                     let mut params = Vec::new();
                     if let Some(yaml_params) = spec["parameters"].as_vec() {
@@ -126,13 +127,13 @@ impl Spec {
                             }
 
                             names.insert(name.clone());
-                            params.push(tag::Parameter {
+                            params.push(Parameter {
                                 name,
                                 spec_name,
                                 description: parse::maybe_string(&param["description"]),
-                                request_part: tag::RequestPart::from_yaml(
+                                request_part: RequestPart::from_yaml(
                                     param,
-                                    &operation_id,
+                                    operation_id,
                                     format!("#paths/{}/parameters", operation_id),
                                     &mut self.models,
                                 )?,
@@ -140,9 +141,9 @@ impl Spec {
                         }
                     }
 
-                    let mut operation = tag::Operation {
+                    let mut operation = Operation {
                         path: path.clone(),
-                        operation_id: operation_id.clone(),
+                        name: operation_id.to_string(),
                         method,
                         description: parse::maybe_string(&spec["description"]),
                         summary: parse::maybe_string(&spec["summary"]),

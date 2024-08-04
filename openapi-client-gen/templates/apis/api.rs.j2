@@ -5,7 +5,6 @@ use super::super::config::ClientConfig;
 use super::super::Error;
 
 /// {{tag.description}}
-/// {{tag.description}}
 pub struct {{tag.struct_name()}} {
   config: Arc<dyn ClientConfig>,
 }
@@ -29,7 +28,7 @@ impl {{tag.struct_name()}} {
     /// {{line-}}
     {% endfor -%}
     {% endif %}
-    pub async fn {{operation.operation_id}}(
+    pub async fn {{operation.var_name()}}(
         &self,
     {%- for param in operation.params %}
         {{param.var_name()}}: {{param.type_string(models)}},
@@ -44,7 +43,7 @@ impl {{tag.struct_name()}} {
         let {% if !path_params.is_empty() %}mut {% endif %}request_path = "{{operation.path}}".to_string();
         {%- if !path_params.is_empty() %}
         {%- for param in path_params  %}
-        request_path = request_path.replace(&format!("{{"{{{}}}"}}", {{param.spec_name}}), &{{param.var_name()}});
+        request_path = request_path.replace(&format!("{{"{{{}}}"}}", {{param.spec_name}}), {{param.var_name()}});
         {%- endfor %}
         {%- endif %}
 
@@ -55,10 +54,10 @@ impl {{tag.struct_name()}} {
           let mut query_pairs = request_url.query_pairs_mut();
           {%- for param in query_params %}
           {%- if param.is_required() %}
-          query_pairs.append_pair("{{param.spec_name}}", &{{param.to_string_string()}});
+          query_pairs.append_pair("{{param.spec_name}}", {{param.to_string_string()}});
           {%- else %}
           if let Some({{param.var_name()}}) = {{param.var_name()}} {
-              query_pairs.append_pair("{{param.spec_name}}", &{{param.to_string_string()}});
+              query_pairs.append_pair("{{param.spec_name}}", {{param.to_string_string()}});
           }
           {%- endif %}
           {%- endfor %}
