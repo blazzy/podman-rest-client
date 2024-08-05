@@ -1,16 +1,17 @@
+use std::future::Future;
+use std::pin::Pin;
+
+use http::header;
+use http::request::Builder;
 use http::request::Request;
 use http::Response;
-use http_body_util::BodyExt;
 use hyper::body::Incoming;
 use hyper_util::client::legacy::connect::Connect;
 use hyper_util::client::legacy::connect::HttpConnector;
 use hyper_util::client::legacy::Client;
 use hyper_util::client::legacy::Error as HyperError;
 use hyper_util::rt::TokioExecutor;
-use std::future::Future;
-use std::pin::Pin;
 
-use super::error::ApiErrorBody;
 use super::Error;
 
 pub trait Connector: Connect + Clone + Send + Sync + 'static {}
@@ -23,6 +24,14 @@ pub trait ClientConfig: Send + Sync {
         &self,
         request: Request<String>,
     ) -> Pin<Box<dyn Future<Output = Result<Response<Incoming>, HyperError>> + 'a + Send>>;
+    fn req_builder(&self, request_url: &str, method: &str) -> Result<Builder, Error> {
+        let hyper_uri: hyper::Uri = request_url.parse()?;
+        let mut req_builder = hyper::Request::builder().uri(hyper_uri).method(method);
+        if let Some(user_agent) = self.get_user_agent() {
+            req_builder = req_builder.header(header::USER_AGENT, user_agent);
+        }
+        Ok(req_builder)
+    }
 }
 
 pub struct Config<C: Connector = HttpConnector> {
@@ -68,26 +77,5 @@ impl<C: Connector> ClientConfig for Config<C> {
         request: Request<String>,
     ) -> Pin<Box<dyn Future<Output = Result<Response<Incoming>, HyperError>> + 'a + Send>> {
         Box::pin(self.client.request(request))
-    }
-}
-
-pub async fn execute_request<U>(
-    config: &dyn ClientConfig,
-    request: http::request::Request<String>,
-) -> Result<U, Error>
-where
-    for<'a> U: serde::Deserialize<'a>,
-{
-    let response = config.request(request).await?;
-    let status = response.status();
-    let collected = response.into_body().collect().await?;
-    if status.is_success() {
-        Ok(serde_json::from_slice(&collected.to_bytes())?)
-    } else {
-        let bytes = collected.to_bytes();
-        let body: ApiErrorBody = serde_json::from_slice(&bytes)
-            .map(ApiErrorBody::Json)
-            .unwrap_or_else(|_| ApiErrorBody::Plain(String::from_utf8_lossy(&bytes).to_string()));
-        Err(Error::Api { code: status, body })
     }
 }

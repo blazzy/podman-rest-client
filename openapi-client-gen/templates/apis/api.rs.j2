@@ -1,8 +1,8 @@
 use std::sync::Arc;
 
-use super::super::config::execute_request;
 use super::super::config::ClientConfig;
 use super::super::Error;
+use super::super::request;
 
 /// {{tag.description}}
 pub struct {{tag.struct_name()}} {
@@ -17,6 +17,7 @@ impl {{tag.struct_name()}} {
     }
 
     {%~ for operation in tag.operations %}
+    {%- let success_type = operation.success_type(models) %}
     /// {{operation.method}} {{operation.path-}}
     {% if let Some(summary) = operation.summary -%}
     {% for line in summary.trim().lines() %}
@@ -33,17 +34,21 @@ impl {{tag.struct_name()}} {
     {%- for param in operation.params %}
         {{param.var_name()}}: {{param.type_string(models)}},
     {%- endfor %}
-    ) -> Result<{{operation.success_type(models)}}, Error> {
+    ) -> Result<{{success_type}}, Error> {
         {%- let query_params = operation.query_params() %}
         {%- let path_params = operation.path_params() %}
         {%- let header_params = operation.header_params() %}
         {%- let body_params = operation.body_params() %}
         let mut request_url = url::Url::parse(self.config.get_base_path())?;
 
-        let {% if !path_params.is_empty() %}mut {% endif %}request_path = "{{operation.path}}".to_string();
+        let mut request_path = request_url.path().to_owned();
+        if request_path.ends_with('/') {
+            request_path.pop();
+        }
+        request_path.push_str("{{operation.path}}");
         {%- if !path_params.is_empty() %}
         {%- for param in path_params  %}
-        request_path = request_path.replace(&format!("{{"{{{}}}"}}", {{param.spec_name}}), {{param.var_name()}});
+        request_path = request_path.replace("{{"{"}}{{param.spec_name}}{{"}"}}", {{param.var_name()}});
         {%- endfor %}
         {%- endif %}
 
@@ -65,8 +70,7 @@ impl {{tag.struct_name()}} {
         {%- endif %}
 
         {%~ let mut_builder = !body_params.is_empty() || !header_params.is_empty() %}
-        let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
-        let {% if mut_builder %}mut {% endif %}req_builder = hyper::Request::builder().uri(hyper_uri).method("{{operation.method}}");
+        let {% if mut_builder %}mut {% endif %}req_builder = self.config.req_builder(request_url.as_str(), "{{operation.method}}")?;
 
         {%~ if !header_params.is_empty() %}
         {%- for param in header_params %}
@@ -88,7 +92,10 @@ impl {{tag.struct_name()}} {
         {%- else %}
         let request = req_builder.body(String::new())?;
         {%- endif %}
-
-        execute_request(&*self.config, request).await
+        {%- if success_type == "()" %}
+        request::execute_request_unit(&*self.config, request).await
+        {%- else %}
+        request::execute_request_json(&*self.config, request).await
+        {%- endif %}
     }
     {%~ endfor %}}

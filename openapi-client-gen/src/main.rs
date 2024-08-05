@@ -78,5 +78,8 @@ fn main() -> Result<(), Error> {
     let error_template = include_str!("../templates/error.rs");
     fs::write(target_path("error.rs"), error_template)?;
 
+    let request_template = include_str!("../templates/request.rs");
+    fs::write(target_path("request.rs"), request_template)?;
+
     Ok(())
 }

@@ -22,8 +22,9 @@ pub enum ModelData {
     Number,
     Boolean,
     Array(Box<Model>),
-    HashMap(Box<Model>),
+    HashMap(Box<Model>, bool),
     ArbitraryValue,
+    NoValue,
     Ref(String),
 }
 
@@ -76,7 +77,7 @@ impl std::fmt::Display for IntegerFormat {
 
 #[derive(Clone)]
 pub struct Property {
-    name: String,
+    pub name: String,
     pub model: Model,
     required: bool,
 }
@@ -179,13 +180,19 @@ impl Model {
             ModelData::Boolean => "bool".into(),
             ModelData::Array(items) => format!("Vec<{}>", items.type_string(models)),
             ModelData::ArbitraryValue => "serde_json::Value".into(),
+            ModelData::NoValue => "()".into(),
             ModelData::Object(_) => {
                 format!("super::super::models::{}", self.struct_name())
             }
-            ModelData::HashMap(value) => {
+            ModelData::HashMap(value, nullable) => {
+                let value = value.type_string(models);
                 format!(
                     "std::collections::HashMap::<String, {}>",
-                    value.type_string(models)
+                    if *nullable {
+                        format!("Option<{}>", value)
+                    } else {
+                        value
+                    }
                 )
             }
             ModelData::Ref(ref_str) => {
@@ -200,9 +207,6 @@ impl Model {
     }
 }
 
-// TODO:
-// * Support for enums
-// * Support for OneOf
 fn from_yaml(
     yaml: &Yaml,
     parent_name: &String,
@@ -217,12 +221,7 @@ fn from_yaml(
     }
 
     if yaml["type"].is_badvalue() || yaml["type"].is_null() {
-        //log::warn!(
-        //    "no ref or type found for property {} {}",
-        //    parent_name,
-        //    model_ref
-        //);
-        return Ok(ModelData::ArbitraryValue);
+        return Ok(ModelData::NoValue);
     }
 
     let type_name = yaml["type"]
@@ -234,12 +233,18 @@ fn from_yaml(
             let additional_properties = &yaml["additionalProperties"];
 
             if !additional_properties.is_null() && !additional_properties.is_badvalue() {
-                return Ok(ModelData::HashMap(Box::new(Model::new(
-                    "additionalProperties".into(),
-                    additional_properties,
-                    &format!("{}/{}", model_ref, "additionalProperties"),
-                    models,
-                )?)));
+                let nullable = Some(true) == additional_properties["nullable"].as_bool()
+                    || Some(true) == additional_properties["x-nullable"].as_bool();
+
+                return Ok(ModelData::HashMap(
+                    Box::new(Model::new(
+                        "additionalProperties".into(),
+                        additional_properties,
+                        &format!("{}/{}", model_ref, "additionalProperties"),
+                        models,
+                    )?),
+                    nullable,
+                ));
             }
 
             if let Some(yaml_props) = yaml["properties"].as_hash() {

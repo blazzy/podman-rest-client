@@ -23,6 +23,9 @@ pub struct {{model.struct_name()}} {
     /// {{line-}}
     {% endfor -%}
     {% endif %}
+    {%- if property.var_name() != property.name %}
+    #[serde(rename = "{{property.name}}")]
+    {% endif %}
     pub {{property.var_name()}}: {{property.type_string(models)}},
   {% endfor -%}
 }

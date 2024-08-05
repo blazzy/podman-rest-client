@@ -25,12 +25,23 @@ pub enum Error {
 
     #[error("JSON Error: {0}")]
     SerdeJson(#[from] serde_json::Error),
+
+    #[error("JSON Error: {0}")]
+    SerdeJsonPath(#[from] serde_path_to_error::Error<serde_json::Error>),
 }
 
 #[derive(Debug)]
 pub enum ApiErrorBody {
     Json(serde_json::Value),
     Plain(String),
+}
+
+impl From<hyper::body::Bytes> for ApiErrorBody {
+    fn from(bytes: hyper::body::Bytes) -> ApiErrorBody {
+        serde_json::from_slice(&bytes)
+            .map(ApiErrorBody::Json)
+            .unwrap_or_else(|_| ApiErrorBody::Plain(String::from_utf8_lossy(&bytes).to_string()))
+    }
 }
 
 impl fmt::Display for ApiErrorBody {
