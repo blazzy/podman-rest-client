@@ -7,6 +7,8 @@ mod common;
 
 #[tokio::test]
 async fn it_connects_to_a_unix_socket() {
+    common::test_init().await;
+
     let client = PodmanRestClient::new(Config {
         uri: "unix:///tmp/sock".to_string(),
         identity_file: None,
@@ -17,14 +19,18 @@ async fn it_connects_to_a_unix_socket() {
 
 #[tokio::test]
 async fn it_can_list_images() {
+    common::test_init().await;
+
     let config = Config::guess().await.unwrap();
     let client = PodmanRestClient::new(config).await.unwrap();
-    let result = client.images_api().image_list_libpod(None, None).await;
+    let result = client.images().image_list_libpod(None, None).await;
     assert!(result.is_ok());
 }
 
 #[tokio::test]
 async fn it_can_create_a_volume() {
+    common::test_init().await;
+
     let config = Config::guess().await.unwrap();
     let client = PodmanRestClient::new(config).await.unwrap();
 
@@ -32,10 +38,7 @@ async fn it_can_create_a_volume() {
         name: Some("podman_rest_client_volume_test".into()),
         ..models::VolumeCreateOptions::default()
     };
-    let result = client
-        .volumes_api()
-        .volume_create_libpod(Some(create))
-        .await;
+    let result = client.volumes().volume_create_libpod(create).await;
     result.expect("Failed to create a volume");
 
     common::delete_volume(&client, "podman_rest_client_volume_test").await;
@@ -43,11 +46,13 @@ async fn it_can_create_a_volume() {
 
 #[tokio::test]
 async fn it_can_run_in_a_thread() {
+    common::test_init().await;
+
     let config = Config::guess().await.unwrap();
     let client = PodmanRestClient::new(config).await.unwrap();
 
     let handle = tokio::spawn(async move {
-        let result = client.images_api().image_list_libpod(None, None).await;
+        let result = client.images().image_list_libpod(None, None).await;
         assert!(result.is_ok());
     });
 
@@ -56,10 +61,12 @@ async fn it_can_run_in_a_thread() {
 
 #[tokio::test]
 async fn it_can_pull_images() {
+    common::test_init().await;
+
     let config = Config::guess().await.unwrap();
     let client = PodmanRestClient::new(config).await.unwrap();
     let pull_report = client
-        .images_api()
+        .images()
         .image_pull_libpod(
             Some("docker.io/library/nginx:latest"),
             Some(true),
@@ -80,6 +87,8 @@ async fn it_can_pull_images() {
 
 #[tokio::test]
 async fn it_can_create_a_container() {
+    common::test_init().await;
+
     let config = Config::guess().await.unwrap();
     let client = PodmanRestClient::new(config).await.unwrap();
 
@@ -92,7 +101,7 @@ async fn it_can_create_a_container() {
     };
 
     client
-        .containers_api()
+        .containers()
         .container_create_libpod(create)
         .await
         .expect("Failed to create container");
@@ -101,7 +110,58 @@ async fn it_can_create_a_container() {
 }
 
 #[tokio::test]
+async fn it_can_create_a_container_with_ports() {
+    common::test_init().await;
+
+    let config = Config::guess().await.unwrap();
+    let client = PodmanRestClient::new(config).await.unwrap();
+
+    common::pull_nginx_image(&client).await;
+
+    let name = "podman_rest_client_creation_with_ports_test";
+
+    let create = models::SpecGenerator {
+        name: Some(name.into()),
+        image: Some("docker.io/library/nginx:latest".into()),
+        portmappings: Some(vec![models::PortMapping {
+            container_port: Some(80),
+            host_port: Some(8000),
+            range: Some(10),
+            ..models::PortMapping::default()
+        }]),
+        ..models::SpecGenerator::default()
+    };
+
+    client
+        .containers()
+        .container_create_libpod(create)
+        .await
+        .expect("Failed to create container");
+
+    let mut list = client
+        .containers()
+        .container_list_libpod(
+            Some(true),
+            None,
+            None,
+            None,
+            None,
+            None,
+            Some(&format!(r#"{{"name": ["{}"]}}"#, name)),
+        )
+        .await
+        .expect("Failed to list containers");
+
+    let mapping = &list.pop().unwrap().ports.unwrap()[0];
+    assert_eq!(mapping.range, Some(10_u16));
+
+    common::delete_container(&client, name).await;
+}
+
+#[tokio::test]
 async fn it_can_create_a_container_with_a_volume_mounted() {
+    common::test_init().await;
+
     let config = Config::guess().await.unwrap();
     let client = PodmanRestClient::new(config).await.unwrap();
 
@@ -120,7 +180,7 @@ async fn it_can_create_a_container_with_a_volume_mounted() {
     };
 
     client
-        .containers_api()
+        .containers()
         .container_create_libpod(create)
         .await
         .expect("Failed to create container");
@@ -131,6 +191,8 @@ async fn it_can_create_a_container_with_a_volume_mounted() {
 
 #[tokio::test]
 async fn it_can_inspect_a_container() {
+    common::test_init().await;
+
     let config = Config::guess().await.unwrap();
     let client = PodmanRestClient::new(config).await.unwrap();
 
@@ -138,7 +200,7 @@ async fn it_can_inspect_a_container() {
     common::create_nginx_container(&client, "podman_rest_client_inspect_test").await;
 
     client
-        .containers_api()
+        .containers()
         .container_inspect_libpod("podman_rest_client_inspect_test", None)
         .await
         .expect("Failed to inspect container");
@@ -147,7 +209,28 @@ async fn it_can_inspect_a_container() {
 }
 
 #[tokio::test]
+async fn it_can_list_containers() {
+    common::test_init().await;
+
+    let config = Config::guess().await.unwrap();
+    let client = PodmanRestClient::new(config).await.unwrap();
+
+    common::pull_nginx_image(&client).await;
+    common::create_nginx_container(&client, "podman_rest_client_list_contaienr_test").await;
+
+    client
+        .containers()
+        .container_list_libpod(Some(true), None, None, None, None, None, None)
+        .await
+        .expect("Failed to list containers");
+
+    common::delete_container(&client, "podman_rest_client_list_contaienr_test").await;
+}
+
+#[tokio::test]
 async fn it_can_create_a_pod() {
+    common::test_init().await;
+
     let config = Config::guess().await.unwrap();
     let client = PodmanRestClient::new(config).await.unwrap();
 
@@ -157,8 +240,8 @@ async fn it_can_create_a_pod() {
     };
 
     client
-        .pods_api()
-        .pod_create_libpod(Some(create))
+        .pods()
+        .pod_create_libpod(create)
         .await
         .expect("Failed to create pod");
 
@@ -167,6 +250,8 @@ async fn it_can_create_a_pod() {
 
 #[tokio::test]
 async fn it_errors_on_invalid_uris() {
+    common::test_init().await;
+
     let err = PodmanRestClient::new(Config {
         uri: "tcp:///127.0.0.1:80".to_string(),
         identity_file: None,

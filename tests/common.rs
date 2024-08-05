@@ -1,10 +1,61 @@
+use tokio::sync::OnceCell;
+
 use podman_rest_client::models::SpecGenerator;
 use podman_rest_client::models::VolumeCreateOptions;
-use podman_rest_client::PodmanRestClient;
+use podman_rest_client::{Config, PodmanRestClient};
+
+static TEST_INIT: OnceCell<()> = OnceCell::const_new();
+
+pub async fn test_init() {
+    TEST_INIT
+        .get_or_init(|| async {
+            let config = Config::guess().await.unwrap();
+            let client = PodmanRestClient::new(config).await.unwrap();
+
+            let containers = client
+                .containers()
+                .container_list_libpod(
+                    Some(true),
+                    None,
+                    None,
+                    None,
+                    None,
+                    None,
+                    Some(r#"{"name": ["podman_rest_client"]}"#),
+                )
+                .await
+                .unwrap();
+
+            for container in containers {
+                delete_container(&client, &container.id.unwrap()).await;
+            }
+
+            let volumes = client
+                .volumes()
+                .volume_list_libpod(Some(r#"{"name": ["podman_rest_client"]}"#))
+                .await
+                .unwrap();
+
+            for volume in volumes {
+                delete_volume(&client, &volume.name.unwrap()).await;
+            }
+
+            let pods = client
+                .pods()
+                .pod_list_libpod(Some(r#"{"name": ["podman_rest_client"]}"#))
+                .await
+                .unwrap();
+
+            for pod in pods {
+                delete_pod(&client, &pod.name.unwrap()).await;
+            }
+        })
+        .await;
+}
 
 pub async fn pull_nginx_image(client: &PodmanRestClient) {
     client
-        .images_api()
+        .images()
         .image_pull_libpod(
             Some("docker.io/library/nginx:latest"),
             Some(true),
@@ -29,7 +80,7 @@ pub async fn create_nginx_container(client: &PodmanRestClient, container_name: &
     };
 
     client
-        .containers_api()
+        .containers()
         .container_create_libpod(create)
         .await
         .expect("Failed to create contaienr");
@@ -37,7 +88,7 @@ pub async fn create_nginx_container(client: &PodmanRestClient, container_name: &
 
 pub async fn delete_container(client: &PodmanRestClient, container_name: &str) {
     client
-        .containers_api()
+        .containers()
         .container_delete_libpod(container_name, None, None, None, None, None)
         .await
         .expect("Failed to clean up container");
@@ -45,7 +96,7 @@ pub async fn delete_container(client: &PodmanRestClient, container_name: &str) {
 
 pub async fn delete_pod(client: &PodmanRestClient, pod_name: &str) {
     client
-        .pods_api()
+        .pods()
         .pod_delete_libpod(pod_name, None)
         .await
         .expect("Failed to clean up pod");
@@ -58,15 +109,15 @@ pub async fn create_volume(client: &PodmanRestClient, volume_name: &str) {
     };
 
     client
-        .volumes_api()
-        .volume_create_libpod(Some(create))
+        .volumes()
+        .volume_create_libpod(create)
         .await
         .expect("Failed to create a volume");
 }
 
 pub async fn delete_volume(client: &PodmanRestClient, volume_name: &str) {
     client
-        .volumes_api()
+        .volumes()
         .volume_delete_libpod(volume_name, None)
         .await
         .expect("Failed to clean up volume");
