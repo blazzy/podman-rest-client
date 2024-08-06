@@ -21,8 +21,8 @@ pub struct Mount {
     #[serde(rename = "Source")]
     pub source: Option<String>,
 
-    #[serde(rename = "Target")]
-    pub target: Option<String>,
+    #[serde(rename = "Destination")]
+    pub destination: Option<String>,
 
     #[serde(rename = "TmpfsOptions")]
     pub tmpfs_options: Option<super::super::models::TmpfsOptions>,

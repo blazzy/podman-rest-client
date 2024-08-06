@@ -9,5 +9,5 @@ pub struct PodRmReport {
     pub id: Option<String>,
 
     #[serde(rename = "RemovedCtrs")]
-    pub removed_ctrs: Option<std::collections::HashMap<String, String>>,
+    pub removed_ctrs: Option<std::collections::HashMap<String, Option<String>>>,
 }

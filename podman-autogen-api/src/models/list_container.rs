@@ -40,7 +40,7 @@ pub struct ListContainer {
     /// The key is the port number and the string slice contains the protocols,
     /// i.e. "tcp", "udp" and "sctp".
     #[serde(rename = "ExposedPorts")]
-    pub exposed_ports: Option<()>,
+    pub exposed_ports: Option<serde_json::Value>,
 
     /// The unique identifier for the container
     #[serde(rename = "Id")]

@@ -64,8 +64,9 @@ pub struct InspectNetworkSettings {
         Option<std::collections::HashMap<String, super::super::models::InspectAdditionalNetwork>>,
 
     #[serde(rename = "Ports")]
-    pub ports:
-        Option<std::collections::HashMap<String, Vec<super::super::models::InspectHostPort>>>,
+    pub ports: Option<
+        std::collections::HashMap<String, Option<Vec<super::super::models::InspectHostPort>>>,
+    >,
 
     #[serde(rename = "SandboxID")]
     pub sandbox_id: Option<String>,
