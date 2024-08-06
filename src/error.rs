@@ -10,7 +10,6 @@ pub enum Error {
     InvalidUri(#[from] http::uri::InvalidUri),
     #[error("SSH Authentication Failed")]
     AuthenticationFailed,
-
     #[error("Missing or unkown scheme in URI")]
     InvalidScheme,
     #[error("Missing SSH user name in URI")]

@@ -1,11 +1,11 @@
 use std::ops::Deref;
 use std::str::FromStr;
 
-use hyper_util::client::legacy::connect::Connect;
 use hyper_util::client::legacy::Client;
 use hyper_util::rt::TokioExecutor;
-use podman_autogen_api::apis::client::APIClient;
-use podman_autogen_api::apis::configuration::Configuration as APIConfiguration;
+use podman_autogen_api::Client as APIClient;
+use podman_autogen_api::Config as APIConfig;
+use podman_autogen_api::Connector;
 
 use crate::config::Config;
 use crate::error::Error;
@@ -56,15 +56,12 @@ impl PodmanRestClient {
         PodmanRestClient::new_connector(connector).await
     }
 
-    async fn new_connector<C>(connector: C) -> Result<PodmanRestClient, Error>
-    where
-        C: Connect + Clone + Send + Sync + 'static,
-    {
+    async fn new_connector<C: Connector>(connector: C) -> Result<PodmanRestClient, Error> {
         let client = Client::builder(TokioExecutor::new()).build(connector);
 
-        let configuration = APIConfiguration {
+        let configuration = APIConfig {
             base_path: BASE_PATH.to_string(),
-            ..APIConfiguration::with_client(client)
+            ..APIConfig::with_client(client)
         };
         let api_client = APIClient::new(configuration);
 

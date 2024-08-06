@@ -1,9 +1,8 @@
-use podman_rest_client::params;
-use tokio::sync::OnceCell;
-
 use podman_rest_client::models::SpecGenerator;
 use podman_rest_client::models::VolumeCreateOptions;
+use podman_rest_client::params;
 use podman_rest_client::{Config, PodmanRestClient};
+use tokio::sync::OnceCell;
 
 static TEST_INIT: OnceCell<()> = OnceCell::const_new();
 

@@ -39,7 +39,7 @@
 //! }).await.unwrap();
 //!
 //! // Fetch a list of container images
-//! let images = client.images_api().image_list_libpod(None,None).await.unwrap();
+//! let images = client.images().image_list_libpod(None).await.unwrap();
 //! # })
 //! ```
 //! ### MacOs
@@ -73,7 +73,7 @@
 //! let client = PodmanRestClient::new(config).await.unwrap();
 //!
 //! // Fetch a list of container images
-//! let images = client.images_api().image_list_libpod(None,None).await.unwrap();
+//! let images = client.images().image_list_libpod(None).await.unwrap();
 //! # })
 //! ```
 
@@ -88,4 +88,5 @@ pub use config::Config;
 pub use error::Error;
 pub use podman_autogen_api::apis;
 pub use podman_autogen_api::models;
+pub use podman_autogen_api::params;
 pub use podman_rest_client::PodmanRestClient;
