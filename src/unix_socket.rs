@@ -6,6 +6,7 @@ use std::task::{Context, Poll};
 use hyper::rt::ReadBufCursor;
 use hyper::Uri;
 use hyper_util::client::legacy::connect::{Connected, Connection};
+use podman_autogen_api::Connector;
 use tokio::io::AsyncRead;
 use tokio::io::AsyncWrite;
 use tokio::net::UnixStream;
@@ -27,6 +28,8 @@ impl UnixConnector {
         }
     }
 }
+
+impl Connector for UnixConnector {}
 
 impl Service<Uri> for UnixConnector {
     type Response = UnixStreamWrapper;

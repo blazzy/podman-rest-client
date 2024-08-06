@@ -7,6 +7,7 @@ use std::task::{Context, Poll};
 use hyper::rt::ReadBufCursor;
 use hyper::Uri;
 use hyper_util::client::legacy::connect::{Connected, Connection};
+use podman_autogen_api::Connector;
 use russh::client as ssh_client;
 use russh::client::Config;
 use russh::client::Msg;
@@ -22,6 +23,8 @@ pub(crate) struct SshConnector {
     session: Arc<ssh_client::Handle<Client>>,
     socket_path: String,
 }
+
+impl Connector for SshConnector {}
 
 impl SshConnector {
     pub async fn new(
