@@ -176,7 +176,7 @@ impl Containers {
     ///
     /// This is the response from the service for an attach request:
     ///
-    /// ```
+    /// ```text
     /// HTTP/1.1 200 OK
     /// Content-Type: application/vnd.docker.raw-stream
     ///
@@ -191,7 +191,7 @@ impl Containers {
     ///
     /// For example, the client sends this request to upgrade the connection:
     ///
-    /// ```
+    /// ```text
     /// POST /v4.6.0/libpod/containers/16253994b7c4/attach?stream=1&stdout=1 HTTP/1.1
     /// Upgrade: tcp
     /// Connection: Upgrade
@@ -200,7 +200,7 @@ impl Containers {
     /// The service will respond with a `101 UPGRADED` response, and will
     /// similarly follow with the raw stream:
     ///
-    /// ```
+    /// ```text
     /// HTTP/1.1 101 UPGRADED
     /// Content-Type: application/vnd.docker.raw-stream
     /// Connection: Upgrade

@@ -47,7 +47,7 @@ let client = PodmanRestClient::new(Config {
 }).await.unwrap();
 
 // Fetch a list of container images
-let images = client.images_api().image_list_libpod(None,None).await.unwrap();
+let images = client.images().image_list_libpod(None).await.unwrap();
 ```
 ### MacOs
 

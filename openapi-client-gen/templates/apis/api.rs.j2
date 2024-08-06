@@ -24,7 +24,8 @@ impl {{tag.struct_name()}} {
     /// {{line-}}
     {% endfor -%}
     {% endif -%}
-    {% if let Some(description) = operation.description -%}
+    {% if let Some(_) = operation.description -%}
+    {% let description = operation.clean_description() -%}
     {% for line in description.trim().lines() %}
     /// {{line-}}
     {% endfor -%}

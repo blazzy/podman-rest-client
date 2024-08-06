@@ -2,6 +2,7 @@ use std::collections::BTreeMap;
 use std::fmt;
 
 use convert_case::{Case, Casing};
+use regex::Regex;
 
 use crate::error::Error;
 use crate::model::Model;
@@ -23,6 +24,21 @@ pub struct Operation {
 }
 
 impl Operation {
+    /// We need to match code blocks and add text annotations if to them if they have no
+    /// annotations lest the be parsed as rust doc strings
+    pub fn clean_description(&self) -> String {
+        if let Some(description) = &self.description {
+            // m - multiline match
+            // s - cause `.` match the newline characters too
+            // .*? non-greedy match
+            let re = Regex::new(r"(?ms)^```\s*$(.*?^```)").unwrap();
+
+            re.replace_all(description, "```text$1").to_string()
+        } else {
+            "".into()
+        }
+    }
+
     pub fn var_name(&self) -> String {
         let var_name = self.name.to_case(Case::Snake);
         if parse::is_keyword(&var_name) {

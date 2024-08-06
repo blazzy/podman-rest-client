@@ -8,14 +8,12 @@ edition.workspace = true
 repository.workspace = true
 
 [dependencies]
-hyper = { workspace = true }
-serde = { version = "^1.0", features = ["derive"] }
-serde_with = { version = "^3.8", default-features = false, features = ["base64", "std", "macros"] }
-serde_json = "^1.0"
-url = "^2.5"
-uuid = { version = "^1.8", features = ["serde", "v4"] }
-hyper-util = { version = "0.1.5", features = ["client", "client-legacy", "http1", "http2"] }
-http-body-util = { version = "0.1.2" }
-http = "~0.2"
-base64 = "~0.7.0"
-futures = "^0.3"
+http = "1.1.0"
+http-body-util = "0.1.2"
+hyper.workspace = true
+hyper-util = { version = "0.1.6", features = ["client", "client-legacy", "http1", "http2"] }
+serde = { version = "1.0.204", features = ["derive"] }
+serde_json = "1.0.122"
+serde_path_to_error = "0.1.16"
+thiserror = "1.0.63"
+url = "2.5.2"
