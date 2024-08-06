@@ -1,11 +1,12 @@
-#![allow(unused_imports)]
-#![allow(clippy::too_many_arguments)]
-
-extern crate futures;
-extern crate hyper;
-extern crate serde;
-extern crate serde_json;
-extern crate url;
-
 pub mod apis;
+mod client;
+mod config;
+mod error;
 pub mod models;
+pub mod params;
+mod request;
+
+pub use client::Client;
+pub use config::Config;
+pub use config::Connector;
+pub use error::Error;
