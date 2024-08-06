@@ -1,4 +1,5 @@
 #[derive(Debug, thiserror::Error)]
+
 pub enum Error {
     #[error("Invalid String {0}")]
     StringParse(String),
@@ -20,4 +21,6 @@ pub enum Error {
     Write(#[from] askama::Error),
     #[error("Yaml scan error {0}")]
     YamlScan(#[from] yaml_rust2::ScanError),
+    #[error("Rust syntax parsing error {0}")]
+    Syn(#[from] syn::Error),
 }

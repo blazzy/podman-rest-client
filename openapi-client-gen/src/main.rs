@@ -3,11 +3,11 @@ use std::path::PathBuf;
 
 use askama::Template;
 use clap::Parser;
-
 use error::Error;
 use model::ModelData;
 
 mod error;
+mod generate;
 mod model;
 mod operation;
 mod parameter;
@@ -78,22 +78,25 @@ fn main() -> Result<(), Error> {
         }
     }
 
-    let client_template = template::ClientTemplate { tags: &spec.tags };
-    fs::write(target_path("client.rs"), client_template.render()?)?;
+    fs::write(target_path("client.rs"), generate::client(&spec)?)?;
 
     let config_template = template::ConfigTemplate { spec: &spec };
     fs::write(target_path("config.rs"), config_template.render()?)?;
 
-    let api_mod_template = template::ApiModTemplate { tags: &spec.tags };
-    fs::write(target_path("apis/mod.rs"), api_mod_template.render()?)?;
+    fs::write(
+        target_path("models/mod.rs"),
+        generate::mod_pub_structs(models.values().map(|model| &model.name))?,
+    )?;
 
-    let model_mod_template = template::ModelModTemplate { models: &models };
-    fs::write(target_path("models/mod.rs"), model_mod_template.render()?)?;
+    fs::write(
+        target_path("apis/mod.rs"),
+        generate::mod_pub_structs(spec.tags.values().map(|tag| &tag.safe_name))?,
+    )?;
 
-    let params_mod_template = template::ParamsModTemplate {
-        operations: &operations,
-    };
-    fs::write(target_path("params/mod.rs"), params_mod_template.render()?)?;
+    fs::write(
+        target_path("params/mod.rs"),
+        generate::mod_pub_structs(operations.iter().map(|op| &op.name))?,
+    )?;
 
     let mod_template = template::ModTemplate;
     fs::write(target_path("lib.rs"), mod_template.render()?)?;
