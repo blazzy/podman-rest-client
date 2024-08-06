@@ -1,5 +1,6 @@
 use assert_matches::assert_matches;
 use podman_rest_client::models;
+use podman_rest_client::params;
 use podman_rest_client::Error;
 use podman_rest_client::{Config, PodmanRestClient};
 
@@ -23,7 +24,7 @@ async fn it_can_list_images() {
 
     let config = Config::guess().await.unwrap();
     let client = PodmanRestClient::new(config).await.unwrap();
-    let result = client.images().image_list_libpod(None, None).await;
+    let result = client.images().image_list_libpod(None).await;
     assert!(result.is_ok());
 }
 
@@ -52,7 +53,7 @@ async fn it_can_run_in_a_thread() {
     let client = PodmanRestClient::new(config).await.unwrap();
 
     let handle = tokio::spawn(async move {
-        let result = client.images().image_list_libpod(None, None).await;
+        let result = client.images().image_list_libpod(None).await;
         assert!(result.is_ok());
     });
 
@@ -67,18 +68,11 @@ async fn it_can_pull_images() {
     let client = PodmanRestClient::new(config).await.unwrap();
     let pull_report = client
         .images()
-        .image_pull_libpod(
-            Some("docker.io/library/nginx:latest"),
-            Some(true),
-            Some(false),
-            None,
-            None,
-            None,
-            None,
-            None,
-            None,
-            None,
-        )
+        .image_pull_libpod(Some(params::ImagePullLibpod {
+            reference: Some("docker.io/library/nginx:latest"),
+            quiet: Some(true),
+            ..Default::default()
+        }))
         .await
         .unwrap();
     assert!(pull_report.error.is_none());
@@ -140,15 +134,11 @@ async fn it_can_create_a_container_with_ports() {
 
     let mut list = client
         .containers()
-        .container_list_libpod(
-            Some(true),
-            None,
-            None,
-            None,
-            None,
-            None,
-            Some(&format!(r#"{{"name": ["{}"]}}"#, name)),
-        )
+        .container_list_libpod(Some(params::ContainerListLibpod {
+            all: Some(true),
+            filters: Some(&format!(r#"{{"name": ["{}"]}}"#, name)),
+            ..Default::default()
+        }))
         .await
         .expect("Failed to list containers");
 
@@ -220,7 +210,10 @@ async fn it_can_list_containers() {
 
     client
         .containers()
-        .container_list_libpod(Some(true), None, None, None, None, None, None)
+        .container_list_libpod(Some(params::ContainerListLibpod {
+            all: Some(true),
+            ..Default::default()
+        }))
         .await
         .expect("Failed to list containers");
 

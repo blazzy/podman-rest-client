@@ -1,3 +1,4 @@
+use podman_rest_client::params;
 use tokio::sync::OnceCell;
 
 use podman_rest_client::models::SpecGenerator;
@@ -14,15 +15,11 @@ pub async fn test_init() {
 
             let containers = client
                 .containers()
-                .container_list_libpod(
-                    Some(true),
-                    None,
-                    None,
-                    None,
-                    None,
-                    None,
-                    Some(r#"{"name": ["podman_rest_client"]}"#),
-                )
+                .container_list_libpod(Some(params::ContainerListLibpod {
+                    all: Some(true),
+                    filters: Some(r#"{"name": ["podman_rest_client"]}"#),
+                    ..Default::default()
+                }))
                 .await
                 .unwrap();
 
@@ -32,7 +29,9 @@ pub async fn test_init() {
 
             let volumes = client
                 .volumes()
-                .volume_list_libpod(Some(r#"{"name": ["podman_rest_client"]}"#))
+                .volume_list_libpod(Some(params::VolumeListLibpod {
+                    filters: Some(r#"{"name": ["podman_rest_client"]}"#),
+                }))
                 .await
                 .unwrap();
 
@@ -42,7 +41,9 @@ pub async fn test_init() {
 
             let pods = client
                 .pods()
-                .pod_list_libpod(Some(r#"{"name": ["podman_rest_client"]}"#))
+                .pod_list_libpod(Some(params::PodListLibpod {
+                    filters: Some(r#"{"name": ["podman_rest_client"]}"#),
+                }))
                 .await
                 .unwrap();
 
@@ -56,18 +57,11 @@ pub async fn test_init() {
 pub async fn pull_nginx_image(client: &PodmanRestClient) {
     client
         .images()
-        .image_pull_libpod(
-            Some("docker.io/library/nginx:latest"),
-            Some(true),
-            None,
-            None,
-            None,
-            None,
-            None,
-            None,
-            None,
-            None,
-        )
+        .image_pull_libpod(Some(params::ImagePullLibpod {
+            reference: Some("docker.io/library/nginx:latest"),
+            quiet: Some(true),
+            ..Default::default()
+        }))
         .await
         .expect("Failed to pull image");
 }
@@ -89,7 +83,7 @@ pub async fn create_nginx_container(client: &PodmanRestClient, container_name: &
 pub async fn delete_container(client: &PodmanRestClient, container_name: &str) {
     client
         .containers()
-        .container_delete_libpod(container_name, None, None, None, None, None)
+        .container_delete_libpod(container_name, None)
         .await
         .expect("Failed to clean up container");
 }
