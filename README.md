@@ -93,6 +93,17 @@ More adjustments likely to come.
 
 ## Changelog
 
+### v0.11.0 (Unreleased)
+
+* Use new api client generator to generate client from swagger file. Big breaking changes
+
+#### Breaking Changes
+
+* Query and Header parameters are now provided through structs in `params` module
+* Body parameters are no longer optional.
+* Some i32/u32 fields became i16/u16
+* API functions no longer have the _api suffix
+
 ### v0.10.2
 
 * Fix issue parsing error on pod deletion ([#14](https://github.com/blazzy/podman-rest-client/pull/14))
