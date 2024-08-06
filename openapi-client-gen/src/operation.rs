@@ -5,9 +5,10 @@ use convert_case::{Case, Casing};
 
 use crate::error::Error;
 use crate::model::Model;
-use crate::parameter::Parameter;
+use crate::parameter::{BodyParameter, Parameter};
 use crate::parse;
 
+#[derive(Default)]
 pub struct Operation {
     pub path: String,
     pub method: Method,
@@ -15,7 +16,10 @@ pub struct Operation {
     pub description: Option<String>,
     pub summary: Option<String>,
     pub responses: BTreeMap<String, Model>,
-    pub params: Vec<Parameter>,
+    pub path_params: Vec<Parameter>,
+    pub query_params: Vec<Parameter>,
+    pub header_params: Vec<Parameter>,
+    pub body_param: Option<BodyParameter>,
 }
 
 impl Operation {
@@ -28,24 +32,39 @@ impl Operation {
         }
     }
 
-    pub fn path_params(&self) -> Vec<&Parameter> {
-        self.filter_params(|param| param.is_path())
+    pub fn params_struct_has_str(&self) -> bool {
+        let predicate = |param: &Parameter| param.r#type.has_string();
+        self.header_params.iter().any(predicate) || self.query_params.iter().any(predicate)
     }
 
-    pub fn query_params(&self) -> Vec<&Parameter> {
-        self.filter_params(|param| param.is_query())
+    pub fn should_use_params_struct(&self) -> bool {
+        !self.header_params.is_empty() || !self.query_params.is_empty()
     }
 
-    pub fn header_params(&self) -> Vec<&Parameter> {
-        self.filter_params(|param| param.is_header())
+    pub fn is_optional_params_struct(&self) -> bool {
+        let predicate = |param: &Parameter| param.required;
+        !(self.header_params.iter().any(predicate) && self.query_params.iter().any(predicate))
     }
 
-    pub fn body_params(&self) -> Vec<&Parameter> {
-        self.filter_params(|param| param.is_body())
+    pub fn struct_type(&self) -> String {
+        let mut name = format!("super::super::params::{}", self.struct_name());
+        if self.params_struct_has_str() {
+            name = format!("{}<'a>", name);
+        }
+
+        if self.is_optional_params_struct() {
+            format!("Option<{}>", name)
+        } else {
+            name
+        }
     }
 
-    pub fn filter_params(&self, predicate: fn(&Parameter) -> bool) -> Vec<&Parameter> {
-        self.params.iter().filter(|p| predicate(p)).collect()
+    pub fn struct_name(&self) -> String {
+        self.name.to_case(Case::UpperCamel)
+    }
+
+    pub fn file_name(&self) -> String {
+        format!("{}.rs", self.name.to_case(Case::Snake))
     }
 
     pub fn success_type(&self, models: &BTreeMap<String, Model>) -> String {
@@ -66,7 +85,9 @@ impl Operation {
     }
 }
 
+#[derive(Default)]
 pub enum Method {
+    #[default]
     Get,
     Post,
     Delete,

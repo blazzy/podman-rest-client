@@ -1,5 +1,4 @@
 use std::collections::BTreeMap;
-use std::collections::HashSet;
 
 use hashlink::LinkedHashMap;
 use yaml_rust2::Yaml;
@@ -8,7 +7,7 @@ use yaml_rust2::YamlLoader;
 use crate::error::Error;
 use crate::model::Model;
 use crate::operation::{Method, Operation};
-use crate::parameter::{Parameter, RequestPart};
+use crate::parameter::BodyParameter;
 use crate::parse;
 use crate::tag::Tag;
 
@@ -113,43 +112,34 @@ impl Spec {
                     let operation_id: &str =
                         parse::string(&spec["operationId"], "Bad or missing operation Id")?;
 
-                    let mut params = Vec::new();
-                    if let Some(yaml_params) = spec["parameters"].as_vec() {
-                        let mut names = HashSet::<String>::new();
-                        for param in yaml_params {
-                            let mut name: String = parse::string(&param["name"], "parameter name")?;
-                            // Ensure the name is unique among the params
-                            let spec_name = name.clone();
-                            let mut count = 0;
-                            while names.contains(&name) {
-                                count += 1;
-                                name = format!("{}_{}", name, count);
-                            }
-
-                            names.insert(name.clone());
-                            params.push(Parameter {
-                                name,
-                                spec_name,
-                                description: parse::maybe_string(&param["description"]),
-                                request_part: RequestPart::from_yaml(
-                                    param,
-                                    operation_id,
-                                    format!("#paths/{}/parameters", operation_id),
-                                    &mut self.models,
-                                )?,
-                            });
-                        }
-                    }
-
                     let mut operation = Operation {
                         path: path.clone(),
                         name: operation_id.to_string(),
                         method,
                         description: parse::maybe_string(&spec["description"]),
                         summary: parse::maybe_string(&spec["summary"]),
-                        responses: BTreeMap::new(),
-                        params,
+                        ..Default::default()
                     };
+
+                    if let Some(yaml_params) = spec["parameters"].as_vec() {
+                        for param in yaml_params {
+                            let part_name = parse::string(&param["in"], "parameter in:")?;
+                            match part_name {
+                                "path" => operation.path_params.push(param.try_into()?),
+                                "query" => operation.query_params.push(param.try_into()?),
+                                "header" => operation.header_params.push(param.try_into()?),
+                                "body" => {
+                                    operation.body_param = Some(BodyParameter::from_yaml(
+                                        param,
+                                        operation_id,
+                                        format!("#paths/{}/parameters", operation_id),
+                                        &mut self.models,
+                                    )?)
+                                }
+                                _ => return Err(Error::UnrecognizedRequestPart(part_name.into())),
+                            }
+                        }
+                    }
 
                     if let Some(responses) = spec["responses"].as_hash() {
                         for (code, response) in responses {

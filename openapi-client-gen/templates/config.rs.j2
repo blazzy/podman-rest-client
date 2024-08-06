@@ -24,9 +24,8 @@ pub trait ClientConfig: Send + Sync {
         &self,
         request: Request<String>,
     ) -> Pin<Box<dyn Future<Output = Result<Response<Incoming>, HyperError>> + 'a + Send>>;
-    fn req_builder(&self, request_url: &str, method: &str) -> Result<Builder, Error> {
-        let hyper_uri: hyper::Uri = request_url.parse()?;
-        let mut req_builder = hyper::Request::builder().uri(hyper_uri).method(method);
+    fn req_builder(&self, method: &str) -> Result<Builder, Error> {
+        let mut req_builder = hyper::Request::builder().method(method);
         if let Some(user_agent) = self.get_user_agent() {
             req_builder = req_builder.header(header::USER_AGENT, user_agent);
         }

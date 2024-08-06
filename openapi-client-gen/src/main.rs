@@ -60,6 +60,24 @@ fn main() -> Result<(), Error> {
         }
     }
 
+    let mut operations = Vec::new();
+    for tag in spec.tags.values() {
+        for operation in &tag.operations {
+            if !operation.header_params.is_empty() || !operation.query_params.is_empty() {
+                operations.push(operation);
+            }
+        }
+    }
+
+    let params_path = target_path("params");
+    fs::create_dir_all(&params_path)?;
+    for operation in &operations {
+        if !operation.header_params.is_empty() || !operation.query_params.is_empty() {
+            let template = template::ParamsTemplate { operation };
+            fs::write(params_path.join(operation.file_name()), template.render()?)?;
+        }
+    }
+
     let client_template = template::ClientTemplate { tags: &spec.tags };
     fs::write(target_path("client.rs"), client_template.render()?)?;
 
@@ -71,6 +89,11 @@ fn main() -> Result<(), Error> {
 
     let model_mod_template = template::ModelModTemplate { models: &models };
     fs::write(target_path("models/mod.rs"), model_mod_template.render()?)?;
+
+    let params_mod_template = template::ParamsModTemplate {
+        operations: &operations,
+    };
+    fs::write(target_path("params/mod.rs"), params_mod_template.render()?)?;
 
     let mod_template = template::ModTemplate;
     fs::write(target_path("lib.rs"), mod_template.render()?)?;

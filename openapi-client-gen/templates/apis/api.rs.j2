@@ -29,16 +29,18 @@ impl {{tag.struct_name()}} {
     /// {{line-}}
     {% endfor -%}
     {% endif %}
-    pub async fn {{operation.var_name()}}(
+    pub async fn {{operation.var_name()}}{% if operation.params_struct_has_str() %}<'a>{% endif %}(
         &self,
-    {%- for param in operation.params %}
-        {{param.var_name()}}: {{param.type_string(models)}},
+    {%- for param in operation.path_params %}
+        {{param.var_name()}}: {{param.type_string()}},
     {%- endfor %}
+    {%- if operation.should_use_params_struct() %}
+        params: {{operation.struct_type()}},
+    {%- endif %}
+    {%- if let Some(body) = operation.body_param %}
+        {{body.var_name()}}: {{body.model.type_string(models)}},
+    {%- endif %}
     ) -> Result<{{success_type}}, Error> {
-        {%- let query_params = operation.query_params() %}
-        {%- let path_params = operation.path_params() %}
-        {%- let header_params = operation.header_params() %}
-        {%- let body_params = operation.body_params() %}
         let mut request_url = url::Url::parse(self.config.get_base_path())?;
 
         let mut request_path = request_url.path().to_owned();
@@ -46,46 +48,58 @@ impl {{tag.struct_name()}} {
             request_path.pop();
         }
         request_path.push_str("{{operation.path}}");
-        {%- if !path_params.is_empty() %}
-        {%- for param in path_params  %}
-        request_path = request_path.replace("{{"{"}}{{param.spec_name}}{{"}"}}", {{param.var_name()}});
+        {%- if !operation.path_params.is_empty() %}
+        {%- for param in operation.path_params  %}
+        request_path = request_path.replace("{{"{"}}{{param.name}}{{"}"}}", {{param.var_name()}});
         {%- endfor %}
         {%- endif %}
 
         request_url.set_path(&request_path);
 
-        {%~ if !query_params.is_empty() %}
-        {
+        let mut req_builder = self.config.req_builder("{{operation.method}}")?;
+
+        {%~ if !operation.query_params.is_empty() || !operation.header_params.is_empty() %}
+          {%- if operation.is_optional_params_struct() %}
+        if let Some(params) = params {
+          {%- endif %}
+        {%- endif %}
+
+        {%~ if !operation.query_params.is_empty() %}
           let mut query_pairs = request_url.query_pairs_mut();
-          {%- for param in query_params %}
-          {%- if param.is_required() %}
-          query_pairs.append_pair("{{param.spec_name}}", {{param.to_string_string()}});
+          {%- for param in operation.query_params %}
+          {%- if param.required %}
+          query_pairs.append_pair("{{param.name}}", &params.{{param.to_string_string()}});
           {%- else %}
-          if let Some({{param.var_name()}}) = {{param.var_name()}} {
-              query_pairs.append_pair("{{param.spec_name}}", {{param.to_string_string()}});
+          if let Some({{param.var_name()}}) = params.{{param.var_name()}} {
+              query_pairs.append_pair("{{param.name}}", &{{param.to_string_string()}});
           }
           {%- endif %}
           {%- endfor %}
+        {%- endif %}
+
+        {%~ if !operation.header_params.is_empty() %}
+          {%- for param in operation.header_params %}
+          {%- if param.required %}
+          req_builder = req_builder.header("{{param.name}}", params.{{param.var_name()}});
+          {%- else %}
+          if let Some({{param.var_name()}}) = params.{{param.var_name()}} {
+            req_builder = req_builder.header("{{param.name}}", {{param.var_name()}});
+          }
+          {%- endif %}
+          {%- endfor %}
+        {%- endif %}
+
+        {%~ if !operation.query_params.is_empty() || !operation.header_params.is_empty() %}
+          {%- if operation.is_optional_params_struct() %}
         }
+          {%- endif %}
         {%- endif %}
 
-        {%~ let mut_builder = !body_params.is_empty() || !header_params.is_empty() %}
-        let {% if mut_builder %}mut {% endif %}req_builder = self.config.req_builder(request_url.as_str(), "{{operation.method}}")?;
+        let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
+        req_builder = req_builder.uri(hyper_uri);
 
-        {%~ if !header_params.is_empty() %}
-        {%- for param in header_params %}
-        {%- if param.is_required() %}
-        req_builder = req_builder.header("{{param.spec_name}}", {{param.var_name()}});
-        {%- else %}
-        if let Some({{param.var_name()}}) = {{param.var_name()}} {
-          req_builder = req_builder.header("{{param.spec_name}}", {{param.var_name()}});
-        }
-        {%- endif %}
-        {%- endfor %}
-        {%- endif %}
-
-        {%- if !body_params.is_empty() %}
-        let body = serde_json::to_string(&{{body_params[0].var_name()}})?;
+        {%- if let Some(body) = operation.body_param %}
+        let body = serde_json::to_string(&{{body.var_name()}})?;
         req_builder = req_builder.header(hyper::header::CONTENT_TYPE, "application/json");
         req_builder = req_builder.header(hyper::header::CONTENT_LENGTH, body.len());
         let request = req_builder.body(body)?;

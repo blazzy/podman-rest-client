@@ -10,26 +10,46 @@ use crate::parse;
 
 pub struct Parameter {
     pub name: String,
-    pub spec_name: String,
     pub description: Option<String>,
-    pub request_part: RequestPart,
+    pub r#type: Type,
+    pub required: bool,
+}
+
+impl TryFrom<&Yaml> for Parameter {
+    type Error = Error;
+
+    fn try_from(yaml: &Yaml) -> Result<Self, Error> {
+        Ok(Parameter {
+            name: parse::string(&yaml["name"], "parameter name")?,
+            description: parse::maybe_string(&yaml["description"]),
+            r#type: yaml.try_into()?,
+            required: yaml["required"].as_bool().unwrap_or(false),
+        })
+    }
 }
 
 impl Parameter {
-    pub fn type_string(&self, models: &BTreeMap<String, Model>) -> String {
-        match &self.request_part {
-            RequestPart::Path(field) | RequestPart::Query(field) | RequestPart::Header(field) => {
-                let base_type = match &field.r#type {
-                    Type::Just(base_type) => base_type.to_string(),
-                    Type::Array(base_type) => format!("Vec<{}>", base_type),
-                };
-                if field.required {
-                    base_type
-                } else {
-                    format!("Option<{}>", base_type)
-                }
-            }
-            RequestPart::Body(model) => model.type_string(models),
+    pub fn type_string(&self) -> String {
+        let base_type = match &self.r#type {
+            Type::Just(base_type) => base_type.to_string(),
+            Type::Array(base_type) => format!("Vec<{}>", base_type),
+        };
+        if self.required {
+            base_type
+        } else {
+            format!("Option<{}>", base_type)
+        }
+    }
+
+    pub fn type_string_lifetime(&self, lifetime: &str) -> String {
+        let base_type = match &self.r#type {
+            Type::Just(base_type) => base_type.to_lifetime_string(lifetime),
+            Type::Array(base_type) => format!("Vec<{}>", base_type.to_lifetime_string(lifetime)),
+        };
+        if self.required {
+            base_type
+        } else {
+            format!("Option<{}>", base_type)
         }
     }
 
@@ -42,70 +62,17 @@ impl Parameter {
         }
     }
 
-    pub fn is_query(&self) -> bool {
-        matches!(self.request_part, RequestPart::Query(_))
-    }
-
-    pub fn is_path(&self) -> bool {
-        matches!(self.request_part, RequestPart::Path(_))
-    }
-
-    pub fn is_header(&self) -> bool {
-        matches!(self.request_part, RequestPart::Header(_))
-    }
-
-    pub fn is_body(&self) -> bool {
-        matches!(self.request_part, RequestPart::Body(_))
-    }
-
-    pub fn is_required(&self) -> bool {
-        match &self.request_part {
-            RequestPart::Path(field) | RequestPart::Query(field) | RequestPart::Header(field) => {
-                field.required
-            }
-            RequestPart::Body(_) => true,
-        }
-    }
-
     pub fn to_string_string(&self) -> String {
-        match &self.request_part {
-            RequestPart::Path(field) | RequestPart::Query(field) | RequestPart::Header(field) => {
-                match &field.r#type {
-                    Type::Just(base_type) => match base_type {
-                        BaseType::String => self.var_name(),
-                        _ => format!("&{}.to_string()", self.var_name()),
-                    },
-                    Type::Array(_) => format!(
-                        "&{}.iter().map(|e| e.to_string()).collect::<Vec<_>>().join(\",\")",
-                        self.var_name()
-                    ),
-                }
-            }
-            RequestPart::Body(_) => "TODO!".into(),
+        match &self.r#type {
+            Type::Just(base_type) => match base_type {
+                BaseType::String => self.var_name(),
+                _ => format!("{}.to_string()", self.var_name()),
+            },
+            Type::Array(_) => format!(
+                "{}.iter().map(|e| e.to_string()).collect::<Vec<_>>().join(\",\")",
+                self.var_name()
+            ),
         }
-    }
-}
-
-pub enum RequestPart {
-    Path(RequestPartField),
-    Query(RequestPartField),
-    Header(RequestPartField),
-    Body(Model),
-}
-
-pub struct RequestPartField {
-    r#type: Type,
-    required: bool,
-}
-
-impl TryFrom<&Yaml> for RequestPartField {
-    type Error = Error;
-
-    fn try_from(value: &Yaml) -> Result<Self, Self::Error> {
-        Ok(RequestPartField {
-            r#type: Type::try_from(value)?,
-            required: value["required"].as_bool().unwrap_or(false),
-        })
     }
 }
 
@@ -113,6 +80,17 @@ pub enum BaseType {
     String,
     Boolean,
     Integer,
+}
+
+impl BaseType {
+    fn to_lifetime_string(&self, lifetime: &str) -> String {
+        use BaseType::*;
+        match self {
+            String => format!("&'{} str", lifetime),
+            Boolean => self.to_string(),
+            Integer => self.to_string(),
+        }
+    }
 }
 
 impl fmt::Display for BaseType {
@@ -146,6 +124,15 @@ pub enum Type {
     Array(BaseType),
 }
 
+impl Type {
+    pub fn has_string(&self) -> bool {
+        matches!(
+            self,
+            Type::Just(BaseType::String) | Type::Array(BaseType::String)
+        )
+    }
+}
+
 impl TryFrom<&Yaml> for Type {
     type Error = Error;
 
@@ -162,26 +149,36 @@ impl TryFrom<&Yaml> for Type {
     }
 }
 
-impl RequestPart {
+pub struct BodyParameter {
+    pub name: String,
+    pub description: Option<String>,
+    pub model: Model,
+}
+
+impl BodyParameter {
     pub fn from_yaml(
         yaml: &Yaml,
         base_name: &str,
         path_ref: String,
         models: &mut BTreeMap<String, Model>,
     ) -> Result<Self, Error> {
-        let part_name = parse::string(&yaml["in"], "parameter in:")?;
+        let schema = &yaml["schema"];
+        let model_ref = format!("{}/{}", path_ref, "body");
+        let model = Model::new(format!("{}Body", base_name), schema, &model_ref, models)?;
 
-        match part_name {
-            "body" => {
-                let schema = &yaml["schema"];
-                let model_ref = format!("{}/{}", path_ref, "body");
-                let model = Model::new(format!("{}Body", base_name), schema, &model_ref, models)?;
-                Ok(RequestPart::Body(model))
-            }
-            "path" => Ok(RequestPart::Path(yaml.try_into()?)),
-            "header" => Ok(RequestPart::Header(yaml.try_into()?)),
-            "query" => Ok(RequestPart::Query(yaml.try_into()?)),
-            _ => Err(Error::UnrecognizedRequestPart(part_name.into())),
+        Ok(BodyParameter {
+            name: parse::string(&yaml["name"], "parameter name")?,
+            description: parse::maybe_string(&yaml["description"]),
+            model,
+        })
+    }
+
+    pub fn var_name(&self) -> String {
+        let var_name = self.name.to_case(Case::Snake);
+        if parse::is_keyword(&var_name) {
+            format!("r#{}", var_name)
+        } else {
+            var_name
         }
     }
 }

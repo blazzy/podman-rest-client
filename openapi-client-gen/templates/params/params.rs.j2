@@ -1,0 +1,19 @@
+#[derive(Default, Debug)]
+pub struct {{operation.struct_name()}}{% if operation.params_struct_has_str() %}<'a>{% endif %} {
+  {%- for param in operation.header_params %}
+    {%- if let Some(description) = param.description %}
+    {% for line in description.trim().lines() %}
+    /// {{line-}}
+    {% endfor -%}
+    {%- endif %}
+    pub {{param.var_name()}}: {{param.type_string_lifetime("a")}},
+  {% endfor %}
+  {%- for param in operation.query_params %}
+    {%- if let Some(description) = param.description %}
+    {% for line in description.trim().lines() %}
+    /// {{line-}}
+    {% endfor -%}
+    {%- endif %}
+    pub {{param.var_name()}}: {{param.type_string_lifetime("a")}},
+  {% endfor %}
+}

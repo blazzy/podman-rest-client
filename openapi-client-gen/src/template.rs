@@ -3,6 +3,7 @@ use std::collections::BTreeMap;
 use askama::Template;
 
 use crate::model::{Model, Property};
+use crate::operation::Operation;
 use crate::spec::Spec;
 use crate::tag;
 
@@ -22,6 +23,12 @@ pub struct ModelTemplate<'a> {
 }
 
 #[derive(Template)]
+#[template(path = "params/params.rs.j2", escape = "none")]
+pub struct ParamsTemplate<'a> {
+    pub operation: &'a Operation,
+}
+
+#[derive(Template)]
 #[template(path = "apis/mod.rs.j2", escape = "none")]
 pub struct ApiModTemplate<'a> {
     pub tags: &'a BTreeMap<String, tag::Tag>,
@@ -31,6 +38,12 @@ pub struct ApiModTemplate<'a> {
 #[template(path = "models/mod.rs.j2", escape = "none")]
 pub struct ModelModTemplate<'a> {
     pub models: &'a BTreeMap<&'a String, &'a Model>,
+}
+
+#[derive(Template)]
+#[template(path = "params/mod.rs.j2", escape = "none")]
+pub struct ParamsModTemplate<'a> {
+    pub operations: &'a Vec<&'a Operation>,
 }
 
 #[derive(Template)]
