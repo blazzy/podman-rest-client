@@ -15077,6 +15077,7 @@ paths:
                   in: query
                   name: quiet
                   type: boolean
+                  x-client-default: true
                 - default: false
                   description: Return the same JSON payload as the Docker-compat endpoint.
                   in: query
@@ -15182,6 +15183,7 @@ paths:
                   in: query
                   name: quiet
                   type: boolean
+                  x-client-default: true
             produces:
                 - application/json
             responses:

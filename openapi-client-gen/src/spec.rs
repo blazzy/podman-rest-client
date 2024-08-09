@@ -190,15 +190,14 @@ mod tests {
 
     #[test]
     fn builds_base_path() {
-        let spec = Spec::from_yaml_string(
-            indoc! {r#"
+        let spec = Spec::from_yaml_string(indoc! {r#"
             basePath: /
             host: example.com
             schemes:
                 - http
                 - https
-            "#}
-        ).unwrap();
+            "#})
+        .unwrap();
         assert_eq!(spec.base_path, "http://example.com/");
     }
 }
