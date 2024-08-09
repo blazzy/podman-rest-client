@@ -12,6 +12,7 @@ use crate::model::Model;
 use crate::model::ModelData;
 use crate::operation;
 use crate::parameter;
+use crate::parameter::XClientDefault;
 use crate::parse;
 
 /// Format name to a conventional upper camel rust ident for struct and trait names
@@ -166,4 +167,16 @@ pub fn model_type(model: &Model, models: &BTreeMap<String, Model>) -> Result<Tok
             }
         }
     })
+}
+
+pub fn or_default(default: &Option<XClientDefault>) -> TokenStream {
+    if let Some(default) = default {
+        match default {
+            XClientDefault::String(string) => quote! { .or(Some(#string)) },
+            XClientDefault::Boolean(bool) => quote! { .or(Some(#bool)) },
+            XClientDefault::Integer(int) => quote! { .or(Some(#int)) },
+        }
+    } else {
+        TokenStream::new()
+    }
 }

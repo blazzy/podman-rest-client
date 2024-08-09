@@ -650,7 +650,7 @@ pub trait Images: HasConfig + Send + Sync {
             if let Some(reference) = params.reference {
                 query_pairs.append_pair("reference", reference);
             }
-            if let Some(quiet) = params.quiet {
+            if let Some(quiet) = params.quiet.or(Some(true)) {
                 query_pairs.append_pair("quiet", &quiet.to_string());
             }
             if let Some(compat_mode) = params.compat_mode {
@@ -750,7 +750,7 @@ pub trait Images: HasConfig + Send + Sync {
             if let Some(destination) = params.destination {
                 query_pairs.append_pair("destination", destination);
             }
-            if let Some(quiet) = params.quiet {
+            if let Some(quiet) = params.quiet.or(Some(true)) {
                 query_pairs.append_pair("quiet", &quiet.to_string());
             }
         }

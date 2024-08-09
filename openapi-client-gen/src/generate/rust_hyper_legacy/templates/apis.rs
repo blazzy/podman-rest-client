@@ -1,7 +1,9 @@
 use proc_macro2::TokenStream;
 use quote::quote;
 
-use crate::lang::rust::{model_type, parameter_to_str, struct_name, to_doc_comment, var_name};
+use crate::lang::rust::{
+    model_type, or_default, parameter_to_str, struct_name, to_doc_comment, var_name,
+};
 use crate::{error::Error, spec::Spec, tag::Tag};
 
 pub fn api(spec: &Spec, tag: &Tag) -> Result<String, Error> {
@@ -110,9 +112,10 @@ pub fn operations(spec: &Spec, tag: &Tag) -> Result<Vec<TokenStream>, Error> {
                         let to_string = parameter_to_str(&quote! { params.#var_name }, param);
                         quote! { query_pairs.append_pair(#name, #to_string); }
                     } else {
+                        let or_default = or_default(&param.x_client_default);
                         let to_string = parameter_to_str(&quote! { #var_name }, param);
                         quote! {
-                            if let Some(#var_name) = params.#var_name {
+                            if let Some(#var_name) = params.#var_name #or_default {
                                 query_pairs.append_pair(#name, #to_string);
                             }
                         }
@@ -136,8 +139,9 @@ pub fn operations(spec: &Spec, tag: &Tag) -> Result<Vec<TokenStream>, Error> {
                     if param.required {
                         quote! { req_builder = req_builder.header(#name, params.#var_name); }
                     } else {
+                        let or_default = or_default(&param.x_client_default);
                         quote! {
-                            if let Some(#var_name) = params.#var_name {
+                            if let Some(#var_name) = params.#var_name #or_default {
                                 req_builder = req_builder.header(#name, #var_name);
                             }
                         }
