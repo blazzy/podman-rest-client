@@ -12,6 +12,30 @@ env:
   RUST_BACKTRACE: 1
 
 jobs:
+  mac-build:
+    runs-on: macos-14
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Homebrew
+      id: set-up-homebrew
+      uses: Homebrew/actions/setup-homebrew@master
+
+    - name: Install Podman
+      run: brew install podman
+
+    - name: Start Podman
+      run: |
+        podman machine init
+        podman machine start
+
+    - name: Build
+      run: cargo build --verbose
+
+    - name: Tests
+      run: cargo test --verbose
+
   build:
     runs-on: ubuntu-24.04
     steps:
