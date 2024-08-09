@@ -58,7 +58,6 @@ pub async fn pull_nginx_image(client: &PodmanRestClient) {
         .images()
         .image_pull_libpod(Some(params::ImagePullLibpod {
             reference: Some("docker.io/library/nginx:latest"),
-            quiet: Some(true),
             ..Default::default()
         }))
         .await

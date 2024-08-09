@@ -70,7 +70,6 @@ async fn it_can_pull_images() {
         .images()
         .image_pull_libpod(Some(params::ImagePullLibpod {
             reference: Some("docker.io/library/nginx:latest"),
-            quiet: Some(true),
             ..Default::default()
         }))
         .await
