@@ -68,6 +68,7 @@ impl Operation {
             name = format!("{}<'a>", name);
         }
 
+        // If all the params are optional, make the top level struct optional as well
         if self.is_optional_params_struct() {
             format!("Option<{}>", name)
         } else {
@@ -81,6 +82,15 @@ impl Operation {
 
     pub fn file_name(&self) -> String {
         format!("{}.rs", self.name.to_case(Case::Snake))
+    }
+
+    pub fn success_response(&self) -> Option<&Model> {
+        let response = self.responses.iter().find(|(key, _)| {
+            let code: u16 = key.parse().unwrap_or(0);
+            (200..300).contains(&code)
+        });
+
+        response.map(|response| response.1)
     }
 
     pub fn success_type(&self, models: &BTreeMap<String, Model>) -> String {

@@ -28,6 +28,12 @@ pub enum ModelData {
     Ref(String),
 }
 
+impl ModelData {
+    pub fn is_no_value(&self) -> bool {
+        matches!(&self, ModelData::NoValue)
+    }
+}
+
 #[derive(Clone)]
 pub enum IntegerFormat {
     INT64,
@@ -170,6 +176,23 @@ impl Model {
 
     pub fn is_ref(&self) -> bool {
         matches!(self.data, ModelData::Ref(_))
+    }
+
+    /// If this is a ref_model trace the refs until we get to the actual model
+    pub fn resolve_model<'a>(
+        &'a self,
+        models: &'a BTreeMap<String, Model>,
+    ) -> Result<&'a Model, Error> {
+        match &self.data {
+            ModelData::Ref(ref_str) => {
+                if let Some(ref_model) = models.get(ref_str) {
+                    ref_model.resolve_model(models)
+                } else {
+                    Err(Error::MissingModelRef(ref_str.into()))
+                }
+            }
+            _ => Ok(self),
+        }
     }
 
     pub fn type_string(&self, models: &BTreeMap<String, Model>) -> String {

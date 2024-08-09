@@ -4,15 +4,6 @@ use askama::Template;
 
 use crate::model::{Model, Property};
 use crate::operation::Operation;
-use crate::spec::Spec;
-use crate::tag;
-
-#[derive(Template)]
-#[template(path = "apis/api.rs.j2", escape = "none")]
-pub struct ApiTemplate<'a> {
-    pub tag: &'a tag::Tag,
-    pub models: &'a BTreeMap<String, Model>,
-}
 
 #[derive(Template)]
 #[template(path = "models/model.rs.j2", escape = "none")]
@@ -26,38 +17,4 @@ pub struct ModelTemplate<'a> {
 #[template(path = "params/params.rs.j2", escape = "none")]
 pub struct ParamsTemplate<'a> {
     pub operation: &'a Operation,
-}
-
-#[derive(Template)]
-#[template(path = "apis/mod.rs.j2", escape = "none")]
-pub struct ApiModTemplate<'a> {
-    pub tags: &'a BTreeMap<String, tag::Tag>,
-}
-
-#[derive(Template)]
-#[template(path = "models/mod.rs.j2", escape = "none")]
-pub struct ModelModTemplate<'a> {
-    pub models: &'a BTreeMap<&'a String, &'a Model>,
-}
-
-#[derive(Template)]
-#[template(path = "params/mod.rs.j2", escape = "none")]
-pub struct ParamsModTemplate<'a> {
-    pub operations: &'a Vec<&'a Operation>,
-}
-
-#[derive(Template)]
-#[template(path = "mod.rs.j2", escape = "none")]
-pub struct ModTemplate;
-
-#[derive(Template)]
-#[template(path = "client.rs.j2", escape = "none")]
-pub struct ClientTemplate<'a> {
-    pub tags: &'a BTreeMap<String, tag::Tag>,
-}
-
-#[derive(Template)]
-#[template(path = "config.rs.j2", escape = "none")]
-pub struct ConfigTemplate<'a> {
-    pub spec: &'a Spec,
 }

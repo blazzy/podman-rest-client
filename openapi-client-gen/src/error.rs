@@ -5,6 +5,8 @@ pub enum Error {
     StringParse(String),
     #[error("Unrecognized ModelType {0}")]
     UnrecognizedModelType(String),
+    #[error("Could not find model referenced! {0}")]
+    MissingModelRef(String),
     #[error("Unsupported Method {0}")]
     UnrecognizedRequestPart(String),
     #[error("Unrecognized RequestPart {0}")]
@@ -13,6 +15,8 @@ pub enum Error {
     UnsupportedMethod(String),
     #[error("Unrecognized Tag {0}")]
     UnrecognizedTag(String),
+    #[error("Unsupported x-client-default type")]
+    UnsupportedXClientDefaultType,
     #[error("Cannot open file {0}")]
     CannotOpenFile(#[from] std::io::Error),
     #[error("Unrecognized Integer Format {0}")]

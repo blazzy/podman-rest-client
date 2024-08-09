@@ -1,4 +1,0 @@
-{%- for model in models.values() -%}
-mod {{model.var_name()}};
-pub use {{model.var_name()}}::{{model.struct_name()}};
-{% endfor %}

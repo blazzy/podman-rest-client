@@ -1,4 +1,0 @@
-{%- for operation in operations -%}
-mod {{operation.var_name()}};
-pub use {{operation.var_name()}}::{{operation.struct_name()}};
-{% endfor %}

@@ -13,17 +13,45 @@ pub struct Parameter {
     pub description: Option<String>,
     pub r#type: Type,
     pub required: bool,
+    pub x_client_default: Option<XClientDefault>,
+}
+
+pub enum XClientDefault {
+    Boolean(bool),
+    String(String),
+    Integer(i64),
+}
+
+impl XClientDefault {
+    pub fn try_new(yaml: &Yaml, param_type: Type) -> Result<Option<XClientDefault>, Error> {
+        let value = &yaml["x-client-default"];
+        if value.is_null() || value.is_badvalue() {
+            return Ok(None);
+        }
+        match param_type {
+            Type::Just(base_type) => match base_type {
+                BaseType::String => Ok(value
+                    .as_str()
+                    .map(|s| XClientDefault::String(s.to_string()))),
+                BaseType::Boolean => Ok(value.as_bool().map(XClientDefault::Boolean)),
+                BaseType::Integer => Ok(value.as_i64().map(XClientDefault::Integer)),
+            },
+            _ => Err(Error::UnsupportedXClientDefaultType),
+        }
+    }
 }
 
 impl TryFrom<&Yaml> for Parameter {
     type Error = Error;
 
     fn try_from(yaml: &Yaml) -> Result<Self, Error> {
+        let r#type: Type = yaml.try_into()?;
         Ok(Parameter {
             name: parse::string(&yaml["name"], "parameter name")?,
             description: parse::maybe_string(&yaml["description"]),
-            r#type: yaml.try_into()?,
+            r#type,
             required: yaml["required"].as_bool().unwrap_or(false),
+            x_client_default: XClientDefault::try_new(yaml, r#type)?,
         })
     }
 }
@@ -76,6 +104,7 @@ impl Parameter {
     }
 }
 
+#[derive(Copy, Clone)]
 pub enum BaseType {
     String,
     Boolean,
@@ -119,6 +148,7 @@ impl TryFrom<&Yaml> for BaseType {
     }
 }
 
+#[derive(Copy, Clone)]
 pub enum Type {
     Just(BaseType),
     Array(BaseType),
