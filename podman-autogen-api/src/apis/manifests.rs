@@ -1,72 +1,52 @@
-use std::sync::Arc;
-
-use super::super::config::ClientConfig;
+use super::super::config::HasConfig;
 use super::super::request;
 use super::super::Error;
-
-/// Actions related to manifests
-pub struct Manifests {
-    config: Arc<dyn ClientConfig>,
-}
-
-impl Manifests {
-    pub fn new(config: Arc<dyn ClientConfig>) -> Manifests {
-        Manifests { config }
-    }
-
+#[async_trait::async_trait]
+pub trait Manifests: HasConfig + Send + Sync {
     /// DELETE /libpod/manifests/{name}
     /// Delete manifest list
     /// Delete named manifest list
     ///
     /// As of v4.0.0
-    pub async fn manifest_delete_libpod(
+    async fn manifest_delete_libpod(
         &self,
         name: &str,
     ) -> Result<super::super::models::LibpodImagesRemoveReport, Error> {
-        let mut request_url = url::Url::parse(self.config.get_base_path())?;
-
+        let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
         let mut request_path = request_url.path().to_owned();
         if request_path.ends_with('/') {
             request_path.pop();
         }
         request_path.push_str("/libpod/manifests/{name}");
         request_path = request_path.replace("{name}", name);
-
         request_url.set_path(&request_path);
-
-        let mut req_builder = self.config.req_builder("DELETE")?;
-
+        let mut req_builder = self.get_config().req_builder("DELETE")?;
         let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
         req_builder = req_builder.uri(hyper_uri);
         let request = req_builder.body(String::new())?;
-        request::execute_request_json(&*self.config, request).await
+        request::execute_request_json(self.get_config(), request).await
     }
-
     /// POST /libpod/manifests/{name}
     /// Create
     /// Create a manifest list
-    pub async fn manifest_create_libpod<'a>(
+    async fn manifest_create_libpod<'a>(
         &self,
         name: &str,
         params: Option<super::super::params::ManifestCreateLibpod<'a>>,
         options: super::super::models::ManifestModifyOptions,
     ) -> Result<super::super::models::IdResponse, Error> {
-        let mut request_url = url::Url::parse(self.config.get_base_path())?;
-
+        let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
         let mut request_path = request_url.path().to_owned();
         if request_path.ends_with('/') {
             request_path.pop();
         }
         request_path.push_str("/libpod/manifests/{name}");
         request_path = request_path.replace("{name}", name);
-
         request_url.set_path(&request_path);
-
-        let mut req_builder = self.config.req_builder("POST")?;
-
+        let mut req_builder = self.get_config().req_builder("POST")?;
         if let Some(params) = params {
             let mut query_pairs = request_url.query_pairs_mut();
-            query_pairs.append_pair("images", &params.images);
+            query_pairs.append_pair("images", params.images);
             if let Some(all) = params.all {
                 query_pairs.append_pair("all", &all.to_string());
             }
@@ -74,16 +54,14 @@ impl Manifests {
                 query_pairs.append_pair("amend", &amend.to_string());
             }
         }
-
         let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
         req_builder = req_builder.uri(hyper_uri);
         let body = serde_json::to_string(&options)?;
         req_builder = req_builder.header(hyper::header::CONTENT_TYPE, "application/json");
         req_builder = req_builder.header(hyper::header::CONTENT_LENGTH, body.len());
         let request = req_builder.body(body)?;
-        request::execute_request_json(&*self.config, request).await
+        request::execute_request_json(self.get_config(), request).await
     }
-
     /// GET /libpod/manifests/{name}
     /// Modify manifest list
     /// Add/Remove an image(s) to a manifest list
@@ -91,182 +69,153 @@ impl Manifests {
     /// Note: operations are not atomic when multiple Images are provided.
     ///
     /// As of v4.0.0
-    pub async fn manifest_modify_libpod(
+    async fn manifest_modify_libpod(
         &self,
         name: &str,
         params: Option<super::super::params::ManifestModifyLibpod>,
         options: super::super::models::ManifestModifyOptions,
     ) -> Result<super::super::models::ManifestModifyReport, Error> {
-        let mut request_url = url::Url::parse(self.config.get_base_path())?;
-
+        let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
         let mut request_path = request_url.path().to_owned();
         if request_path.ends_with('/') {
             request_path.pop();
         }
         request_path.push_str("/libpod/manifests/{name}");
         request_path = request_path.replace("{name}", name);
-
         request_url.set_path(&request_path);
-
-        let mut req_builder = self.config.req_builder("GET")?;
-
+        let mut req_builder = self.get_config().req_builder("GET")?;
         if let Some(params) = params {
             let mut query_pairs = request_url.query_pairs_mut();
             if let Some(tls_verify) = params.tls_verify {
                 query_pairs.append_pair("tlsVerify", &tls_verify.to_string());
             }
         }
-
         let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
         req_builder = req_builder.uri(hyper_uri);
         let body = serde_json::to_string(&options)?;
         req_builder = req_builder.header(hyper::header::CONTENT_TYPE, "application/json");
         req_builder = req_builder.header(hyper::header::CONTENT_LENGTH, body.len());
         let request = req_builder.body(body)?;
-        request::execute_request_json(&*self.config, request).await
+        request::execute_request_json(self.get_config(), request).await
     }
-
     /// POST /libpod/manifests/{name}/add
     /// Add image
     /// Add an image to a manifest list
     ///
     /// Deprecated: As of 4.0.0 use ManifestModifyLibpod instead
-    pub async fn manifest_add_libpod(
+    async fn manifest_add_libpod(
         &self,
         name: &str,
         options: super::super::models::ManifestAddOptions,
     ) -> Result<super::super::models::IdResponse, Error> {
-        let mut request_url = url::Url::parse(self.config.get_base_path())?;
-
+        let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
         let mut request_path = request_url.path().to_owned();
         if request_path.ends_with('/') {
             request_path.pop();
         }
         request_path.push_str("/libpod/manifests/{name}/add");
         request_path = request_path.replace("{name}", name);
-
         request_url.set_path(&request_path);
-
-        let mut req_builder = self.config.req_builder("POST")?;
-
+        let mut req_builder = self.get_config().req_builder("POST")?;
         let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
         req_builder = req_builder.uri(hyper_uri);
         let body = serde_json::to_string(&options)?;
         req_builder = req_builder.header(hyper::header::CONTENT_TYPE, "application/json");
         req_builder = req_builder.header(hyper::header::CONTENT_LENGTH, body.len());
         let request = req_builder.body(body)?;
-        request::execute_request_json(&*self.config, request).await
+        request::execute_request_json(self.get_config(), request).await
     }
-
     /// GET /libpod/manifests/{name}/exists
     /// Exists
     /// Check if manifest list exists
     ///
     /// Note: There is no contract that the manifest list will exist for a follow-on operation
-    pub async fn manifest_exists_libpod(&self, name: &str) -> Result<(), Error> {
-        let mut request_url = url::Url::parse(self.config.get_base_path())?;
-
+    async fn manifest_exists_libpod(&self, name: &str) -> Result<(), Error> {
+        let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
         let mut request_path = request_url.path().to_owned();
         if request_path.ends_with('/') {
             request_path.pop();
         }
         request_path.push_str("/libpod/manifests/{name}/exists");
         request_path = request_path.replace("{name}", name);
-
         request_url.set_path(&request_path);
-
-        let mut req_builder = self.config.req_builder("GET")?;
-
+        let mut req_builder = self.get_config().req_builder("GET")?;
         let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
         req_builder = req_builder.uri(hyper_uri);
         let request = req_builder.body(String::new())?;
-        request::execute_request_unit(&*self.config, request).await
+        request::execute_request_unit(self.get_config(), request).await
     }
-
     /// GET /libpod/manifests/{name}/json
     /// Inspect
     /// Display attributes of given manifest list
-    pub async fn manifest_inspect_libpod(
+    async fn manifest_inspect_libpod(
         &self,
         name: &str,
         params: Option<super::super::params::ManifestInspectLibpod>,
     ) -> Result<super::super::models::Schema2ListPublic, Error> {
-        let mut request_url = url::Url::parse(self.config.get_base_path())?;
-
+        let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
         let mut request_path = request_url.path().to_owned();
         if request_path.ends_with('/') {
             request_path.pop();
         }
         request_path.push_str("/libpod/manifests/{name}/json");
         request_path = request_path.replace("{name}", name);
-
         request_url.set_path(&request_path);
-
-        let mut req_builder = self.config.req_builder("GET")?;
-
+        let mut req_builder = self.get_config().req_builder("GET")?;
         if let Some(params) = params {
             let mut query_pairs = request_url.query_pairs_mut();
             if let Some(tls_verify) = params.tls_verify {
                 query_pairs.append_pair("tlsVerify", &tls_verify.to_string());
             }
         }
-
         let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
         req_builder = req_builder.uri(hyper_uri);
         let request = req_builder.body(String::new())?;
-        request::execute_request_json(&*self.config, request).await
+        request::execute_request_json(self.get_config(), request).await
     }
-
     /// POST /libpod/manifests/{name}/push
     /// Push manifest to registry
     /// Push a manifest list or image index to a registry
     ///
     /// Deprecated: As of 4.0.0 use ManifestPushLibpod instead
-    pub async fn manifest_push_v_3_libpod<'a>(
+    async fn manifest_push_v_3_libpod<'a>(
         &self,
         name: &str,
         params: Option<super::super::params::ManifestPushV3Libpod<'a>>,
     ) -> Result<super::super::models::IdResponse, Error> {
-        let mut request_url = url::Url::parse(self.config.get_base_path())?;
-
+        let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
         let mut request_path = request_url.path().to_owned();
         if request_path.ends_with('/') {
             request_path.pop();
         }
         request_path.push_str("/libpod/manifests/{name}/push");
         request_path = request_path.replace("{name}", name);
-
         request_url.set_path(&request_path);
-
-        let mut req_builder = self.config.req_builder("POST")?;
-
+        let mut req_builder = self.get_config().req_builder("POST")?;
         if let Some(params) = params {
             let mut query_pairs = request_url.query_pairs_mut();
-            query_pairs.append_pair("destination", &params.destination);
+            query_pairs.append_pair("destination", params.destination);
             if let Some(all) = params.all {
                 query_pairs.append_pair("all", &all.to_string());
             }
         }
-
         let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
         req_builder = req_builder.uri(hyper_uri);
         let request = req_builder.body(String::new())?;
-        request::execute_request_json(&*self.config, request).await
+        request::execute_request_json(self.get_config(), request).await
     }
-
     /// POST /libpod/manifests/{name}/registry/{destination}
     /// Push manifest list to registry
     /// Push a manifest list or image index to the named registry
     ///
     /// As of v4.0.0
-    pub async fn manifest_push_libpod<'a>(
+    async fn manifest_push_libpod<'a>(
         &self,
         name: &str,
         destination: &str,
         params: Option<super::super::params::ManifestPushLibpod<'a>>,
     ) -> Result<super::super::models::IdResponse, Error> {
-        let mut request_url = url::Url::parse(self.config.get_base_path())?;
-
+        let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
         let mut request_path = request_url.path().to_owned();
         if request_path.ends_with('/') {
             request_path.pop();
@@ -274,11 +223,8 @@ impl Manifests {
         request_path.push_str("/libpod/manifests/{name}/registry/{destination}");
         request_path = request_path.replace("{name}", name);
         request_path = request_path.replace("{destination}", destination);
-
         request_url.set_path(&request_path);
-
-        let mut req_builder = self.config.req_builder("POST")?;
-
+        let mut req_builder = self.get_config().req_builder("POST")?;
         if let Some(params) = params {
             let mut query_pairs = request_url.query_pairs_mut();
             if let Some(add_compression) = params.add_compression {
@@ -307,10 +253,9 @@ impl Manifests {
                 query_pairs.append_pair("quiet", &quiet.to_string());
             }
         }
-
         let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
         req_builder = req_builder.uri(hyper_uri);
         let request = req_builder.body(String::new())?;
-        request::execute_request_json(&*self.config, request).await
+        request::execute_request_json(self.get_config(), request).await
     }
 }

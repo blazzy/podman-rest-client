@@ -1,54 +1,39 @@
-use std::sync::Arc;
-
-use super::super::config::ClientConfig;
+use super::super::config::HasConfig;
 use super::super::request;
 use super::super::Error;
-
-/// Actions related to images
-pub struct Images {
-    config: Arc<dyn ClientConfig>,
-}
-
-impl Images {
-    pub fn new(config: Arc<dyn ClientConfig>) -> Images {
-        Images { config }
-    }
-
+#[async_trait::async_trait]
+pub trait Images: HasConfig + Send + Sync {
     /// POST /libpod/build
     /// Create image
     /// Build an image from the given Dockerfile(s)
-    pub async fn image_build_libpod<'a>(
+    async fn image_build_libpod<'a>(
         &self,
         params: Option<super::super::params::ImageBuildLibpod<'a>>,
     ) -> Result<super::super::models::ImageBuildLibpod200, Error> {
-        let mut request_url = url::Url::parse(self.config.get_base_path())?;
-
+        let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
         let mut request_path = request_url.path().to_owned();
         if request_path.ends_with('/') {
             request_path.pop();
         }
         request_path.push_str("/libpod/build");
-
         request_url.set_path(&request_path);
-
-        let mut req_builder = self.config.req_builder("POST")?;
-
+        let mut req_builder = self.get_config().req_builder("POST")?;
         if let Some(params) = params {
             let mut query_pairs = request_url.query_pairs_mut();
             if let Some(dockerfile) = params.dockerfile {
-                query_pairs.append_pair("dockerfile", &dockerfile);
+                query_pairs.append_pair("dockerfile", dockerfile);
             }
             if let Some(t) = params.t {
-                query_pairs.append_pair("t", &t);
+                query_pairs.append_pair("t", t);
             }
             if let Some(allplatforms) = params.allplatforms {
                 query_pairs.append_pair("allplatforms", &allplatforms.to_string());
             }
             if let Some(extrahosts) = params.extrahosts {
-                query_pairs.append_pair("extrahosts", &extrahosts);
+                query_pairs.append_pair("extrahosts", extrahosts);
             }
             if let Some(remote) = params.remote {
-                query_pairs.append_pair("remote", &remote);
+                query_pairs.append_pair("remote", remote);
             }
             if let Some(q) = params.q {
                 query_pairs.append_pair("q", &q.to_string());
@@ -57,7 +42,7 @@ impl Images {
                 query_pairs.append_pair("nocache", &nocache.to_string());
             }
             if let Some(cachefrom) = params.cachefrom {
-                query_pairs.append_pair("cachefrom", &cachefrom);
+                query_pairs.append_pair("cachefrom", cachefrom);
             }
             if let Some(pull) = params.pull {
                 query_pairs.append_pair("pull", &pull.to_string());
@@ -78,7 +63,7 @@ impl Images {
                 query_pairs.append_pair("cpushares", &cpushares.to_string());
             }
             if let Some(cpusetcpus) = params.cpusetcpus {
-                query_pairs.append_pair("cpusetcpus", &cpusetcpus);
+                query_pairs.append_pair("cpusetcpus", cpusetcpus);
             }
             if let Some(cpuperiod) = params.cpuperiod {
                 query_pairs.append_pair("cpuperiod", &cpuperiod.to_string());
@@ -87,7 +72,7 @@ impl Images {
                 query_pairs.append_pair("cpuquota", &cpuquota.to_string());
             }
             if let Some(buildargs) = params.buildargs {
-                query_pairs.append_pair("buildargs", &buildargs);
+                query_pairs.append_pair("buildargs", buildargs);
             }
             if let Some(shmsize) = params.shmsize {
                 query_pairs.append_pair("shmsize", &shmsize.to_string());
@@ -96,7 +81,7 @@ impl Images {
                 query_pairs.append_pair("squash", &squash.to_string());
             }
             if let Some(labels) = params.labels {
-                query_pairs.append_pair("labels", &labels);
+                query_pairs.append_pair("labels", labels);
             }
             if let Some(layer_label) = params.layer_label {
                 query_pairs.append_pair(
@@ -112,16 +97,16 @@ impl Images {
                 query_pairs.append_pair("layers", &layers.to_string());
             }
             if let Some(networkmode) = params.networkmode {
-                query_pairs.append_pair("networkmode", &networkmode);
+                query_pairs.append_pair("networkmode", networkmode);
             }
             if let Some(platform) = params.platform {
-                query_pairs.append_pair("platform", &platform);
+                query_pairs.append_pair("platform", platform);
             }
             if let Some(target) = params.target {
-                query_pairs.append_pair("target", &target);
+                query_pairs.append_pair("target", target);
             }
             if let Some(outputs) = params.outputs {
-                query_pairs.append_pair("outputs", &outputs);
+                query_pairs.append_pair("outputs", outputs);
             }
             if let Some(httpproxy) = params.httpproxy {
                 query_pairs.append_pair("httpproxy", &httpproxy.to_string());
@@ -157,47 +142,39 @@ impl Images {
                 );
             }
         }
-
         let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
         req_builder = req_builder.uri(hyper_uri);
         let request = req_builder.body(String::new())?;
-        request::execute_request_json(&*self.config, request).await
+        request::execute_request_json(self.get_config(), request).await
     }
-
     /// DELETE /libpod/images/{name}
     /// Remove an image from the local storage.
     /// Remove an image from the local storage.
-    pub async fn image_delete_libpod(
+    async fn image_delete_libpod(
         &self,
         name: &str,
         params: Option<super::super::params::ImageDeleteLibpod>,
     ) -> Result<super::super::models::LibpodImagesRemoveReport, Error> {
-        let mut request_url = url::Url::parse(self.config.get_base_path())?;
-
+        let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
         let mut request_path = request_url.path().to_owned();
         if request_path.ends_with('/') {
             request_path.pop();
         }
         request_path.push_str("/libpod/images/{name}");
         request_path = request_path.replace("{name}", name);
-
         request_url.set_path(&request_path);
-
-        let mut req_builder = self.config.req_builder("DELETE")?;
-
+        let mut req_builder = self.get_config().req_builder("DELETE")?;
         if let Some(params) = params {
             let mut query_pairs = request_url.query_pairs_mut();
             if let Some(force) = params.force {
                 query_pairs.append_pair("force", &force.to_string());
             }
         }
-
         let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
         req_builder = req_builder.uri(hyper_uri);
         let request = req_builder.body(String::new())?;
-        request::execute_request_json(&*self.config, request).await
+        request::execute_request_json(self.get_config(), request).await
     }
-
     /// GET /libpod/images/{name}/changes
     /// Report on changes to images's filesystem; adds, deletes or modifications.
     /// Returns which files in an image's filesystem have been added, deleted, or modified. The Kind of modification can be one of:
@@ -205,177 +182,146 @@ impl Images {
     /// 0: Modified
     /// 1: Added
     /// 2: Deleted
-    pub async fn image_changes_libpod<'a>(
+    async fn image_changes_libpod<'a>(
         &self,
         name: &str,
         params: Option<super::super::params::ImageChangesLibpod<'a>>,
     ) -> Result<(), Error> {
-        let mut request_url = url::Url::parse(self.config.get_base_path())?;
-
+        let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
         let mut request_path = request_url.path().to_owned();
         if request_path.ends_with('/') {
             request_path.pop();
         }
         request_path.push_str("/libpod/images/{name}/changes");
         request_path = request_path.replace("{name}", name);
-
         request_url.set_path(&request_path);
-
-        let mut req_builder = self.config.req_builder("GET")?;
-
+        let mut req_builder = self.get_config().req_builder("GET")?;
         if let Some(params) = params {
             let mut query_pairs = request_url.query_pairs_mut();
             if let Some(parent) = params.parent {
-                query_pairs.append_pair("parent", &parent);
+                query_pairs.append_pair("parent", parent);
             }
             if let Some(diff_type) = params.diff_type {
-                query_pairs.append_pair("diffType", &diff_type);
+                query_pairs.append_pair("diffType", diff_type);
             }
         }
-
         let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
         req_builder = req_builder.uri(hyper_uri);
         let request = req_builder.body(String::new())?;
-        request::execute_request_unit(&*self.config, request).await
+        request::execute_request_unit(self.get_config(), request).await
     }
-
     /// GET /libpod/images/{name}/exists
     /// Image exists
     /// Check if image exists in local store
-    pub async fn image_exists_libpod(&self, name: &str) -> Result<(), Error> {
-        let mut request_url = url::Url::parse(self.config.get_base_path())?;
-
+    async fn image_exists_libpod(&self, name: &str) -> Result<(), Error> {
+        let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
         let mut request_path = request_url.path().to_owned();
         if request_path.ends_with('/') {
             request_path.pop();
         }
         request_path.push_str("/libpod/images/{name}/exists");
         request_path = request_path.replace("{name}", name);
-
         request_url.set_path(&request_path);
-
-        let mut req_builder = self.config.req_builder("GET")?;
-
+        let mut req_builder = self.get_config().req_builder("GET")?;
         let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
         req_builder = req_builder.uri(hyper_uri);
         let request = req_builder.body(String::new())?;
-        request::execute_request_unit(&*self.config, request).await
+        request::execute_request_unit(self.get_config(), request).await
     }
-
     /// GET /libpod/images/{name}/get
     /// Export an image
     /// Export an image
-    pub async fn image_get_libpod<'a>(
+    async fn image_get_libpod<'a>(
         &self,
         name: &str,
         params: Option<super::super::params::ImageGetLibpod<'a>>,
     ) -> Result<String, Error> {
-        let mut request_url = url::Url::parse(self.config.get_base_path())?;
-
+        let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
         let mut request_path = request_url.path().to_owned();
         if request_path.ends_with('/') {
             request_path.pop();
         }
         request_path.push_str("/libpod/images/{name}/get");
         request_path = request_path.replace("{name}", name);
-
         request_url.set_path(&request_path);
-
-        let mut req_builder = self.config.req_builder("GET")?;
-
+        let mut req_builder = self.get_config().req_builder("GET")?;
         if let Some(params) = params {
             let mut query_pairs = request_url.query_pairs_mut();
             if let Some(format) = params.format {
-                query_pairs.append_pair("format", &format);
+                query_pairs.append_pair("format", format);
             }
             if let Some(compress) = params.compress {
                 query_pairs.append_pair("compress", &compress.to_string());
             }
         }
-
         let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
         req_builder = req_builder.uri(hyper_uri);
         let request = req_builder.body(String::new())?;
-        request::execute_request_json(&*self.config, request).await
+        request::execute_request_json(self.get_config(), request).await
     }
-
     /// GET /libpod/images/{name}/history
     /// History of an image
     /// Return parent layers of an image.
-    pub async fn image_history_libpod(
+    async fn image_history_libpod(
         &self,
         name: &str,
     ) -> Result<super::super::models::HistoryResponse, Error> {
-        let mut request_url = url::Url::parse(self.config.get_base_path())?;
-
+        let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
         let mut request_path = request_url.path().to_owned();
         if request_path.ends_with('/') {
             request_path.pop();
         }
         request_path.push_str("/libpod/images/{name}/history");
         request_path = request_path.replace("{name}", name);
-
         request_url.set_path(&request_path);
-
-        let mut req_builder = self.config.req_builder("GET")?;
-
+        let mut req_builder = self.get_config().req_builder("GET")?;
         let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
         req_builder = req_builder.uri(hyper_uri);
         let request = req_builder.body(String::new())?;
-        request::execute_request_json(&*self.config, request).await
+        request::execute_request_json(self.get_config(), request).await
     }
-
     /// GET /libpod/images/{name}/json
     /// Inspect an image
     /// Obtain low-level information about an image
-    pub async fn image_inspect_libpod(
+    async fn image_inspect_libpod(
         &self,
         name: &str,
     ) -> Result<super::super::models::ImageData, Error> {
-        let mut request_url = url::Url::parse(self.config.get_base_path())?;
-
+        let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
         let mut request_path = request_url.path().to_owned();
         if request_path.ends_with('/') {
             request_path.pop();
         }
         request_path.push_str("/libpod/images/{name}/json");
         request_path = request_path.replace("{name}", name);
-
         request_url.set_path(&request_path);
-
-        let mut req_builder = self.config.req_builder("GET")?;
-
+        let mut req_builder = self.get_config().req_builder("GET")?;
         let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
         req_builder = req_builder.uri(hyper_uri);
         let request = req_builder.body(String::new())?;
-        request::execute_request_json(&*self.config, request).await
+        request::execute_request_json(self.get_config(), request).await
     }
-
     /// POST /libpod/images/{name}/push
     /// Push Image
     /// Push an image to a container registry
-    pub async fn image_push_libpod<'a>(
+    async fn image_push_libpod<'a>(
         &self,
         name: &str,
         params: Option<super::super::params::ImagePushLibpod<'a>>,
     ) -> Result<String, Error> {
-        let mut request_url = url::Url::parse(self.config.get_base_path())?;
-
+        let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
         let mut request_path = request_url.path().to_owned();
         if request_path.ends_with('/') {
             request_path.pop();
         }
         request_path.push_str("/libpod/images/{name}/push");
         request_path = request_path.replace("{name}", name);
-
         request_url.set_path(&request_path);
-
-        let mut req_builder = self.config.req_builder("POST")?;
-
+        let mut req_builder = self.get_config().req_builder("POST")?;
         if let Some(params) = params {
             let mut query_pairs = request_url.query_pairs_mut();
             if let Some(destination) = params.destination {
-                query_pairs.append_pair("destination", &destination);
+                query_pairs.append_pair("destination", destination);
             }
             if let Some(force_compression_format) = params.force_compression_format {
                 query_pairs.append_pair(
@@ -389,172 +335,142 @@ impl Images {
             if let Some(quiet) = params.quiet {
                 query_pairs.append_pair("quiet", &quiet.to_string());
             }
-
             if let Some(x_registry_auth) = params.x_registry_auth {
                 req_builder = req_builder.header("X-Registry-Auth", x_registry_auth);
             }
         }
-
         let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
         req_builder = req_builder.uri(hyper_uri);
         let request = req_builder.body(String::new())?;
-        request::execute_request_json(&*self.config, request).await
+        request::execute_request_json(self.get_config(), request).await
     }
-
     /// GET /libpod/images/{name}/resolve
     /// Resolve an image (short) name
     /// Resolve the passed image name to a list of fully-qualified images referring to container registries.
-    pub async fn image_resolve_libpod(&self, name: &str) -> Result<(), Error> {
-        let mut request_url = url::Url::parse(self.config.get_base_path())?;
-
+    async fn image_resolve_libpod(&self, name: &str) -> Result<(), Error> {
+        let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
         let mut request_path = request_url.path().to_owned();
         if request_path.ends_with('/') {
             request_path.pop();
         }
         request_path.push_str("/libpod/images/{name}/resolve");
         request_path = request_path.replace("{name}", name);
-
         request_url.set_path(&request_path);
-
-        let mut req_builder = self.config.req_builder("GET")?;
-
+        let mut req_builder = self.get_config().req_builder("GET")?;
         let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
         req_builder = req_builder.uri(hyper_uri);
         let request = req_builder.body(String::new())?;
-        request::execute_request_unit(&*self.config, request).await
+        request::execute_request_unit(self.get_config(), request).await
     }
-
     /// POST /libpod/images/{name}/tag
     /// Tag an image
     /// Tag an image so that it becomes part of a repository.
-    pub async fn image_tag_libpod<'a>(
+    async fn image_tag_libpod<'a>(
         &self,
         name: &str,
         params: Option<super::super::params::ImageTagLibpod<'a>>,
     ) -> Result<(), Error> {
-        let mut request_url = url::Url::parse(self.config.get_base_path())?;
-
+        let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
         let mut request_path = request_url.path().to_owned();
         if request_path.ends_with('/') {
             request_path.pop();
         }
         request_path.push_str("/libpod/images/{name}/tag");
         request_path = request_path.replace("{name}", name);
-
         request_url.set_path(&request_path);
-
-        let mut req_builder = self.config.req_builder("POST")?;
-
+        let mut req_builder = self.get_config().req_builder("POST")?;
         if let Some(params) = params {
             let mut query_pairs = request_url.query_pairs_mut();
             if let Some(repo) = params.repo {
-                query_pairs.append_pair("repo", &repo);
+                query_pairs.append_pair("repo", repo);
             }
             if let Some(tag) = params.tag {
-                query_pairs.append_pair("tag", &tag);
+                query_pairs.append_pair("tag", tag);
             }
         }
-
         let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
         req_builder = req_builder.uri(hyper_uri);
         let request = req_builder.body(String::new())?;
-        request::execute_request_unit(&*self.config, request).await
+        request::execute_request_unit(self.get_config(), request).await
     }
-
     /// GET /libpod/images/{name}/tree
     /// Image tree
     /// Retrieve the image tree for the provided image name or ID
-    pub async fn image_tree_libpod(
+    async fn image_tree_libpod(
         &self,
         name: &str,
         params: Option<super::super::params::ImageTreeLibpod>,
     ) -> Result<super::super::models::ImageTreeReport, Error> {
-        let mut request_url = url::Url::parse(self.config.get_base_path())?;
-
+        let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
         let mut request_path = request_url.path().to_owned();
         if request_path.ends_with('/') {
             request_path.pop();
         }
         request_path.push_str("/libpod/images/{name}/tree");
         request_path = request_path.replace("{name}", name);
-
         request_url.set_path(&request_path);
-
-        let mut req_builder = self.config.req_builder("GET")?;
-
+        let mut req_builder = self.get_config().req_builder("GET")?;
         if let Some(params) = params {
             let mut query_pairs = request_url.query_pairs_mut();
             if let Some(whatrequires) = params.whatrequires {
                 query_pairs.append_pair("whatrequires", &whatrequires.to_string());
             }
         }
-
         let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
         req_builder = req_builder.uri(hyper_uri);
         let request = req_builder.body(String::new())?;
-        request::execute_request_json(&*self.config, request).await
+        request::execute_request_json(self.get_config(), request).await
     }
-
     /// POST /libpod/images/{name}/untag
     /// Untag an image
     /// Untag an image. If not repo and tag are specified, all tags are removed from the image.
-    pub async fn image_untag_libpod<'a>(
+    async fn image_untag_libpod<'a>(
         &self,
         name: &str,
         params: Option<super::super::params::ImageUntagLibpod<'a>>,
     ) -> Result<(), Error> {
-        let mut request_url = url::Url::parse(self.config.get_base_path())?;
-
+        let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
         let mut request_path = request_url.path().to_owned();
         if request_path.ends_with('/') {
             request_path.pop();
         }
         request_path.push_str("/libpod/images/{name}/untag");
         request_path = request_path.replace("{name}", name);
-
         request_url.set_path(&request_path);
-
-        let mut req_builder = self.config.req_builder("POST")?;
-
+        let mut req_builder = self.get_config().req_builder("POST")?;
         if let Some(params) = params {
             let mut query_pairs = request_url.query_pairs_mut();
             if let Some(repo) = params.repo {
-                query_pairs.append_pair("repo", &repo);
+                query_pairs.append_pair("repo", repo);
             }
             if let Some(tag) = params.tag {
-                query_pairs.append_pair("tag", &tag);
+                query_pairs.append_pair("tag", tag);
             }
         }
-
         let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
         req_builder = req_builder.uri(hyper_uri);
         let request = req_builder.body(String::new())?;
-        request::execute_request_unit(&*self.config, request).await
+        request::execute_request_unit(self.get_config(), request).await
     }
-
     /// GET /libpod/images/export
     /// Export multiple images
     /// Export multiple images into a single object. Only `docker-archive` is currently supported.
-    pub async fn image_export_libpod<'a>(
+    async fn image_export_libpod<'a>(
         &self,
         params: Option<super::super::params::ImageExportLibpod<'a>>,
     ) -> Result<String, Error> {
-        let mut request_url = url::Url::parse(self.config.get_base_path())?;
-
+        let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
         let mut request_path = request_url.path().to_owned();
         if request_path.ends_with('/') {
             request_path.pop();
         }
         request_path.push_str("/libpod/images/export");
-
         request_url.set_path(&request_path);
-
-        let mut req_builder = self.config.req_builder("GET")?;
-
+        let mut req_builder = self.get_config().req_builder("GET")?;
         if let Some(params) = params {
             let mut query_pairs = request_url.query_pairs_mut();
             if let Some(format) = params.format {
-                query_pairs.append_pair("format", &format);
+                query_pairs.append_pair("format", format);
             }
             if let Some(references) = params.references {
                 query_pairs.append_pair(
@@ -576,33 +492,27 @@ impl Images {
                 );
             }
         }
-
         let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
         req_builder = req_builder.uri(hyper_uri);
         let request = req_builder.body(String::new())?;
-        request::execute_request_json(&*self.config, request).await
+        request::execute_request_json(self.get_config(), request).await
     }
-
     /// POST /libpod/images/import
     /// Import image
     /// Import a previously exported tarball as an image.
-    pub async fn image_import_libpod<'a>(
+    async fn image_import_libpod<'a>(
         &self,
         params: Option<super::super::params::ImageImportLibpod<'a>>,
         upload: String,
     ) -> Result<super::super::models::ImageImportReport, Error> {
-        let mut request_url = url::Url::parse(self.config.get_base_path())?;
-
+        let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
         let mut request_path = request_url.path().to_owned();
         if request_path.ends_with('/') {
             request_path.pop();
         }
         request_path.push_str("/libpod/images/import");
-
         request_url.set_path(&request_path);
-
-        let mut req_builder = self.config.req_builder("POST")?;
-
+        let mut req_builder = self.get_config().req_builder("POST")?;
         if let Some(params) = params {
             let mut query_pairs = request_url.query_pairs_mut();
             if let Some(changes) = params.changes {
@@ -616,111 +526,93 @@ impl Images {
                 );
             }
             if let Some(message) = params.message {
-                query_pairs.append_pair("message", &message);
+                query_pairs.append_pair("message", message);
             }
             if let Some(reference) = params.reference {
-                query_pairs.append_pair("reference", &reference);
+                query_pairs.append_pair("reference", reference);
             }
             if let Some(url) = params.url {
-                query_pairs.append_pair("url", &url);
+                query_pairs.append_pair("url", url);
             }
-
             if let Some(content_type) = params.content_type {
                 req_builder = req_builder.header("Content-Type", content_type);
             }
         }
-
         let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
         req_builder = req_builder.uri(hyper_uri);
         let body = serde_json::to_string(&upload)?;
         req_builder = req_builder.header(hyper::header::CONTENT_TYPE, "application/json");
         req_builder = req_builder.header(hyper::header::CONTENT_LENGTH, body.len());
         let request = req_builder.body(body)?;
-        request::execute_request_json(&*self.config, request).await
+        request::execute_request_json(self.get_config(), request).await
     }
-
     /// GET /libpod/images/json
     /// List Images
     /// Returns a list of images on the server
-    pub async fn image_list_libpod<'a>(
+    async fn image_list_libpod<'a>(
         &self,
         params: Option<super::super::params::ImageListLibpod<'a>>,
     ) -> Result<Vec<super::super::models::LibpodImageSummary>, Error> {
-        let mut request_url = url::Url::parse(self.config.get_base_path())?;
-
+        let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
         let mut request_path = request_url.path().to_owned();
         if request_path.ends_with('/') {
             request_path.pop();
         }
         request_path.push_str("/libpod/images/json");
-
         request_url.set_path(&request_path);
-
-        let mut req_builder = self.config.req_builder("GET")?;
-
+        let mut req_builder = self.get_config().req_builder("GET")?;
         if let Some(params) = params {
             let mut query_pairs = request_url.query_pairs_mut();
             if let Some(all) = params.all {
                 query_pairs.append_pair("all", &all.to_string());
             }
             if let Some(filters) = params.filters {
-                query_pairs.append_pair("filters", &filters);
+                query_pairs.append_pair("filters", filters);
             }
         }
-
         let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
         req_builder = req_builder.uri(hyper_uri);
         let request = req_builder.body(String::new())?;
-        request::execute_request_json(&*self.config, request).await
+        request::execute_request_json(self.get_config(), request).await
     }
-
     /// POST /libpod/images/load
     /// Load image
     /// Load an image (oci-archive or docker-archive) stream.
-    pub async fn image_load_libpod(
+    async fn image_load_libpod(
         &self,
         upload: String,
     ) -> Result<super::super::models::ImageLoadReport, Error> {
-        let mut request_url = url::Url::parse(self.config.get_base_path())?;
-
+        let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
         let mut request_path = request_url.path().to_owned();
         if request_path.ends_with('/') {
             request_path.pop();
         }
         request_path.push_str("/libpod/images/load");
-
         request_url.set_path(&request_path);
-
-        let mut req_builder = self.config.req_builder("POST")?;
-
+        let mut req_builder = self.get_config().req_builder("POST")?;
         let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
         req_builder = req_builder.uri(hyper_uri);
         let body = serde_json::to_string(&upload)?;
         req_builder = req_builder.header(hyper::header::CONTENT_TYPE, "application/json");
         req_builder = req_builder.header(hyper::header::CONTENT_LENGTH, body.len());
         let request = req_builder.body(body)?;
-        request::execute_request_json(&*self.config, request).await
+        request::execute_request_json(self.get_config(), request).await
     }
-
     /// POST /libpod/images/prune
     /// Prune unused images
     /// Remove images that are not being used by a container
-    pub async fn image_prune_libpod<'a>(
+    async fn image_prune_libpod<'a>(
         &self,
         params: Option<super::super::params::ImagePruneLibpod<'a>>,
     ) -> Result<Vec<super::super::models::PruneReport>, Error> {
-        let mut request_url = url::Url::parse(self.config.get_base_path())?;
-
+        let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
         let mut request_path = request_url.path().to_owned();
         if request_path.ends_with('/') {
             request_path.pop();
         }
         request_path.push_str("/libpod/images/prune");
-
         request_url.set_path(&request_path);
-
-        let mut req_builder = self.config.req_builder("POST")?;
-
+        let mut req_builder = self.get_config().req_builder("POST")?;
         if let Some(params) = params {
             let mut query_pairs = request_url.query_pairs_mut();
             if let Some(all) = params.all {
@@ -730,39 +622,33 @@ impl Images {
                 query_pairs.append_pair("external", &external.to_string());
             }
             if let Some(filters) = params.filters {
-                query_pairs.append_pair("filters", &filters);
+                query_pairs.append_pair("filters", filters);
             }
         }
-
         let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
         req_builder = req_builder.uri(hyper_uri);
         let request = req_builder.body(String::new())?;
-        request::execute_request_json(&*self.config, request).await
+        request::execute_request_json(self.get_config(), request).await
     }
-
     /// POST /libpod/images/pull
     /// Pull images
     /// Pull one or more images from a container registry.
-    pub async fn image_pull_libpod<'a>(
+    async fn image_pull_libpod<'a>(
         &self,
         params: Option<super::super::params::ImagePullLibpod<'a>>,
     ) -> Result<super::super::models::LibpodImagesPullReport, Error> {
-        let mut request_url = url::Url::parse(self.config.get_base_path())?;
-
+        let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
         let mut request_path = request_url.path().to_owned();
         if request_path.ends_with('/') {
             request_path.pop();
         }
         request_path.push_str("/libpod/images/pull");
-
         request_url.set_path(&request_path);
-
-        let mut req_builder = self.config.req_builder("POST")?;
-
+        let mut req_builder = self.get_config().req_builder("POST")?;
         if let Some(params) = params {
             let mut query_pairs = request_url.query_pairs_mut();
             if let Some(reference) = params.reference {
-                query_pairs.append_pair("reference", &reference);
+                query_pairs.append_pair("reference", reference);
             }
             if let Some(quiet) = params.quiet {
                 query_pairs.append_pair("quiet", &quiet.to_string());
@@ -771,16 +657,16 @@ impl Images {
                 query_pairs.append_pair("compatMode", &compat_mode.to_string());
             }
             if let Some(arch) = params.arch {
-                query_pairs.append_pair("Arch", &arch);
+                query_pairs.append_pair("Arch", arch);
             }
             if let Some(os) = params.os {
-                query_pairs.append_pair("OS", &os);
+                query_pairs.append_pair("OS", os);
             }
             if let Some(variant) = params.variant {
-                query_pairs.append_pair("Variant", &variant);
+                query_pairs.append_pair("Variant", variant);
             }
             if let Some(policy) = params.policy {
-                query_pairs.append_pair("policy", &policy);
+                query_pairs.append_pair("policy", policy);
             }
             if let Some(tls_verify) = params.tls_verify {
                 query_pairs.append_pair("tlsVerify", &tls_verify.to_string());
@@ -788,37 +674,30 @@ impl Images {
             if let Some(all_tags) = params.all_tags {
                 query_pairs.append_pair("allTags", &all_tags.to_string());
             }
-
             if let Some(x_registry_auth) = params.x_registry_auth {
                 req_builder = req_builder.header("X-Registry-Auth", x_registry_auth);
             }
         }
-
         let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
         req_builder = req_builder.uri(hyper_uri);
         let request = req_builder.body(String::new())?;
-        request::execute_request_json(&*self.config, request).await
+        request::execute_request_json(self.get_config(), request).await
     }
-
     /// DELETE /libpod/images/remove
     /// Remove one or more images from the storage.
     /// Remove one or more images from the storage.
-    pub async fn image_delete_all_libpod<'a>(
+    async fn image_delete_all_libpod<'a>(
         &self,
         params: Option<super::super::params::ImageDeleteAllLibpod<'a>>,
     ) -> Result<super::super::models::LibpodImagesRemoveReport, Error> {
-        let mut request_url = url::Url::parse(self.config.get_base_path())?;
-
+        let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
         let mut request_path = request_url.path().to_owned();
         if request_path.ends_with('/') {
             request_path.pop();
         }
         request_path.push_str("/libpod/images/remove");
-
         request_url.set_path(&request_path);
-
-        let mut req_builder = self.config.req_builder("DELETE")?;
-
+        let mut req_builder = self.get_config().req_builder("DELETE")?;
         if let Some(params) = params {
             let mut query_pairs = request_url.query_pairs_mut();
             if let Some(images) = params.images {
@@ -844,79 +723,67 @@ impl Images {
                 query_pairs.append_pair("lookupManifest", &lookup_manifest.to_string());
             }
         }
-
         let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
         req_builder = req_builder.uri(hyper_uri);
         let request = req_builder.body(String::new())?;
-        request::execute_request_json(&*self.config, request).await
+        request::execute_request_json(self.get_config(), request).await
     }
-
     /// POST /libpod/images/scp/{name}
     /// Copy an image from one host to another
     /// Copy an image from one host to another
-    pub async fn image_scp_libpod<'a>(
+    async fn image_scp_libpod<'a>(
         &self,
         name: &str,
         params: Option<super::super::params::ImageScpLibpod<'a>>,
     ) -> Result<super::super::models::ScpReport, Error> {
-        let mut request_url = url::Url::parse(self.config.get_base_path())?;
-
+        let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
         let mut request_path = request_url.path().to_owned();
         if request_path.ends_with('/') {
             request_path.pop();
         }
         request_path.push_str("/libpod/images/scp/{name}");
         request_path = request_path.replace("{name}", name);
-
         request_url.set_path(&request_path);
-
-        let mut req_builder = self.config.req_builder("POST")?;
-
+        let mut req_builder = self.get_config().req_builder("POST")?;
         if let Some(params) = params {
             let mut query_pairs = request_url.query_pairs_mut();
             if let Some(destination) = params.destination {
-                query_pairs.append_pair("destination", &destination);
+                query_pairs.append_pair("destination", destination);
             }
             if let Some(quiet) = params.quiet {
                 query_pairs.append_pair("quiet", &quiet.to_string());
             }
         }
-
         let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
         req_builder = req_builder.uri(hyper_uri);
         let request = req_builder.body(String::new())?;
-        request::execute_request_json(&*self.config, request).await
+        request::execute_request_json(self.get_config(), request).await
     }
-
     /// GET /libpod/images/search
     /// Search images
     /// Search registries for images
-    pub async fn image_search_libpod<'a>(
+    async fn image_search_libpod<'a>(
         &self,
         params: Option<super::super::params::ImageSearchLibpod<'a>>,
     ) -> Result<super::super::models::RegistrySearchResponse, Error> {
-        let mut request_url = url::Url::parse(self.config.get_base_path())?;
-
+        let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
         let mut request_path = request_url.path().to_owned();
         if request_path.ends_with('/') {
             request_path.pop();
         }
         request_path.push_str("/libpod/images/search");
-
         request_url.set_path(&request_path);
-
-        let mut req_builder = self.config.req_builder("GET")?;
-
+        let mut req_builder = self.get_config().req_builder("GET")?;
         if let Some(params) = params {
             let mut query_pairs = request_url.query_pairs_mut();
             if let Some(term) = params.term {
-                query_pairs.append_pair("term", &term);
+                query_pairs.append_pair("term", term);
             }
             if let Some(limit) = params.limit {
                 query_pairs.append_pair("limit", &limit.to_string());
             }
             if let Some(filters) = params.filters {
-                query_pairs.append_pair("filters", &filters);
+                query_pairs.append_pair("filters", filters);
             }
             if let Some(tls_verify) = params.tls_verify {
                 query_pairs.append_pair("tlsVerify", &tls_verify.to_string());
@@ -925,10 +792,9 @@ impl Images {
                 query_pairs.append_pair("listTags", &list_tags.to_string());
             }
         }
-
         let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
         req_builder = req_builder.uri(hyper_uri);
         let request = req_builder.body(String::new())?;
-        request::execute_request_json(&*self.config, request).await
+        request::execute_request_json(self.get_config(), request).await
     }
 }

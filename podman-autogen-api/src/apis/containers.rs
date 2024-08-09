@@ -1,43 +1,28 @@
-use std::sync::Arc;
-
-use super::super::config::ClientConfig;
+use super::super::config::HasConfig;
 use super::super::request;
 use super::super::Error;
-
-/// Actions related to containers
-pub struct Containers {
-    config: Arc<dyn ClientConfig>,
-}
-
-impl Containers {
-    pub fn new(config: Arc<dyn ClientConfig>) -> Containers {
-        Containers { config }
-    }
-
+#[async_trait::async_trait]
+pub trait Containers: HasConfig + Send + Sync {
     /// POST /libpod/commit
     /// Commit
     /// Create a new image from a container
-    pub async fn image_commit_libpod<'a>(
+    async fn image_commit_libpod<'a>(
         &self,
         params: Option<super::super::params::ImageCommitLibpod<'a>>,
     ) -> Result<(), Error> {
-        let mut request_url = url::Url::parse(self.config.get_base_path())?;
-
+        let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
         let mut request_path = request_url.path().to_owned();
         if request_path.ends_with('/') {
             request_path.pop();
         }
         request_path.push_str("/libpod/commit");
-
         request_url.set_path(&request_path);
-
-        let mut req_builder = self.config.req_builder("POST")?;
-
+        let mut req_builder = self.get_config().req_builder("POST")?;
         if let Some(params) = params {
             let mut query_pairs = request_url.query_pairs_mut();
-            query_pairs.append_pair("container", &params.container);
+            query_pairs.append_pair("container", params.container);
             if let Some(author) = params.author {
-                query_pairs.append_pair("author", &author);
+                query_pairs.append_pair("author", author);
             }
             if let Some(changes) = params.changes {
                 query_pairs.append_pair(
@@ -50,10 +35,10 @@ impl Containers {
                 );
             }
             if let Some(comment) = params.comment {
-                query_pairs.append_pair("comment", &comment);
+                query_pairs.append_pair("comment", comment);
             }
             if let Some(format) = params.format {
-                query_pairs.append_pair("format", &format);
+                query_pairs.append_pair("format", format);
             }
             if let Some(pause) = params.pause {
                 query_pairs.append_pair("pause", &pause.to_string());
@@ -62,43 +47,37 @@ impl Containers {
                 query_pairs.append_pair("squash", &squash.to_string());
             }
             if let Some(repo) = params.repo {
-                query_pairs.append_pair("repo", &repo);
+                query_pairs.append_pair("repo", repo);
             }
             if let Some(stream) = params.stream {
                 query_pairs.append_pair("stream", &stream.to_string());
             }
             if let Some(tag) = params.tag {
-                query_pairs.append_pair("tag", &tag);
+                query_pairs.append_pair("tag", tag);
             }
         }
-
         let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
         req_builder = req_builder.uri(hyper_uri);
         let request = req_builder.body(String::new())?;
-        request::execute_request_unit(&*self.config, request).await
+        request::execute_request_unit(self.get_config(), request).await
     }
-
     /// DELETE /libpod/containers/{name}
     /// Delete container
     /// Delete container
-    pub async fn container_delete_libpod(
+    async fn container_delete_libpod(
         &self,
         name: &str,
         params: Option<super::super::params::ContainerDeleteLibpod>,
-    ) -> Result<serde_json::Value, Error> {
-        let mut request_url = url::Url::parse(self.config.get_base_path())?;
-
+    ) -> Result<Vec<super::super::models::LibpodContainersRmReport>, Error> {
+        let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
         let mut request_path = request_url.path().to_owned();
         if request_path.ends_with('/') {
             request_path.pop();
         }
         request_path.push_str("/libpod/containers/{name}");
         request_path = request_path.replace("{name}", name);
-
         request_url.set_path(&request_path);
-
-        let mut req_builder = self.config.req_builder("DELETE")?;
-
+        let mut req_builder = self.get_config().req_builder("DELETE")?;
         if let Some(params) = params {
             let mut query_pairs = request_url.query_pairs_mut();
             if let Some(depend) = params.depend {
@@ -117,52 +96,44 @@ impl Containers {
                 query_pairs.append_pair("v", &v.to_string());
             }
         }
-
         let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
         req_builder = req_builder.uri(hyper_uri);
         let request = req_builder.body(String::new())?;
-        request::execute_request_json(&*self.config, request).await
+        request::execute_request_json(self.get_config(), request).await
     }
-
     /// GET /libpod/containers/{name}/archive
     /// Copy files into a container
     /// Copy a tar archive of files into a container
-    pub async fn put_container_archive_libpod<'a>(
+    async fn put_container_archive_libpod<'a>(
         &self,
         name: &str,
         params: Option<super::super::params::PutContainerArchiveLibpod<'a>>,
         request: String,
     ) -> Result<(), Error> {
-        let mut request_url = url::Url::parse(self.config.get_base_path())?;
-
+        let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
         let mut request_path = request_url.path().to_owned();
         if request_path.ends_with('/') {
             request_path.pop();
         }
         request_path.push_str("/libpod/containers/{name}/archive");
         request_path = request_path.replace("{name}", name);
-
         request_url.set_path(&request_path);
-
-        let mut req_builder = self.config.req_builder("GET")?;
-
+        let mut req_builder = self.get_config().req_builder("GET")?;
         if let Some(params) = params {
             let mut query_pairs = request_url.query_pairs_mut();
-            query_pairs.append_pair("path", &params.path);
+            query_pairs.append_pair("path", params.path);
             if let Some(pause) = params.pause {
                 query_pairs.append_pair("pause", &pause.to_string());
             }
         }
-
         let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
         req_builder = req_builder.uri(hyper_uri);
         let body = serde_json::to_string(&request)?;
         req_builder = req_builder.header(hyper::header::CONTENT_TYPE, "application/json");
         req_builder = req_builder.header(hyper::header::CONTENT_LENGTH, body.len());
         let request = req_builder.body(body)?;
-        request::execute_request_unit(&*self.config, request).await
+        request::execute_request_unit(self.get_config(), request).await
     }
-
     /// POST /libpod/containers/{name}/attach
     /// Attach to a container
     /// Attach to a container to read its output or send it input. You can attach
@@ -252,28 +223,24 @@ impl Containers {
     /// the stream is not multiplexed. The data exchanged over the hijacked
     /// connection is simply the raw data from the process PTY and client's
     /// `stdin`.
-    pub async fn container_attach_libpod<'a>(
+    async fn container_attach_libpod<'a>(
         &self,
         name: &str,
         params: Option<super::super::params::ContainerAttachLibpod<'a>>,
-    ) -> Result<serde_json::Value, Error> {
-        let mut request_url = url::Url::parse(self.config.get_base_path())?;
-
+    ) -> Result<(), Error> {
+        let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
         let mut request_path = request_url.path().to_owned();
         if request_path.ends_with('/') {
             request_path.pop();
         }
         request_path.push_str("/libpod/containers/{name}/attach");
         request_path = request_path.replace("{name}", name);
-
         request_url.set_path(&request_path);
-
-        let mut req_builder = self.config.req_builder("POST")?;
-
+        let mut req_builder = self.get_config().req_builder("POST")?;
         if let Some(params) = params {
             let mut query_pairs = request_url.query_pairs_mut();
             if let Some(detach_keys) = params.detach_keys {
-                query_pairs.append_pair("detachKeys", &detach_keys);
+                query_pairs.append_pair("detachKeys", detach_keys);
             }
             if let Some(logs) = params.logs {
                 query_pairs.append_pair("logs", &logs.to_string());
@@ -291,13 +258,11 @@ impl Containers {
                 query_pairs.append_pair("stdin", &stdin.to_string());
             }
         }
-
         let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
         req_builder = req_builder.uri(hyper_uri);
         let request = req_builder.body(String::new())?;
-        request::execute_request_json(&*self.config, request).await
+        request::execute_request_unit(self.get_config(), request).await
     }
-
     /// GET /libpod/containers/{name}/changes
     /// Report on changes to container's filesystem; adds, deletes or modifications.
     /// Returns which files in a container's filesystem have been added, deleted, or modified. The Kind of modification can be one of:
@@ -305,60 +270,50 @@ impl Containers {
     /// 0: Modified
     /// 1: Added
     /// 2: Deleted
-    pub async fn container_changes_libpod<'a>(
+    async fn container_changes_libpod<'a>(
         &self,
         name: &str,
         params: Option<super::super::params::ContainerChangesLibpod<'a>>,
     ) -> Result<(), Error> {
-        let mut request_url = url::Url::parse(self.config.get_base_path())?;
-
+        let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
         let mut request_path = request_url.path().to_owned();
         if request_path.ends_with('/') {
             request_path.pop();
         }
         request_path.push_str("/libpod/containers/{name}/changes");
         request_path = request_path.replace("{name}", name);
-
         request_url.set_path(&request_path);
-
-        let mut req_builder = self.config.req_builder("GET")?;
-
+        let mut req_builder = self.get_config().req_builder("GET")?;
         if let Some(params) = params {
             let mut query_pairs = request_url.query_pairs_mut();
             if let Some(parent) = params.parent {
-                query_pairs.append_pair("parent", &parent);
+                query_pairs.append_pair("parent", parent);
             }
             if let Some(diff_type) = params.diff_type {
-                query_pairs.append_pair("diffType", &diff_type);
+                query_pairs.append_pair("diffType", diff_type);
             }
         }
-
         let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
         req_builder = req_builder.uri(hyper_uri);
         let request = req_builder.body(String::new())?;
-        request::execute_request_unit(&*self.config, request).await
+        request::execute_request_unit(self.get_config(), request).await
     }
-
     /// POST /libpod/containers/{name}/checkpoint
     /// Checkpoint a container
-    pub async fn container_checkpoint_libpod(
+    async fn container_checkpoint_libpod(
         &self,
         name: &str,
         params: Option<super::super::params::ContainerCheckpointLibpod>,
     ) -> Result<(), Error> {
-        let mut request_url = url::Url::parse(self.config.get_base_path())?;
-
+        let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
         let mut request_path = request_url.path().to_owned();
         if request_path.ends_with('/') {
             request_path.pop();
         }
         request_path.push_str("/libpod/containers/{name}/checkpoint");
         request_path = request_path.replace("{name}", name);
-
         request_url.set_path(&request_path);
-
-        let mut req_builder = self.config.req_builder("POST")?;
-
+        let mut req_builder = self.get_config().req_builder("POST")?;
         if let Some(params) = params {
             let mut query_pairs = request_url.query_pairs_mut();
             if let Some(keep) = params.keep {
@@ -392,199 +347,161 @@ impl Containers {
                 query_pairs.append_pair("printStats", &print_stats.to_string());
             }
         }
-
         let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
         req_builder = req_builder.uri(hyper_uri);
         let request = req_builder.body(String::new())?;
-        request::execute_request_unit(&*self.config, request).await
+        request::execute_request_unit(self.get_config(), request).await
     }
-
     /// GET /libpod/containers/{name}/exists
     /// Check if container exists
     /// Quick way to determine if a container exists by name or ID
-    pub async fn container_exists_libpod(&self, name: &str) -> Result<(), Error> {
-        let mut request_url = url::Url::parse(self.config.get_base_path())?;
-
+    async fn container_exists_libpod(&self, name: &str) -> Result<(), Error> {
+        let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
         let mut request_path = request_url.path().to_owned();
         if request_path.ends_with('/') {
             request_path.pop();
         }
         request_path.push_str("/libpod/containers/{name}/exists");
         request_path = request_path.replace("{name}", name);
-
         request_url.set_path(&request_path);
-
-        let mut req_builder = self.config.req_builder("GET")?;
-
+        let mut req_builder = self.get_config().req_builder("GET")?;
         let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
         req_builder = req_builder.uri(hyper_uri);
         let request = req_builder.body(String::new())?;
-        request::execute_request_unit(&*self.config, request).await
+        request::execute_request_unit(self.get_config(), request).await
     }
-
     /// GET /libpod/containers/{name}/export
     /// Export a container
     /// Export the contents of a container as a tarball.
-    pub async fn container_export_libpod(&self, name: &str) -> Result<(), Error> {
-        let mut request_url = url::Url::parse(self.config.get_base_path())?;
-
+    async fn container_export_libpod(&self, name: &str) -> Result<(), Error> {
+        let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
         let mut request_path = request_url.path().to_owned();
         if request_path.ends_with('/') {
             request_path.pop();
         }
         request_path.push_str("/libpod/containers/{name}/export");
         request_path = request_path.replace("{name}", name);
-
         request_url.set_path(&request_path);
-
-        let mut req_builder = self.config.req_builder("GET")?;
-
+        let mut req_builder = self.get_config().req_builder("GET")?;
         let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
         req_builder = req_builder.uri(hyper_uri);
         let request = req_builder.body(String::new())?;
-        request::execute_request_unit(&*self.config, request).await
+        request::execute_request_unit(self.get_config(), request).await
     }
-
     /// GET /libpod/containers/{name}/healthcheck
     /// Run a container's healthcheck
     /// Execute the defined healthcheck and return information about the results
-    pub async fn container_healthcheck_libpod(
+    async fn container_healthcheck_libpod(
         &self,
         name: &str,
     ) -> Result<super::super::models::HealthCheckResults, Error> {
-        let mut request_url = url::Url::parse(self.config.get_base_path())?;
-
+        let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
         let mut request_path = request_url.path().to_owned();
         if request_path.ends_with('/') {
             request_path.pop();
         }
         request_path.push_str("/libpod/containers/{name}/healthcheck");
         request_path = request_path.replace("{name}", name);
-
         request_url.set_path(&request_path);
-
-        let mut req_builder = self.config.req_builder("GET")?;
-
+        let mut req_builder = self.get_config().req_builder("GET")?;
         let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
         req_builder = req_builder.uri(hyper_uri);
         let request = req_builder.body(String::new())?;
-        request::execute_request_json(&*self.config, request).await
+        request::execute_request_json(self.get_config(), request).await
     }
-
     /// POST /libpod/containers/{name}/init
     /// Initialize a container
     /// Performs all tasks necessary for initializing the container but does not start the container.
-    pub async fn container_init_libpod(&self, name: &str) -> Result<(), Error> {
-        let mut request_url = url::Url::parse(self.config.get_base_path())?;
-
+    async fn container_init_libpod(&self, name: &str) -> Result<(), Error> {
+        let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
         let mut request_path = request_url.path().to_owned();
         if request_path.ends_with('/') {
             request_path.pop();
         }
         request_path.push_str("/libpod/containers/{name}/init");
         request_path = request_path.replace("{name}", name);
-
         request_url.set_path(&request_path);
-
-        let mut req_builder = self.config.req_builder("POST")?;
-
+        let mut req_builder = self.get_config().req_builder("POST")?;
         let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
         req_builder = req_builder.uri(hyper_uri);
         let request = req_builder.body(String::new())?;
-        request::execute_request_unit(&*self.config, request).await
+        request::execute_request_unit(self.get_config(), request).await
     }
-
     /// GET /libpod/containers/{name}/json
     /// Inspect container
     /// Return low-level information about a container.
-    pub async fn container_inspect_libpod(
+    async fn container_inspect_libpod(
         &self,
         name: &str,
         params: Option<super::super::params::ContainerInspectLibpod>,
     ) -> Result<super::super::models::InspectContainerData, Error> {
-        let mut request_url = url::Url::parse(self.config.get_base_path())?;
-
+        let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
         let mut request_path = request_url.path().to_owned();
         if request_path.ends_with('/') {
             request_path.pop();
         }
         request_path.push_str("/libpod/containers/{name}/json");
         request_path = request_path.replace("{name}", name);
-
         request_url.set_path(&request_path);
-
-        let mut req_builder = self.config.req_builder("GET")?;
-
+        let mut req_builder = self.get_config().req_builder("GET")?;
         if let Some(params) = params {
             let mut query_pairs = request_url.query_pairs_mut();
             if let Some(size) = params.size {
                 query_pairs.append_pair("size", &size.to_string());
             }
         }
-
         let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
         req_builder = req_builder.uri(hyper_uri);
         let request = req_builder.body(String::new())?;
-        request::execute_request_json(&*self.config, request).await
+        request::execute_request_json(self.get_config(), request).await
     }
-
     /// POST /libpod/containers/{name}/kill
     /// Kill container
     /// send a signal to a container, defaults to killing the container
-    pub async fn container_kill_libpod<'a>(
+    async fn container_kill_libpod<'a>(
         &self,
         name: &str,
         params: Option<super::super::params::ContainerKillLibpod<'a>>,
     ) -> Result<(), Error> {
-        let mut request_url = url::Url::parse(self.config.get_base_path())?;
-
+        let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
         let mut request_path = request_url.path().to_owned();
         if request_path.ends_with('/') {
             request_path.pop();
         }
         request_path.push_str("/libpod/containers/{name}/kill");
         request_path = request_path.replace("{name}", name);
-
         request_url.set_path(&request_path);
-
-        let mut req_builder = self.config.req_builder("POST")?;
-
+        let mut req_builder = self.get_config().req_builder("POST")?;
         if let Some(params) = params {
             let mut query_pairs = request_url.query_pairs_mut();
             if let Some(signal) = params.signal {
-                query_pairs.append_pair("signal", &signal);
+                query_pairs.append_pair("signal", signal);
             }
         }
-
         let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
         req_builder = req_builder.uri(hyper_uri);
         let request = req_builder.body(String::new())?;
-        request::execute_request_unit(&*self.config, request).await
+        request::execute_request_unit(self.get_config(), request).await
     }
-
     /// GET /libpod/containers/{name}/logs
     /// Get container logs
     /// Get stdout and stderr logs from a container.
     ///
     /// The stream format is the same as described in the attach endpoint.
-    pub async fn container_logs_libpod<'a>(
+    async fn container_logs_libpod<'a>(
         &self,
         name: &str,
         params: Option<super::super::params::ContainerLogsLibpod<'a>>,
     ) -> Result<(), Error> {
-        let mut request_url = url::Url::parse(self.config.get_base_path())?;
-
+        let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
         let mut request_path = request_url.path().to_owned();
         if request_path.ends_with('/') {
             request_path.pop();
         }
         request_path.push_str("/libpod/containers/{name}/logs");
         request_path = request_path.replace("{name}", name);
-
         request_url.set_path(&request_path);
-
-        let mut req_builder = self.config.req_builder("GET")?;
-
+        let mut req_builder = self.get_config().req_builder("GET")?;
         if let Some(params) = params {
             let mut query_pairs = request_url.query_pairs_mut();
             if let Some(follow) = params.follow {
@@ -597,124 +514,102 @@ impl Containers {
                 query_pairs.append_pair("stderr", &stderr.to_string());
             }
             if let Some(since) = params.since {
-                query_pairs.append_pair("since", &since);
+                query_pairs.append_pair("since", since);
             }
             if let Some(until) = params.until {
-                query_pairs.append_pair("until", &until);
+                query_pairs.append_pair("until", until);
             }
             if let Some(timestamps) = params.timestamps {
                 query_pairs.append_pair("timestamps", &timestamps.to_string());
             }
             if let Some(tail) = params.tail {
-                query_pairs.append_pair("tail", &tail);
+                query_pairs.append_pair("tail", tail);
             }
         }
-
         let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
         req_builder = req_builder.uri(hyper_uri);
         let request = req_builder.body(String::new())?;
-        request::execute_request_unit(&*self.config, request).await
+        request::execute_request_unit(self.get_config(), request).await
     }
-
     /// POST /libpod/containers/{name}/mount
     /// Mount a container
     /// Mount a container to the filesystem
-    pub async fn container_mount_libpod(&self, name: &str) -> Result<String, Error> {
-        let mut request_url = url::Url::parse(self.config.get_base_path())?;
-
+    async fn container_mount_libpod(&self, name: &str) -> Result<String, Error> {
+        let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
         let mut request_path = request_url.path().to_owned();
         if request_path.ends_with('/') {
             request_path.pop();
         }
         request_path.push_str("/libpod/containers/{name}/mount");
         request_path = request_path.replace("{name}", name);
-
         request_url.set_path(&request_path);
-
-        let mut req_builder = self.config.req_builder("POST")?;
-
+        let mut req_builder = self.get_config().req_builder("POST")?;
         let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
         req_builder = req_builder.uri(hyper_uri);
         let request = req_builder.body(String::new())?;
-        request::execute_request_json(&*self.config, request).await
+        request::execute_request_json(self.get_config(), request).await
     }
-
     /// POST /libpod/containers/{name}/pause
     /// Pause a container
     /// Use the cgroups freezer to suspend all processes in a container.
-    pub async fn container_pause_libpod(&self, name: &str) -> Result<(), Error> {
-        let mut request_url = url::Url::parse(self.config.get_base_path())?;
-
+    async fn container_pause_libpod(&self, name: &str) -> Result<(), Error> {
+        let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
         let mut request_path = request_url.path().to_owned();
         if request_path.ends_with('/') {
             request_path.pop();
         }
         request_path.push_str("/libpod/containers/{name}/pause");
         request_path = request_path.replace("{name}", name);
-
         request_url.set_path(&request_path);
-
-        let mut req_builder = self.config.req_builder("POST")?;
-
+        let mut req_builder = self.get_config().req_builder("POST")?;
         let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
         req_builder = req_builder.uri(hyper_uri);
         let request = req_builder.body(String::new())?;
-        request::execute_request_unit(&*self.config, request).await
+        request::execute_request_unit(self.get_config(), request).await
     }
-
     /// POST /libpod/containers/{name}/rename
     /// Rename an existing container
     /// Change the name of an existing container.
-    pub async fn container_rename_libpod<'a>(
+    async fn container_rename_libpod<'a>(
         &self,
         name: &str,
         params: Option<super::super::params::ContainerRenameLibpod<'a>>,
     ) -> Result<(), Error> {
-        let mut request_url = url::Url::parse(self.config.get_base_path())?;
-
+        let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
         let mut request_path = request_url.path().to_owned();
         if request_path.ends_with('/') {
             request_path.pop();
         }
         request_path.push_str("/libpod/containers/{name}/rename");
         request_path = request_path.replace("{name}", name);
-
         request_url.set_path(&request_path);
-
-        let mut req_builder = self.config.req_builder("POST")?;
-
+        let mut req_builder = self.get_config().req_builder("POST")?;
         if let Some(params) = params {
             let mut query_pairs = request_url.query_pairs_mut();
-            query_pairs.append_pair("name", &params.name);
+            query_pairs.append_pair("name", params.name);
         }
-
         let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
         req_builder = req_builder.uri(hyper_uri);
         let request = req_builder.body(String::new())?;
-        request::execute_request_unit(&*self.config, request).await
+        request::execute_request_unit(self.get_config(), request).await
     }
-
     /// POST /libpod/containers/{name}/resize
     /// Resize a container's TTY
     /// Resize the terminal attached to a container (for use with Attach).
-    pub async fn container_resize_libpod(
+    async fn container_resize_libpod(
         &self,
         name: &str,
         params: Option<super::super::params::ContainerResizeLibpod>,
     ) -> Result<serde_json::Value, Error> {
-        let mut request_url = url::Url::parse(self.config.get_base_path())?;
-
+        let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
         let mut request_path = request_url.path().to_owned();
         if request_path.ends_with('/') {
             request_path.pop();
         }
         request_path.push_str("/libpod/containers/{name}/resize");
         request_path = request_path.replace("{name}", name);
-
         request_url.set_path(&request_path);
-
-        let mut req_builder = self.config.req_builder("POST")?;
-
+        let mut req_builder = self.get_config().req_builder("POST")?;
         if let Some(params) = params {
             let mut query_pairs = request_url.query_pairs_mut();
             if let Some(h) = params.h {
@@ -724,71 +619,59 @@ impl Containers {
                 query_pairs.append_pair("w", &w.to_string());
             }
         }
-
         let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
         req_builder = req_builder.uri(hyper_uri);
         let request = req_builder.body(String::new())?;
-        request::execute_request_json(&*self.config, request).await
+        request::execute_request_json(self.get_config(), request).await
     }
-
     /// POST /libpod/containers/{name}/restart
     /// Restart a container
-    pub async fn container_restart_libpod(
+    async fn container_restart_libpod(
         &self,
         name: &str,
         params: Option<super::super::params::ContainerRestartLibpod>,
     ) -> Result<(), Error> {
-        let mut request_url = url::Url::parse(self.config.get_base_path())?;
-
+        let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
         let mut request_path = request_url.path().to_owned();
         if request_path.ends_with('/') {
             request_path.pop();
         }
         request_path.push_str("/libpod/containers/{name}/restart");
         request_path = request_path.replace("{name}", name);
-
         request_url.set_path(&request_path);
-
-        let mut req_builder = self.config.req_builder("POST")?;
-
+        let mut req_builder = self.get_config().req_builder("POST")?;
         if let Some(params) = params {
             let mut query_pairs = request_url.query_pairs_mut();
             if let Some(t) = params.t {
                 query_pairs.append_pair("t", &t.to_string());
             }
         }
-
         let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
         req_builder = req_builder.uri(hyper_uri);
         let request = req_builder.body(String::new())?;
-        request::execute_request_unit(&*self.config, request).await
+        request::execute_request_unit(self.get_config(), request).await
     }
-
     /// POST /libpod/containers/{name}/restore
     /// Restore a container
     /// Restore a container from a checkpoint.
-    pub async fn container_restore_libpod<'a>(
+    async fn container_restore_libpod<'a>(
         &self,
         name: &str,
         params: Option<super::super::params::ContainerRestoreLibpod<'a>>,
     ) -> Result<(), Error> {
-        let mut request_url = url::Url::parse(self.config.get_base_path())?;
-
+        let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
         let mut request_path = request_url.path().to_owned();
         if request_path.ends_with('/') {
             request_path.pop();
         }
         request_path.push_str("/libpod/containers/{name}/restore");
         request_path = request_path.replace("{name}", name);
-
         request_url.set_path(&request_path);
-
-        let mut req_builder = self.config.req_builder("POST")?;
-
+        let mut req_builder = self.get_config().req_builder("POST")?;
         if let Some(params) = params {
             let mut query_pairs = request_url.query_pairs_mut();
             if let Some(name) = params.name {
-                query_pairs.append_pair("name", &name);
+                query_pairs.append_pair("name", name);
             }
             if let Some(keep) = params.keep {
                 query_pairs.append_pair("keep", &keep.to_string());
@@ -818,103 +701,85 @@ impl Containers {
                 query_pairs.append_pair("printStats", &print_stats.to_string());
             }
             if let Some(pod) = params.pod {
-                query_pairs.append_pair("pod", &pod);
+                query_pairs.append_pair("pod", pod);
             }
         }
-
         let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
         req_builder = req_builder.uri(hyper_uri);
         let request = req_builder.body(String::new())?;
-        request::execute_request_unit(&*self.config, request).await
+        request::execute_request_unit(self.get_config(), request).await
     }
-
     /// POST /libpod/containers/{name}/start
     /// Start a container
-    pub async fn container_start_libpod<'a>(
+    async fn container_start_libpod<'a>(
         &self,
         name: &str,
         params: Option<super::super::params::ContainerStartLibpod<'a>>,
     ) -> Result<(), Error> {
-        let mut request_url = url::Url::parse(self.config.get_base_path())?;
-
+        let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
         let mut request_path = request_url.path().to_owned();
         if request_path.ends_with('/') {
             request_path.pop();
         }
         request_path.push_str("/libpod/containers/{name}/start");
         request_path = request_path.replace("{name}", name);
-
         request_url.set_path(&request_path);
-
-        let mut req_builder = self.config.req_builder("POST")?;
-
+        let mut req_builder = self.get_config().req_builder("POST")?;
         if let Some(params) = params {
             let mut query_pairs = request_url.query_pairs_mut();
             if let Some(detach_keys) = params.detach_keys {
-                query_pairs.append_pair("detachKeys", &detach_keys);
+                query_pairs.append_pair("detachKeys", detach_keys);
             }
         }
-
         let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
         req_builder = req_builder.uri(hyper_uri);
         let request = req_builder.body(String::new())?;
-        request::execute_request_unit(&*self.config, request).await
+        request::execute_request_unit(self.get_config(), request).await
     }
-
     /// GET /libpod/containers/{name}/stats
     /// Get stats for a container
     /// DEPRECATED. This endpoint will be removed with the next major release. Please use /libpod/containers/stats instead.
-    pub async fn container_stats_libpod(
+    async fn container_stats_libpod(
         &self,
         name: &str,
         params: Option<super::super::params::ContainerStatsLibpod>,
     ) -> Result<(), Error> {
-        let mut request_url = url::Url::parse(self.config.get_base_path())?;
-
+        let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
         let mut request_path = request_url.path().to_owned();
         if request_path.ends_with('/') {
             request_path.pop();
         }
         request_path.push_str("/libpod/containers/{name}/stats");
         request_path = request_path.replace("{name}", name);
-
         request_url.set_path(&request_path);
-
-        let mut req_builder = self.config.req_builder("GET")?;
-
+        let mut req_builder = self.get_config().req_builder("GET")?;
         if let Some(params) = params {
             let mut query_pairs = request_url.query_pairs_mut();
             if let Some(stream) = params.stream {
                 query_pairs.append_pair("stream", &stream.to_string());
             }
         }
-
         let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
         req_builder = req_builder.uri(hyper_uri);
         let request = req_builder.body(String::new())?;
-        request::execute_request_unit(&*self.config, request).await
+        request::execute_request_unit(self.get_config(), request).await
     }
-
     /// POST /libpod/containers/{name}/stop
     /// Stop a container
-    pub async fn container_stop_libpod(
+    async fn container_stop_libpod(
         &self,
         name: &str,
         params: Option<super::super::params::ContainerStopLibpod>,
     ) -> Result<(), Error> {
-        let mut request_url = url::Url::parse(self.config.get_base_path())?;
-
+        let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
         let mut request_path = request_url.path().to_owned();
         if request_path.ends_with('/') {
             request_path.pop();
         }
         request_path.push_str("/libpod/containers/{name}/stop");
         request_path = request_path.replace("{name}", name);
-
         request_url.set_path(&request_path);
-
-        let mut req_builder = self.config.req_builder("POST")?;
-
+        let mut req_builder = self.get_config().req_builder("POST")?;
         if let Some(params) = params {
             let mut query_pairs = request_url.query_pairs_mut();
             if let Some(timeout) = params.timeout {
@@ -924,34 +789,28 @@ impl Containers {
                 query_pairs.append_pair("Ignore", &ignore.to_string());
             }
         }
-
         let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
         req_builder = req_builder.uri(hyper_uri);
         let request = req_builder.body(String::new())?;
-        request::execute_request_unit(&*self.config, request).await
+        request::execute_request_unit(self.get_config(), request).await
     }
-
     /// GET /libpod/containers/{name}/top
     /// List processes
     /// List processes running inside a container
-    pub async fn container_top_libpod<'a>(
+    async fn container_top_libpod<'a>(
         &self,
         name: &str,
         params: Option<super::super::params::ContainerTopLibpod<'a>>,
     ) -> Result<super::super::models::ContainerTopOkBody, Error> {
-        let mut request_url = url::Url::parse(self.config.get_base_path())?;
-
+        let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
         let mut request_path = request_url.path().to_owned();
         if request_path.ends_with('/') {
             request_path.pop();
         }
         request_path.push_str("/libpod/containers/{name}/top");
         request_path = request_path.replace("{name}", name);
-
         request_url.set_path(&request_path);
-
-        let mut req_builder = self.config.req_builder("GET")?;
-
+        let mut req_builder = self.get_config().req_builder("GET")?;
         if let Some(params) = params {
             let mut query_pairs = request_url.query_pairs_mut();
             if let Some(stream) = params.stream {
@@ -971,120 +830,98 @@ impl Containers {
                 );
             }
         }
-
         let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
         req_builder = req_builder.uri(hyper_uri);
         let request = req_builder.body(String::new())?;
-        request::execute_request_json(&*self.config, request).await
+        request::execute_request_json(self.get_config(), request).await
     }
-
     /// POST /libpod/containers/{name}/unmount
     /// Unmount a container
     /// Unmount a container from the filesystem
-    pub async fn container_unmount_libpod(&self, name: &str) -> Result<(), Error> {
-        let mut request_url = url::Url::parse(self.config.get_base_path())?;
-
+    async fn container_unmount_libpod(&self, name: &str) -> Result<(), Error> {
+        let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
         let mut request_path = request_url.path().to_owned();
         if request_path.ends_with('/') {
             request_path.pop();
         }
         request_path.push_str("/libpod/containers/{name}/unmount");
         request_path = request_path.replace("{name}", name);
-
         request_url.set_path(&request_path);
-
-        let mut req_builder = self.config.req_builder("POST")?;
-
+        let mut req_builder = self.get_config().req_builder("POST")?;
         let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
         req_builder = req_builder.uri(hyper_uri);
         let request = req_builder.body(String::new())?;
-        request::execute_request_unit(&*self.config, request).await
+        request::execute_request_unit(self.get_config(), request).await
     }
-
     /// POST /libpod/containers/{name}/unpause
     /// Unpause Container
-    pub async fn container_unpause_libpod(&self, name: &str) -> Result<(), Error> {
-        let mut request_url = url::Url::parse(self.config.get_base_path())?;
-
+    async fn container_unpause_libpod(&self, name: &str) -> Result<(), Error> {
+        let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
         let mut request_path = request_url.path().to_owned();
         if request_path.ends_with('/') {
             request_path.pop();
         }
         request_path.push_str("/libpod/containers/{name}/unpause");
         request_path = request_path.replace("{name}", name);
-
         request_url.set_path(&request_path);
-
-        let mut req_builder = self.config.req_builder("POST")?;
-
+        let mut req_builder = self.get_config().req_builder("POST")?;
         let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
         req_builder = req_builder.uri(hyper_uri);
         let request = req_builder.body(String::new())?;
-        request::execute_request_unit(&*self.config, request).await
+        request::execute_request_unit(self.get_config(), request).await
     }
-
     /// POST /libpod/containers/{name}/update
     /// Update an existing containers cgroup configuration
     /// Update an existing containers cgroup configuration.
-    pub async fn container_update_libpod<'a>(
+    async fn container_update_libpod<'a>(
         &self,
         name: &str,
         params: Option<super::super::params::ContainerUpdateLibpod<'a>>,
         config: super::super::models::UpdateEntities,
-    ) -> Result<serde_json::Value, Error> {
-        let mut request_url = url::Url::parse(self.config.get_base_path())?;
-
+    ) -> Result<(), Error> {
+        let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
         let mut request_path = request_url.path().to_owned();
         if request_path.ends_with('/') {
             request_path.pop();
         }
         request_path.push_str("/libpod/containers/{name}/update");
         request_path = request_path.replace("{name}", name);
-
         request_url.set_path(&request_path);
-
-        let mut req_builder = self.config.req_builder("POST")?;
-
+        let mut req_builder = self.get_config().req_builder("POST")?;
         if let Some(params) = params {
             let mut query_pairs = request_url.query_pairs_mut();
             if let Some(restart_policy) = params.restart_policy {
-                query_pairs.append_pair("restartPolicy", &restart_policy);
+                query_pairs.append_pair("restartPolicy", restart_policy);
             }
             if let Some(restart_retries) = params.restart_retries {
                 query_pairs.append_pair("restartRetries", &restart_retries.to_string());
             }
         }
-
         let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
         req_builder = req_builder.uri(hyper_uri);
         let body = serde_json::to_string(&config)?;
         req_builder = req_builder.header(hyper::header::CONTENT_TYPE, "application/json");
         req_builder = req_builder.header(hyper::header::CONTENT_LENGTH, body.len());
         let request = req_builder.body(body)?;
-        request::execute_request_json(&*self.config, request).await
+        request::execute_request_unit(self.get_config(), request).await
     }
-
     /// POST /libpod/containers/{name}/wait
     /// Wait on a container
     /// Wait on a container to meet a given condition
-    pub async fn container_wait_libpod<'a>(
+    async fn container_wait_libpod<'a>(
         &self,
         name: &str,
         params: Option<super::super::params::ContainerWaitLibpod<'a>>,
     ) -> Result<i32, Error> {
-        let mut request_url = url::Url::parse(self.config.get_base_path())?;
-
+        let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
         let mut request_path = request_url.path().to_owned();
         if request_path.ends_with('/') {
             request_path.pop();
         }
         request_path.push_str("/libpod/containers/{name}/wait");
         request_path = request_path.replace("{name}", name);
-
         request_url.set_path(&request_path);
-
-        let mut req_builder = self.config.req_builder("POST")?;
-
+        let mut req_builder = self.get_config().req_builder("POST")?;
         if let Some(params) = params {
             let mut query_pairs = request_url.query_pairs_mut();
             if let Some(condition) = params.condition {
@@ -1098,62 +935,51 @@ impl Containers {
                 );
             }
             if let Some(interval) = params.interval {
-                query_pairs.append_pair("interval", &interval);
+                query_pairs.append_pair("interval", interval);
             }
         }
-
         let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
         req_builder = req_builder.uri(hyper_uri);
         let request = req_builder.body(String::new())?;
-        request::execute_request_json(&*self.config, request).await
+        request::execute_request_json(self.get_config(), request).await
     }
-
     /// POST /libpod/containers/create
     /// Create a container
-    pub async fn container_create_libpod(
+    async fn container_create_libpod(
         &self,
         create: super::super::models::SpecGenerator,
     ) -> Result<super::super::models::ContainerCreateResponse, Error> {
-        let mut request_url = url::Url::parse(self.config.get_base_path())?;
-
+        let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
         let mut request_path = request_url.path().to_owned();
         if request_path.ends_with('/') {
             request_path.pop();
         }
         request_path.push_str("/libpod/containers/create");
-
         request_url.set_path(&request_path);
-
-        let mut req_builder = self.config.req_builder("POST")?;
-
+        let mut req_builder = self.get_config().req_builder("POST")?;
         let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
         req_builder = req_builder.uri(hyper_uri);
         let body = serde_json::to_string(&create)?;
         req_builder = req_builder.header(hyper::header::CONTENT_TYPE, "application/json");
         req_builder = req_builder.header(hyper::header::CONTENT_LENGTH, body.len());
         let request = req_builder.body(body)?;
-        request::execute_request_json(&*self.config, request).await
+        request::execute_request_json(self.get_config(), request).await
     }
-
     /// GET /libpod/containers/json
     /// List containers
     /// Returns a list of containers
-    pub async fn container_list_libpod<'a>(
+    async fn container_list_libpod<'a>(
         &self,
         params: Option<super::super::params::ContainerListLibpod<'a>>,
     ) -> Result<Vec<super::super::models::ListContainer>, Error> {
-        let mut request_url = url::Url::parse(self.config.get_base_path())?;
-
+        let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
         let mut request_path = request_url.path().to_owned();
         if request_path.ends_with('/') {
             request_path.pop();
         }
         request_path.push_str("/libpod/containers/json");
-
         request_url.set_path(&request_path);
-
-        let mut req_builder = self.config.req_builder("GET")?;
-
+        let mut req_builder = self.get_config().req_builder("GET")?;
         if let Some(params) = params {
             let mut query_pairs = request_url.query_pairs_mut();
             if let Some(all) = params.all {
@@ -1175,91 +1001,74 @@ impl Containers {
                 query_pairs.append_pair("sync", &sync.to_string());
             }
             if let Some(filters) = params.filters {
-                query_pairs.append_pair("filters", &filters);
+                query_pairs.append_pair("filters", filters);
             }
         }
-
         let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
         req_builder = req_builder.uri(hyper_uri);
         let request = req_builder.body(String::new())?;
-        request::execute_request_json(&*self.config, request).await
+        request::execute_request_json(self.get_config(), request).await
     }
-
     /// POST /libpod/containers/prune
     /// Delete stopped containers
     /// Remove containers not in use
-    pub async fn container_prune_libpod<'a>(
+    async fn container_prune_libpod<'a>(
         &self,
         params: Option<super::super::params::ContainerPruneLibpod<'a>>,
     ) -> Result<Vec<super::super::models::ContainersPruneReportLibpod>, Error> {
-        let mut request_url = url::Url::parse(self.config.get_base_path())?;
-
+        let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
         let mut request_path = request_url.path().to_owned();
         if request_path.ends_with('/') {
             request_path.pop();
         }
         request_path.push_str("/libpod/containers/prune");
-
         request_url.set_path(&request_path);
-
-        let mut req_builder = self.config.req_builder("POST")?;
-
+        let mut req_builder = self.get_config().req_builder("POST")?;
         if let Some(params) = params {
             let mut query_pairs = request_url.query_pairs_mut();
             if let Some(filters) = params.filters {
-                query_pairs.append_pair("filters", &filters);
+                query_pairs.append_pair("filters", filters);
             }
         }
-
         let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
         req_builder = req_builder.uri(hyper_uri);
         let request = req_builder.body(String::new())?;
-        request::execute_request_json(&*self.config, request).await
+        request::execute_request_json(self.get_config(), request).await
     }
-
     /// GET /libpod/containers/showmounted
     /// Show mounted containers
     /// Lists all mounted containers mount points
-    pub async fn container_show_mounted_libpod(
+    async fn container_show_mounted_libpod(
         &self,
     ) -> Result<std::collections::HashMap<String, String>, Error> {
-        let mut request_url = url::Url::parse(self.config.get_base_path())?;
-
+        let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
         let mut request_path = request_url.path().to_owned();
         if request_path.ends_with('/') {
             request_path.pop();
         }
         request_path.push_str("/libpod/containers/showmounted");
-
         request_url.set_path(&request_path);
-
-        let mut req_builder = self.config.req_builder("GET")?;
-
+        let mut req_builder = self.get_config().req_builder("GET")?;
         let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
         req_builder = req_builder.uri(hyper_uri);
         let request = req_builder.body(String::new())?;
-        request::execute_request_json(&*self.config, request).await
+        request::execute_request_json(self.get_config(), request).await
     }
-
     /// GET /libpod/containers/stats
     /// Get stats for one or more containers
     /// Return a live stream of resource usage statistics of one or more container. If no container is specified, the statistics of all containers are returned.
-    pub async fn containers_stats_all_libpod<'a>(
+    async fn containers_stats_all_libpod<'a>(
         &self,
         params: Option<super::super::params::ContainersStatsAllLibpod<'a>>,
     ) -> Result<super::super::models::ContainerStats, Error> {
-        let mut request_url = url::Url::parse(self.config.get_base_path())?;
-
+        let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
         let mut request_path = request_url.path().to_owned();
         if request_path.ends_with('/') {
             request_path.pop();
         }
         request_path.push_str("/libpod/containers/stats");
-
         request_url.set_path(&request_path);
-
-        let mut req_builder = self.config.req_builder("GET")?;
-
+        let mut req_builder = self.get_config().req_builder("GET")?;
         if let Some(params) = params {
             let mut query_pairs = request_url.query_pairs_mut();
             if let Some(containers) = params.containers {
@@ -1279,34 +1088,28 @@ impl Containers {
                 query_pairs.append_pair("interval", &interval.to_string());
             }
         }
-
         let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
         req_builder = req_builder.uri(hyper_uri);
         let request = req_builder.body(String::new())?;
-        request::execute_request_json(&*self.config, request).await
+        request::execute_request_json(self.get_config(), request).await
     }
-
     /// GET /libpod/generate/{name}/systemd
     /// Generate Systemd Units
     /// Generate Systemd Units based on a pod or container.
-    pub async fn generate_systemd_libpod<'a>(
+    async fn generate_systemd_libpod<'a>(
         &self,
         name: &str,
         params: Option<super::super::params::GenerateSystemdLibpod<'a>>,
     ) -> Result<std::collections::HashMap<String, String>, Error> {
-        let mut request_url = url::Url::parse(self.config.get_base_path())?;
-
+        let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
         let mut request_path = request_url.path().to_owned();
         if request_path.ends_with('/') {
             request_path.pop();
         }
         request_path.push_str("/libpod/generate/{name}/systemd");
         request_path = request_path.replace("{name}", name);
-
         request_url.set_path(&request_path);
-
-        let mut req_builder = self.config.req_builder("GET")?;
-
+        let mut req_builder = self.get_config().req_builder("GET")?;
         if let Some(params) = params {
             let mut query_pairs = request_url.query_pairs_mut();
             if let Some(use_name) = params.use_name {
@@ -1325,16 +1128,16 @@ impl Containers {
                 query_pairs.append_pair("stopTimeout", &stop_timeout.to_string());
             }
             if let Some(restart_policy) = params.restart_policy {
-                query_pairs.append_pair("restartPolicy", &restart_policy);
+                query_pairs.append_pair("restartPolicy", restart_policy);
             }
             if let Some(container_prefix) = params.container_prefix {
-                query_pairs.append_pair("containerPrefix", &container_prefix);
+                query_pairs.append_pair("containerPrefix", container_prefix);
             }
             if let Some(pod_prefix) = params.pod_prefix {
-                query_pairs.append_pair("podPrefix", &pod_prefix);
+                query_pairs.append_pair("podPrefix", pod_prefix);
             }
             if let Some(separator) = params.separator {
-                query_pairs.append_pair("separator", &separator);
+                query_pairs.append_pair("separator", separator);
             }
             if let Some(restart_sec) = params.restart_sec {
                 query_pairs.append_pair("restartSec", &restart_sec.to_string());
@@ -1380,32 +1183,26 @@ impl Containers {
                 );
             }
         }
-
         let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
         req_builder = req_builder.uri(hyper_uri);
         let request = req_builder.body(String::new())?;
-        request::execute_request_json(&*self.config, request).await
+        request::execute_request_json(self.get_config(), request).await
     }
-
     /// GET /libpod/generate/kube
     /// Generate a Kubernetes YAML file.
     /// Generate Kubernetes YAML based on a pod or container.
-    pub async fn generate_kube_libpod<'a>(
+    async fn generate_kube_libpod<'a>(
         &self,
         params: Option<super::super::params::GenerateKubeLibpod<'a>>,
     ) -> Result<String, Error> {
-        let mut request_url = url::Url::parse(self.config.get_base_path())?;
-
+        let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
         let mut request_path = request_url.path().to_owned();
         if request_path.ends_with('/') {
             request_path.pop();
         }
         request_path.push_str("/libpod/generate/kube");
-
         request_url.set_path(&request_path);
-
-        let mut req_builder = self.config.req_builder("GET")?;
-
+        let mut req_builder = self.get_config().req_builder("GET")?;
         if let Some(params) = params {
             let mut query_pairs = request_url.query_pairs_mut();
             query_pairs.append_pair(
@@ -1421,7 +1218,7 @@ impl Containers {
                 query_pairs.append_pair("service", &service.to_string());
             }
             if let Some(r#type) = params.r#type {
-                query_pairs.append_pair("type", &r#type);
+                query_pairs.append_pair("type", r#type);
             }
             if let Some(replicas) = params.replicas {
                 query_pairs.append_pair("replicas", &replicas.to_string());
@@ -1433,120 +1230,102 @@ impl Containers {
                 query_pairs.append_pair("podmanOnly", &podman_only.to_string());
             }
         }
-
         let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
         req_builder = req_builder.uri(hyper_uri);
         let request = req_builder.body(String::new())?;
-        request::execute_request_json(&*self.config, request).await
+        request::execute_request_json(self.get_config(), request).await
     }
-
     /// POST /libpod/kube/apply
     /// Apply a podman workload or Kubernetes YAML file.
     /// Deploy a podman container, pod, volume, or Kubernetes yaml to a Kubernetes cluster.
-    pub async fn kube_apply_libpod<'a>(
+    async fn kube_apply_libpod<'a>(
         &self,
         params: Option<super::super::params::KubeApplyLibpod<'a>>,
         request: String,
     ) -> Result<String, Error> {
-        let mut request_url = url::Url::parse(self.config.get_base_path())?;
-
+        let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
         let mut request_path = request_url.path().to_owned();
         if request_path.ends_with('/') {
             request_path.pop();
         }
         request_path.push_str("/libpod/kube/apply");
-
         request_url.set_path(&request_path);
-
-        let mut req_builder = self.config.req_builder("POST")?;
-
+        let mut req_builder = self.get_config().req_builder("POST")?;
         if let Some(params) = params {
             let mut query_pairs = request_url.query_pairs_mut();
             if let Some(ca_cert_file) = params.ca_cert_file {
-                query_pairs.append_pair("caCertFile", &ca_cert_file);
+                query_pairs.append_pair("caCertFile", ca_cert_file);
             }
             if let Some(kube_config) = params.kube_config {
-                query_pairs.append_pair("kubeConfig", &kube_config);
+                query_pairs.append_pair("kubeConfig", kube_config);
             }
             if let Some(namespace) = params.namespace {
-                query_pairs.append_pair("namespace", &namespace);
+                query_pairs.append_pair("namespace", namespace);
             }
             if let Some(service) = params.service {
                 query_pairs.append_pair("service", &service.to_string());
             }
             if let Some(file) = params.file {
-                query_pairs.append_pair("file", &file);
+                query_pairs.append_pair("file", file);
             }
         }
-
         let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
         req_builder = req_builder.uri(hyper_uri);
         let body = serde_json::to_string(&request)?;
         req_builder = req_builder.header(hyper::header::CONTENT_TYPE, "application/json");
         req_builder = req_builder.header(hyper::header::CONTENT_LENGTH, body.len());
         let request = req_builder.body(body)?;
-        request::execute_request_json(&*self.config, request).await
+        request::execute_request_json(self.get_config(), request).await
     }
-
     /// DELETE /libpod/play/kube
     /// Remove resources created from kube play
     /// Tears down pods, secrets, and volumes defined in a YAML file
-    pub async fn play_kube_down_libpod(
+    async fn play_kube_down_libpod(
         &self,
         params: Option<super::super::params::PlayKubeDownLibpod>,
     ) -> Result<super::super::models::PlayKubeReport, Error> {
-        let mut request_url = url::Url::parse(self.config.get_base_path())?;
-
+        let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
         let mut request_path = request_url.path().to_owned();
         if request_path.ends_with('/') {
             request_path.pop();
         }
         request_path.push_str("/libpod/play/kube");
-
         request_url.set_path(&request_path);
-
-        let mut req_builder = self.config.req_builder("DELETE")?;
-
+        let mut req_builder = self.get_config().req_builder("DELETE")?;
         if let Some(params) = params {
             let mut query_pairs = request_url.query_pairs_mut();
             if let Some(force) = params.force {
                 query_pairs.append_pair("force", &force.to_string());
             }
         }
-
         let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
         req_builder = req_builder.uri(hyper_uri);
         let request = req_builder.body(String::new())?;
-        request::execute_request_json(&*self.config, request).await
+        request::execute_request_json(self.get_config(), request).await
     }
-
     /// POST /libpod/play/kube
     /// Play a Kubernetes YAML file.
     /// Create and run pods based on a Kubernetes YAML file (pod or service kind).
-    pub async fn play_kube_libpod<'a>(
+    async fn play_kube_libpod<'a>(
         &self,
         params: Option<super::super::params::PlayKubeLibpod<'a>>,
         request: String,
     ) -> Result<super::super::models::PlayKubeReport, Error> {
-        let mut request_url = url::Url::parse(self.config.get_base_path())?;
-
+        let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
         let mut request_path = request_url.path().to_owned();
         if request_path.ends_with('/') {
             request_path.pop();
         }
         request_path.push_str("/libpod/play/kube");
-
         request_url.set_path(&request_path);
-
-        let mut req_builder = self.config.req_builder("POST")?;
-
+        let mut req_builder = self.get_config().req_builder("POST")?;
         if let Some(params) = params {
             let mut query_pairs = request_url.query_pairs_mut();
             if let Some(annotations) = params.annotations {
-                query_pairs.append_pair("annotations", &annotations);
+                query_pairs.append_pair("annotations", annotations);
             }
             if let Some(log_driver) = params.log_driver {
-                query_pairs.append_pair("logDriver", &log_driver);
+                query_pairs.append_pair("logDriver", log_driver);
             }
             if let Some(log_options) = params.log_options {
                 query_pairs.append_pair(
@@ -1620,19 +1399,18 @@ impl Containers {
                 query_pairs.append_pair("tlsVerify", &tls_verify.to_string());
             }
             if let Some(userns) = params.userns {
-                query_pairs.append_pair("userns", &userns);
+                query_pairs.append_pair("userns", userns);
             }
             if let Some(wait) = params.wait {
                 query_pairs.append_pair("wait", &wait.to_string());
             }
         }
-
         let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
         req_builder = req_builder.uri(hyper_uri);
         let body = serde_json::to_string(&request)?;
         req_builder = req_builder.header(hyper::header::CONTENT_TYPE, "application/json");
         req_builder = req_builder.header(hyper::header::CONTENT_LENGTH, body.len());
         let request = req_builder.body(body)?;
-        request::execute_request_json(&*self.config, request).await
+        request::execute_request_json(self.get_config(), request).await
     }
 }

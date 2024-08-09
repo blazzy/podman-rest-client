@@ -8,6 +8,7 @@ edition.workspace = true
 repository.workspace = true
 
 [dependencies]
+async-trait = "0.1.81"
 http = "1.1.0"
 http-body-util = "0.1.2"
 hyper.workspace = true

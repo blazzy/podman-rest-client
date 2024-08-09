@@ -13,10 +13,11 @@ use hyper_util::client::legacy::Error as HyperError;
 use hyper_util::rt::TokioExecutor;
 
 use super::Error;
-
 pub trait Connector: Connect + Clone + Send + Sync + 'static {}
 impl Connector for HttpConnector {}
-
+pub trait HasConfig {
+    fn get_config(&self) -> &dyn ClientConfig;
+}
 pub trait ClientConfig: Send + Sync {
     fn get_base_path(&self) -> &String;
     fn get_user_agent(&self) -> &Option<String>;
@@ -32,45 +33,38 @@ pub trait ClientConfig: Send + Sync {
         Ok(req_builder)
     }
 }
-
 pub struct Config<C: Connector = HttpConnector> {
     pub base_path: String,
     pub user_agent: Option<String>,
     pub client: Client<C, String>,
 }
-
 impl Config<HttpConnector> {
     pub fn new() -> Config<HttpConnector> {
         Config::default()
     }
 }
-
 impl Default for Config<HttpConnector> {
     fn default() -> Self {
         let client = Client::builder(TokioExecutor::new()).build_http();
         Config::with_client(client)
     }
 }
-
 impl<C: Connector> Config<C> {
     pub fn with_client(client: Client<C, String>) -> Config<C> {
         Config {
-            base_path: "https://podman.iopodman.io".to_owned(),
+            base_path: "http://podman.io/".to_owned(),
             user_agent: Some("openapi-client-gen".to_owned()),
             client,
         }
     }
 }
-
 impl<C: Connector> ClientConfig for Config<C> {
     fn get_base_path(&self) -> &String {
         &self.base_path
     }
-
     fn get_user_agent(&self) -> &Option<String> {
         &self.user_agent
     }
-
     fn request<'a>(
         &self,
         request: Request<String>,
