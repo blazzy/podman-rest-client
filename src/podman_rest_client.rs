@@ -1,9 +1,11 @@
-use std::ops::Deref;
 use std::str::FromStr;
 
 use hyper_util::client::legacy::Client;
 use hyper_util::rt::TokioExecutor;
-use podman_autogen_api::Client as APIClient;
+use podman_autogen_api::apis;
+use podman_autogen_api::config::HasConfig;
+use podman_autogen_api::impl_api_client;
+use podman_autogen_api::ClientConfig;
 use podman_autogen_api::Config as APIConfig;
 use podman_autogen_api::Connector;
 
@@ -14,14 +16,18 @@ use crate::unix_socket;
 
 const BASE_PATH: &str = "http://d/v5.1.0";
 
-pub struct PodmanRestClient(pub APIClient);
+pub struct PodmanRestClient {
+    config: Box<dyn ClientConfig>,
+}
+
+impl_api_client!(PodmanRestClient, config);
 
 impl PodmanRestClient {
-    pub async fn new(config: Config) -> Result<PodmanRestClient, Error> {
+    pub async fn new(config: Config) -> Result<Self, Error> {
         let (scheme, rest) = config.uri.split_once("://").ok_or(Error::InvalidScheme)?;
 
         match scheme {
-            "unix" => PodmanRestClient::new_unix(rest).await,
+            "unix" => Ok(PodmanRestClient::new_unix(rest)),
             "ssh" => PodmanRestClient::new_ssh(config.uri, config.identity_file).await,
             _ => Err(Error::InvalidScheme),
         }
@@ -47,32 +53,23 @@ impl PodmanRestClient {
 
         let connector = ssh::SshConnector::new(&user_name, &key_path, &address, uri.path()).await?;
 
-        PodmanRestClient::new_connector(connector).await
+        Ok(PodmanRestClient::new_connector(connector))
     }
 
-    pub async fn new_unix(path: &str) -> Result<PodmanRestClient, Error> {
+    pub fn new_unix(path: &str) -> PodmanRestClient {
         let connector = unix_socket::UnixConnector::new(path);
 
-        PodmanRestClient::new_connector(connector).await
+        PodmanRestClient::new_connector(connector)
     }
 
-    async fn new_connector<C: Connector>(connector: C) -> Result<PodmanRestClient, Error> {
+    fn new_connector<C: Connector>(connector: C) -> PodmanRestClient {
         let client = Client::builder(TokioExecutor::new()).build(connector);
 
-        let configuration = APIConfig {
-            base_path: BASE_PATH.to_string(),
-            ..APIConfig::with_client(client)
-        };
-        let api_client = APIClient::new(configuration);
-
-        Ok(PodmanRestClient(api_client))
-    }
-}
-
-impl Deref for PodmanRestClient {
-    type Target = APIClient;
-
-    fn deref(&self) -> &Self::Target {
-        &self.0
+        PodmanRestClient {
+            config: Box::new(APIConfig {
+                base_path: BASE_PATH.to_string(),
+                ..APIConfig::with_client(client)
+            }),
+        }
     }
 }
