@@ -28,8 +28,8 @@ impl Spec {
         let mut spec = Spec::default();
 
         let host: String = parse::string(&yaml["host"], "host")?;
-        let base_path: String = parse::string(&yaml["host"], "host").unwrap_or("/".into());
-        let scheme: String = parse::string(&yaml["host"][0], "host").unwrap_or("https".into());
+        let base_path: String = parse::string(&yaml["basePath"], "basePath").unwrap_or("/".into());
+        let scheme: String = parse::string(&yaml["schemes"][0], "host").unwrap_or("https".into());
 
         spec.base_path = format!("{}://{}{}", scheme, host, base_path);
 
@@ -179,5 +179,26 @@ impl Spec {
             .iter()
             .filter(|(_, model)| model.is_object())
             .collect()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use indoc::indoc;
+
+    use super::*;
+
+    #[test]
+    fn builds_base_path() {
+        let spec = Spec::from_yaml_string(
+            indoc! {r#"
+            basePath: /
+            host: example.com
+            schemes:
+                - http
+                - https
+            "#}
+        ).unwrap();
+        assert_eq!(spec.base_path, "http://example.com/");
     }
 }
