@@ -10,7 +10,7 @@
 Provides an interface for querying the Podman REST API. Most of the interface is generated from
 the the official Podman swagger file. This crate adds a layer to make it possible to connect to
 the podman rest api over ssh to a unix socket and directly to a unix socket. Connections over
-ssh are  commonly necessary on macOs where the container runtime runs in a virtual machine
+ssh are  commonly necessary on macOS where the container runtime runs in a virtual machine
 accessible over ssh.
 
 
@@ -51,7 +51,7 @@ let images = client.images().image_list_libpod(None).await.unwrap();
 ```
 ### MacOs
 
-On macOs you might initialize a client like this with an ssh url and identity file
+On macOS you might initialize a client like this with an ssh url and identity file
 
 ```rust
 let client = PodmanRestClient::new(Config {
