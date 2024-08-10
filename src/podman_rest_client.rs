@@ -2,17 +2,17 @@ use std::str::FromStr;
 
 use hyper_util::client::legacy::Client;
 use hyper_util::rt::TokioExecutor;
-use podman_autogen_api::apis;
-use podman_autogen_api::config::HasConfig;
-use podman_autogen_api::impl_api_client;
-use podman_autogen_api::ClientConfig;
-use podman_autogen_api::Config as APIConfig;
-use podman_autogen_api::Connector;
 
+use crate::apis;
 use crate::config::Config;
 use crate::error::Error;
+use crate::impl_api_client;
 use crate::ssh;
 use crate::unix_socket;
+use crate::APIConfig;
+use crate::ClientConfig;
+use crate::Connector;
+use crate::HasConfig;
 
 const BASE_PATH: &str = "http://d/v5.1.0";
 

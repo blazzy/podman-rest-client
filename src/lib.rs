@@ -84,9 +84,19 @@ mod podman_rest_client;
 mod ssh;
 mod unix_socket;
 
+#[cfg(feature = "v4")]
+mod v4;
+#[cfg(feature = "v4")]
+pub use v4::{apis, models, params};
+#[cfg(feature = "v4")]
+pub(crate) use v4::{config::HasConfig, ClientConfig, Config as APIConfig, Connector};
+
+#[cfg(feature = "v5")]
+mod v5;
 pub use config::Config;
 pub use error::Error;
-pub use podman_autogen_api::apis;
-pub use podman_autogen_api::models;
-pub use podman_autogen_api::params;
 pub use podman_rest_client::PodmanRestClient;
+#[cfg(feature = "v5")]
+pub use v5::{apis, models, params};
+#[cfg(feature = "v5")]
+pub(crate) use v5::{config::HasConfig, ClientConfig, Config as APIConfig, Connector};

@@ -6,13 +6,13 @@ use std::task::{Context, Poll};
 use hyper::rt::ReadBufCursor;
 use hyper::Uri;
 use hyper_util::client::legacy::connect::{Connected, Connection};
-use podman_autogen_api::Connector;
 use tokio::io::AsyncRead;
 use tokio::io::AsyncWrite;
 use tokio::net::UnixStream;
 use tower_service::Service;
 
 use crate::error::Error;
+use crate::Connector;
 
 #[derive(Clone)]
 pub(crate) struct UnixConnector {

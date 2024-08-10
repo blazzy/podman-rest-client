@@ -7,7 +7,6 @@ use std::task::{Context, Poll};
 use hyper::rt::ReadBufCursor;
 use hyper::Uri;
 use hyper_util::client::legacy::connect::{Connected, Connection};
-use podman_autogen_api::Connector;
 use russh::client as ssh_client;
 use russh::client::Config;
 use russh::client::Msg;
@@ -17,6 +16,7 @@ use tokio::io::{AsyncRead, AsyncWrite};
 use tower_service::Service;
 
 use crate::error::Error;
+use crate::Connector;
 
 #[derive(Clone)]
 pub(crate) struct SshConnector {
