@@ -1,8 +1,8 @@
 use http_body_util::BodyExt;
 use serde_path_to_error::deserialize;
 
-use crate::config::ClientConfig;
-use crate::error::Error;
+use super::config::ClientConfig;
+use super::error::Error;
 
 pub async fn execute_request_bytes(
     config: &dyn ClientConfig,
