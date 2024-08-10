@@ -1,7 +1,6 @@
 use std::collections::BTreeMap;
 use std::fmt;
 
-use convert_case::{Case, Casing};
 use yaml_rust2::Yaml;
 
 use crate::error::Error;
@@ -82,12 +81,7 @@ impl Parameter {
     }
 
     pub fn var_name(&self) -> String {
-        let var_name = self.name.to_case(Case::Snake);
-        if parse::is_keyword(&var_name) {
-            format!("r#{}", var_name)
-        } else {
-            var_name
-        }
+        crate::lang::rust::var_name(&self.name).to_string()
     }
 
     pub fn to_string_string(&self) -> String {
@@ -204,11 +198,6 @@ impl BodyParameter {
     }
 
     pub fn var_name(&self) -> String {
-        let var_name = self.name.to_case(Case::Snake);
-        if parse::is_keyword(&var_name) {
-            format!("r#{}", var_name)
-        } else {
-            var_name
-        }
+        crate::lang::rust::var_name(&self.name).to_string()
     }
 }

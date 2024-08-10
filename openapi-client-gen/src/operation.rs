@@ -7,7 +7,6 @@ use regex::Regex;
 use crate::error::Error;
 use crate::model::Model;
 use crate::parameter::{BodyParameter, Parameter};
-use crate::parse;
 
 #[derive(Default)]
 pub struct Operation {
@@ -40,12 +39,7 @@ impl Operation {
     }
 
     pub fn var_name(&self) -> String {
-        let var_name = self.name.to_case(Case::Snake);
-        if parse::is_keyword(&var_name) {
-            format!("r#{}", var_name)
-        } else {
-            var_name
-        }
+        crate::lang::rust::var_name(&self.name).to_string()
     }
 
     pub fn params_struct_has_str(&self) -> bool {

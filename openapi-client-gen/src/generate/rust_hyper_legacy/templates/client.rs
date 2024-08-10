@@ -54,7 +54,7 @@ pub fn client(spec: &Spec) -> Result<String, Error> {
 
 fn api_implementations<'a>(spec: &'a Spec) -> impl Iterator<Item = TokenStream> + 'a {
     spec.tags.values().map(|tag| {
-        let struct_name = struct_name(&tag.safe_name);
+        let struct_name = struct_name(&tag.name);
 
         quote! {
             impl apis::#struct_name for $struct_name {}
@@ -64,8 +64,8 @@ fn api_implementations<'a>(spec: &'a Spec) -> impl Iterator<Item = TokenStream> 
 
 fn api_functions<'a>(spec: &'a Spec) -> impl Iterator<Item = TokenStream> + 'a {
     spec.tags.values().map(|tag| {
-        let struct_name = struct_name(&tag.safe_name);
-        let var_name = var_name(&tag.safe_name);
+        let struct_name = struct_name(&tag.name);
+        let var_name = var_name(&tag.name);
         let doc_comments = to_doc_comment(&tag.description);
 
         quote! {

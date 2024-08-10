@@ -97,12 +97,7 @@ impl Property {
     }
 
     pub fn var_name(&self) -> String {
-        let var_name = self.safe_name().to_case(Case::Snake);
-        if parse::is_keyword(&var_name) {
-            format!("r#{}", var_name)
-        } else {
-            var_name
-        }
+        crate::lang::rust::var_name(&self.name).to_string()
     }
 
     pub fn type_string(&self, models: &BTreeMap<String, Model>) -> String {
@@ -154,12 +149,7 @@ impl Model {
     }
 
     pub fn var_name(&self) -> String {
-        let var_name = self.safe_name().to_case(Case::Snake);
-        if parse::is_keyword(&var_name) {
-            format!("r#{}", var_name)
-        } else {
-            var_name
-        }
+        crate::lang::rust::var_name(&self.name).to_string()
     }
 
     pub fn struct_name(&self) -> String {

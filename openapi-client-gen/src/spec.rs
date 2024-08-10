@@ -64,15 +64,10 @@ impl Spec {
             let name: String = parse::string(&tag["name"], "tag name")?;
             let description: String = parse::string(&tag["description"], "tag description")?;
 
-            let safe_name = name
-                .chars()
-                .map(|c| if c.is_ascii_alphanumeric() { c } else { '_' })
-                .collect();
-
             self.tags.insert(
-                name,
+                name.clone(),
                 Tag {
-                    safe_name,
+                    name,
                     description,
                     operations: Vec::new(),
                 },

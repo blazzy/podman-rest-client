@@ -13,7 +13,10 @@ use crate::model::ModelData;
 use crate::operation;
 use crate::parameter;
 use crate::parameter::XClientDefault;
-use crate::parse;
+
+pub fn is_keyword(var: &str) -> bool {
+    RUST_KEYWORDS.iter().any(|k| k == &var)
+}
 
 /// Format name to a conventional upper camel rust ident for struct and trait names
 pub fn struct_name(name: &str) -> Ident {
@@ -109,7 +112,7 @@ pub fn parameter_to_str(var_name: &TokenStream, parameter: &parameter::Parameter
 
 // TODO: use syn::parse_str instead. Ident::new panics!
 pub fn ident(str: &str) -> Ident {
-    if parse::is_keyword(str) {
+    if is_keyword(str) {
         Ident::new_raw(str, Span::call_site())
     } else {
         Ident::new(str, Span::call_site())
@@ -180,3 +183,15 @@ pub fn or_default(default: &Option<XClientDefault>) -> TokenStream {
         TokenStream::new()
     }
 }
+
+pub fn file_name(name: &str) -> String {
+    format!("{}.rs", var_name(name))
+}
+
+const RUST_KEYWORDS: [&str; 51] = [
+    "as", "break", "const", "continue", "crate", "else", "enum", "extern", "false", "fn", "for",
+    "if", "impl", "in", "let", "loop", "match", "mod", "move", "mut", "pub", "ref", "return",
+    "self", "Self", "static", "struct", "super", "trait", "true", "type", "unsafe", "use", "where",
+    "while", "async", "await", "dyn", "abstract", "become", "box", "do", "final", "macro",
+    "override", "priv", "try", "typeof", "unsized", "virtual", "yield",
+];
