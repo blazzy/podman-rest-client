@@ -28,7 +28,6 @@ hyper.workspace = true
 http-body-util = "0.1.2"
 hyper-util = { version = "0.1.5", features = ["client-legacy", "http1"] }
 nix = { version = "0.29.0", features = ["user"] }
-podman-autogen-api = { version = "=0.9.0", path="podman-autogen-api" }
 russh = "0.43.0"
 russh-keys = "0.43.0"
 serde = { version = "1.0.204", features = ["derive"] }
