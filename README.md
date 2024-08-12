@@ -102,6 +102,9 @@ set to nullable:
 * `definitions/InspectPodInfraConfig/properties/PortBindings/additionalProperties`
 * `definitions/PodRmReport/properties/RemovedCtrs/additionalProperties`
 
+I'm not sure, but it might make more sense to make all hashmap values as
+nullable by default in this project.
+
 ### Client side defaults
 
 Some requests return extra streaming data with their responses by default. Our
