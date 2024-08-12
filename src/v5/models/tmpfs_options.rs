@@ -1,11 +1,9 @@
 use serde::{Deserialize, Serialize};
-
 #[derive(Default, Debug, Serialize, Deserialize)]
 /// TmpfsOptions defines options specific to mounts of type "tmpfs".
 pub struct TmpfsOptions {
     #[serde(rename = "Mode")]
     pub mode: Option<u32>,
-
     /// Size sets the size of the tmpfs, in bytes.
     ///
     /// This will be converted to an operating system specific value

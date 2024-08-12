@@ -1,5 +1,4 @@
 use serde::{Deserialize, Serialize};
-
 #[derive(Default, Debug, Serialize, Deserialize)]
 /// Metadata contains engine-local data about the image.
 pub struct Metadata {

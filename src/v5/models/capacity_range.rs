@@ -1,5 +1,4 @@
 use serde::{Deserialize, Serialize};
-
 #[derive(Default, Debug, Serialize, Deserialize)]
 /// CapacityRange describes the minimum and maximum capacity a volume should be
 /// created with
@@ -8,7 +7,6 @@ pub struct CapacityRange {
     /// value of 0 indicates an unspecified maximum
     #[serde(rename = "LimitBytes")]
     pub limit_bytes: Option<i64>,
-
     /// RequiredBytes specifies that a volume must be at least this big. The
     /// value of 0 indicates an unspecified minimum.
     #[serde(rename = "RequiredBytes")]

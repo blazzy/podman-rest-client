@@ -1,5 +1,4 @@
 use serde::{Deserialize, Serialize};
-
 #[derive(Default, Debug, Serialize, Deserialize)]
 /// ContainerUpdateOKBody OK response to ContainerUpdate operation
 pub struct ContainerUpdateOkBody {

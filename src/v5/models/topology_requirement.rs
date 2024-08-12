@@ -1,5 +1,4 @@
 use serde::{Deserialize, Serialize};
-
 #[derive(Default, Debug, Serialize, Deserialize)]
 /// TopologyRequirement expresses the user's requirements for a volume's
 /// accessible topology.
@@ -80,7 +79,6 @@ pub struct TopologyRequirement {
     /// combination of other possibilities from the list of requisite.
     #[serde(rename = "Preferred")]
     pub preferred: Option<Vec<super::super::models::Topology>>,
-
     /// Requisite specifies a list of Topologies, at least one of which the
     /// volume must be accessible from.
     ///

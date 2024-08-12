@@ -1,5 +1,4 @@
 use serde::{Deserialize, Serialize};
-
 #[derive(Default, Debug, Serialize, Deserialize)]
 /// ServiceUpdateResponse service update response
 pub struct ServiceUpdateResponse {

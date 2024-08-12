@@ -1,6 +1,6 @@
-use super::super::config::HasConfig;
-use super::super::request;
-use super::super::Error;
+use crate::v4::config::HasConfig;
+use crate::v4::request;
+use crate::v4::Error;
 #[async_trait::async_trait]
 pub trait Secrets: HasConfig + Send + Sync {
     /// DELETE /libpod/secrets/{name}

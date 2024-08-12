@@ -1,5 +1,4 @@
 use serde::{Deserialize, Serialize};
-
 #[derive(Default, Debug, Serialize, Deserialize)]
 /// Topology is a map of topological domains to topological segments.
 /// This description is taken verbatim from the CSI Spec:

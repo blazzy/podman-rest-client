@@ -1,5 +1,4 @@
 use serde::{Deserialize, Serialize};
-
 #[derive(Default, Debug, Serialize, Deserialize)]
 /// NetworkingConfig represents the container's networking configuration for each of its interfaces
 /// Carries the networking configs specified in the `docker run` and `docker network connect` commands

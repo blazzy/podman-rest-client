@@ -1,6 +1,6 @@
-use super::super::config::HasConfig;
-use super::super::request;
-use super::super::Error;
+use crate::v5::config::HasConfig;
+use crate::v5::request;
+use crate::v5::Error;
 #[async_trait::async_trait]
 pub trait Exec: HasConfig + Send + Sync {
     /// POST /libpod/containers/{name}/exec
