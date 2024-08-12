@@ -1,6 +1,4 @@
-use std::future::Future;
-use std::pin::Pin;
-
+use super::Error;
 use http::header;
 use http::request::Builder;
 use http::request::Request;
@@ -11,8 +9,8 @@ use hyper_util::client::legacy::connect::HttpConnector;
 use hyper_util::client::legacy::Client;
 use hyper_util::client::legacy::Error as HyperError;
 use hyper_util::rt::TokioExecutor;
-
-use super::Error;
+use std::future::Future;
+use std::pin::Pin;
 pub trait Connector: Connect + Clone + Send + Sync + 'static {}
 impl Connector for HttpConnector {}
 pub trait HasConfig {

@@ -2,16 +2,12 @@
 pub struct ContainerList<'a> {
     /// Return all containers. By default, only running containers are shown
     pub all: Option<bool>,
-
     /// Return containers in storage not controlled by Podman
     pub external: Option<bool>,
-
     /// Return this number of most recently created containers, including non-running ones.
     pub limit: Option<i64>,
-
     /// Return the size of container as fields SizeRw and SizeRootFs.
     pub size: Option<bool>,
-
     /// Returns a list of containers.
     ///  - ancestor=(<image-name>[:<tag>], <image id>, or <image@digest>)
     ///  - before=(<container id> or <container name>)

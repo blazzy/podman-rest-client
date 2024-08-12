@@ -2,10 +2,8 @@
 pub struct ImagePruneLibpod<'a> {
     /// Remove all images not in use by containers, not just dangling ones
     pub all: Option<bool>,
-
     /// Remove images even when they are used by external containers (e.g, by build containers)
     pub external: Option<bool>,
-
     /// filters to apply to image pruning, encoded as JSON (map[string][]string). Available filters:
     ///   - `dangling=<boolean>` When set to `true` (or `1`), prune only
     ///      unused *and* untagged images. When set to `false`

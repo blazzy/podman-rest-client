@@ -8,7 +8,6 @@ pub struct ContainerWait<'a> {
     ///   - running
     ///   - stopped
     pub condition: Option<&'a str>,
-
     /// Time Interval to wait before polling for completion.
     pub interval: Option<&'a str>,
 }

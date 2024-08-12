@@ -6,10 +6,8 @@ pub struct ManifestCreateLibpod<'a> {
     /// Alias of `image` is support for compatibility with < 4.0.0
     /// Response status code is 200 with < 4.0.0 for compatibility
     pub images: &'a str,
-
     /// add all contents if given list
     pub all: Option<bool>,
-
     /// modify an existing list if one with the desired name already exists
     pub amend: Option<bool>,
 }

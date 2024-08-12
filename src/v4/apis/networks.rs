@@ -153,7 +153,7 @@ pub trait Networks: HasConfig + Send + Sync {
     /// GET /libpod/networks/json
     /// List networks
     /// Display summary of network configurations.
-    /// - In a 200 response, all of the fields named Bytes are returned as a Base64 encoded string.
+    ///   - In a 200 response, all of the fields named Bytes are returned as a Base64 encoded string.
     async fn network_list_libpod<'a>(
         &self,
         params: Option<super::super::params::NetworkListLibpod<'a>>,
