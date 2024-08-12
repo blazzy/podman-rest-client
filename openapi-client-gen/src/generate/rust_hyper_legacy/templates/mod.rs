@@ -2,6 +2,7 @@ pub mod apis;
 pub mod client;
 pub mod config;
 pub mod models;
+pub mod params;
 
 use quote::quote;
 

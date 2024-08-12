@@ -55,65 +55,11 @@ impl TryFrom<&Yaml> for Parameter {
     }
 }
 
-impl Parameter {
-    pub fn type_string(&self) -> String {
-        let base_type = match &self.r#type {
-            Type::Just(base_type) => base_type.to_string(),
-            Type::Array(base_type) => format!("Vec<{}>", base_type),
-        };
-        if self.required {
-            base_type
-        } else {
-            format!("Option<{}>", base_type)
-        }
-    }
-
-    pub fn type_string_lifetime(&self, lifetime: &str) -> String {
-        let base_type = match &self.r#type {
-            Type::Just(base_type) => base_type.to_lifetime_string(lifetime),
-            Type::Array(base_type) => format!("Vec<{}>", base_type.to_lifetime_string(lifetime)),
-        };
-        if self.required {
-            base_type
-        } else {
-            format!("Option<{}>", base_type)
-        }
-    }
-
-    pub fn var_name(&self) -> String {
-        crate::lang::rust::var_name(&self.name).to_string()
-    }
-
-    pub fn to_string_string(&self) -> String {
-        match &self.r#type {
-            Type::Just(base_type) => match base_type {
-                BaseType::String => self.var_name(),
-                _ => format!("{}.to_string()", self.var_name()),
-            },
-            Type::Array(_) => format!(
-                "{}.iter().map(|e| e.to_string()).collect::<Vec<_>>().join(\",\")",
-                self.var_name()
-            ),
-        }
-    }
-}
-
 #[derive(Copy, Clone)]
 pub enum BaseType {
     String,
     Boolean,
     Integer,
-}
-
-impl BaseType {
-    fn to_lifetime_string(&self, lifetime: &str) -> String {
-        use BaseType::*;
-        match self {
-            String => format!("&'{} str", lifetime),
-            Boolean => self.to_string(),
-            Integer => self.to_string(),
-        }
-    }
 }
 
 impl fmt::Display for BaseType {
@@ -195,9 +141,5 @@ impl BodyParameter {
             description: parse::maybe_string(&yaml["description"]),
             model,
         })
-    }
-
-    pub fn var_name(&self) -> String {
-        crate::lang::rust::var_name(&self.name).to_string()
     }
 }

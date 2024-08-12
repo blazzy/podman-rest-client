@@ -1,6 +1,5 @@
 use std::collections::{BTreeMap, HashSet};
 
-use convert_case::{Case, Casing};
 use yaml_rust2::Yaml;
 
 use crate::error::Error;
@@ -88,27 +87,6 @@ pub struct Property {
     pub required: bool,
 }
 
-impl Property {
-    pub fn safe_name(&self) -> String {
-        self.name
-            .chars()
-            .map(|c| if c.is_ascii_alphanumeric() { c } else { '_' })
-            .collect()
-    }
-
-    pub fn var_name(&self) -> String {
-        crate::lang::rust::var_name(&self.name).to_string()
-    }
-
-    pub fn type_string(&self, models: &BTreeMap<String, Model>) -> String {
-        if self.required {
-            self.model.type_string(models)
-        } else {
-            format!("Option<{}>", self.model.type_string(models))
-        }
-    }
-}
-
 impl Model {
     pub fn new(
         name: String,
@@ -141,25 +119,6 @@ impl Model {
         }
     }
 
-    pub fn safe_name(&self) -> String {
-        self.name
-            .chars()
-            .map(|c| if c.is_ascii_alphanumeric() { c } else { '_' })
-            .collect()
-    }
-
-    pub fn var_name(&self) -> String {
-        crate::lang::rust::var_name(&self.name).to_string()
-    }
-
-    pub fn struct_name(&self) -> String {
-        self.safe_name().to_case(Case::UpperCamel)
-    }
-
-    pub fn file_name(&self) -> String {
-        format!("{}.rs", self.name.to_case(Case::Snake))
-    }
-
     pub fn is_object(&self) -> bool {
         matches!(self.data, ModelData::Object(_))
     }
@@ -182,40 +141,6 @@ impl Model {
                 }
             }
             _ => Ok(self),
-        }
-    }
-
-    pub fn type_string(&self, models: &BTreeMap<String, Model>) -> String {
-        match &self.data {
-            ModelData::String => "String".into(),
-            ModelData::Integer(format) => format.to_string(),
-            ModelData::Number => "f64".into(),
-            ModelData::Boolean => "bool".into(),
-            ModelData::Array(items) => format!("Vec<{}>", items.type_string(models)),
-            ModelData::ArbitraryValue => "serde_json::Value".into(),
-            ModelData::NoValue => "()".into(),
-            ModelData::Object(_) => {
-                format!("super::super::models::{}", self.struct_name())
-            }
-            ModelData::HashMap(value, nullable) => {
-                let value = value.type_string(models);
-                format!(
-                    "std::collections::HashMap::<String, {}>",
-                    if *nullable {
-                        format!("Option<{}>", value)
-                    } else {
-                        value
-                    }
-                )
-            }
-            ModelData::Ref(ref_str) => {
-                if let Some(ref_model) = models.get(ref_str) {
-                    ref_model.type_string(models)
-                } else {
-                    log::warn!("Could not find model reference: {}", ref_str,);
-                    "serde_json::Value".into()
-                }
-            }
         }
     }
 }

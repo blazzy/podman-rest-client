@@ -53,7 +53,7 @@ pub fn operations(spec: &Spec, tag: &Tag) -> Result<Vec<TokenStream>, Error> {
                 .iter()
                 .map(|param| {
                     let var_name = var_name(&param.name);
-                    let param_type = param.type_as_token_stream();
+                    let param_type = param.type_as_token_stream(None);
                     Ok(quote! { #var_name: #param_type, })
                 })
                 .collect::<Result<Vec<_>, Error>>()?;

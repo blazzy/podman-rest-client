@@ -13,7 +13,6 @@ mod parameter;
 mod parse;
 mod spec;
 mod tag;
-mod template;
 
 #[derive(Parser)]
 #[command(version, about, long_about = None)]

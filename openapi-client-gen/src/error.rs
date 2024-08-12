@@ -23,8 +23,6 @@ pub enum Error {
     CannotOpenFile(#[from] std::io::Error),
     #[error("Unrecognized Integer Format {0}")]
     UnrecognizedIntegerFormat(String),
-    #[error("Cannot write template {0}")]
-    Write(#[from] askama::Error),
     #[error("Yaml scan error {0}")]
     YamlScan(#[from] yaml_rust2::ScanError),
     #[error("Rust syntax parsing error {0}")]

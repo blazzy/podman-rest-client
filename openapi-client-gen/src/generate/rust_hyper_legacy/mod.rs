@@ -1,6 +1,5 @@
 use std::path::{Path, PathBuf};
 
-use askama::Template;
 use itertools::Itertools;
 
 use crate::error::Error;
@@ -8,7 +7,6 @@ use crate::file_tracker::FileTracker;
 use crate::lang::rust;
 use crate::model::ModelData;
 use crate::spec::Spec;
-use crate::template;
 
 mod templates;
 
@@ -69,7 +67,7 @@ pub fn generate<'a>(config: &'a mut GeneratorConfig<'a>) -> Result<(), Error> {
     for model in models.values() {
         if let ModelData::Object(properties) = &model.data {
             files.create(
-                models_dir.join(model.file_name()),
+                models_dir.join(rust::file_name(&model.name)),
                 templates::models::models(model, properties, &spec.models)?,
             )?;
         }
@@ -90,8 +88,10 @@ pub fn generate<'a>(config: &'a mut GeneratorConfig<'a>) -> Result<(), Error> {
 
     for operation in &operations {
         if !operation.header_params.is_empty() || !operation.query_params.is_empty() {
-            let template = template::ParamsTemplate { operation };
-            files.create(params_dir.join(operation.file_name()), &template.render()?)?;
+            files.create(
+                params_dir.join(rust::file_name(&operation.name)),
+                templates::params::params(operation)?,
+            )?;
         }
     }
     files.create(

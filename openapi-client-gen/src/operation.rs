@@ -1,9 +1,6 @@
 use std::collections::BTreeMap;
 use std::fmt;
 
-use convert_case::{Case, Casing};
-use regex::Regex;
-
 use crate::error::Error;
 use crate::model::Model;
 use crate::parameter::{BodyParameter, Parameter};
@@ -23,25 +20,6 @@ pub struct Operation {
 }
 
 impl Operation {
-    /// We need to match code blocks and add text annotations if to them if they have no
-    /// annotations lest the be parsed as rust doc strings
-    pub fn clean_description(&self) -> String {
-        if let Some(description) = &self.description {
-            // m - multiline match
-            // s - cause `.` match the newline characters too
-            // .*? non-greedy match
-            let re = Regex::new(r"(?ms)^```\s*$(.*?^```)").unwrap();
-
-            re.replace_all(description, "```text$1").to_string()
-        } else {
-            "".into()
-        }
-    }
-
-    pub fn var_name(&self) -> String {
-        crate::lang::rust::var_name(&self.name).to_string()
-    }
-
     pub fn params_struct_has_str(&self) -> bool {
         let predicate = |param: &Parameter| param.r#type.has_string();
         self.header_params.iter().any(predicate) || self.query_params.iter().any(predicate)
@@ -56,28 +34,6 @@ impl Operation {
         !(self.header_params.iter().any(predicate) && self.query_params.iter().any(predicate))
     }
 
-    pub fn struct_type(&self) -> String {
-        let mut name = format!("super::super::params::{}", self.struct_name());
-        if self.params_struct_has_str() {
-            name = format!("{}<'a>", name);
-        }
-
-        // If all the params are optional, make the top level struct optional as well
-        if self.is_optional_params_struct() {
-            format!("Option<{}>", name)
-        } else {
-            name
-        }
-    }
-
-    pub fn struct_name(&self) -> String {
-        self.name.to_case(Case::UpperCamel)
-    }
-
-    pub fn file_name(&self) -> String {
-        format!("{}.rs", self.name.to_case(Case::Snake))
-    }
-
     pub fn success_response(&self) -> Option<&Model> {
         let response = self.responses.iter().find(|(key, _)| {
             let code: u16 = key.parse().unwrap_or(0);
@@ -85,23 +41,6 @@ impl Operation {
         });
 
         response.map(|response| response.1)
-    }
-
-    pub fn success_type(&self, models: &BTreeMap<String, Model>) -> String {
-        let successes: Vec<_> = self
-            .responses
-            .iter()
-            .filter(|(key, _)| {
-                let code: u16 = key.parse().unwrap_or(0);
-                (200..300).contains(&code)
-            })
-            .collect();
-
-        if successes.len() != 1 {
-            "serde_json::Value".into()
-        } else {
-            successes[0].1.type_string(models)
-        }
     }
 }
 

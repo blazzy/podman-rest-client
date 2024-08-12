@@ -38,10 +38,10 @@ pub fn safe_name<S: AsRef<str>>(name: S) -> String {
 }
 
 impl parameter::BaseType {
-    pub fn as_token_stream(&self) -> TokenStream {
+    pub fn as_token_stream(&self, lifetime: Option<TokenStream>) -> TokenStream {
         use parameter::BaseType::*;
         match &self {
-            String => quote! { &str },
+            String => quote! { &#lifetime str },
             Boolean => quote! { bool },
             Integer => quote! { i64 },
         }
@@ -49,11 +49,11 @@ impl parameter::BaseType {
 }
 
 impl parameter::Parameter {
-    pub fn type_as_token_stream(&self) -> TokenStream {
+    pub fn type_as_token_stream(&self, lifetime: Option<TokenStream>) -> TokenStream {
         let tokens = match &self.r#type {
-            parameter::Type::Just(base_type) => base_type.as_token_stream(),
+            parameter::Type::Just(base_type) => base_type.as_token_stream(lifetime),
             parameter::Type::Array(base_type) => {
-                let base_type = base_type.as_token_stream();
+                let base_type = base_type.as_token_stream(lifetime);
                 quote! { Vec<#base_type> }
             }
         };
@@ -132,7 +132,7 @@ pub fn to_doc_comment(text: &str) -> Vec<TokenStream> {
 
     text.lines()
         .map(|line| {
-            let line = format!(" {}", line.trim());
+            let line = format!(" {}", line.trim_end());
             quote! { #[doc = #line] }
         })
         .collect::<Vec<_>>()
