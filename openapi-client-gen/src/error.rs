@@ -11,6 +11,8 @@ pub enum Error {
     UnrecognizedRequestPart(String),
     #[error("Unrecognized RequestPart {0}")]
     UnrecognizedRequestPartType(String),
+    #[error("Could not determine common module")]
+    CouldNotDetermineCommonModule,
     #[error("Unrecognized RequestPart Type {0}")]
     UnsupportedMethod(String),
     #[error("Unrecognized Tag {0}")]

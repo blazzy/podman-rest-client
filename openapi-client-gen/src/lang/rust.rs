@@ -8,8 +8,8 @@ use syn::Ident;
 
 use crate::error::Error;
 use crate::model;
-use crate::model::Model;
 use crate::model::ModelData;
+use crate::model::{Model, Property};
 use crate::operation;
 use crate::parameter;
 use crate::parameter::XClientDefault;
@@ -30,8 +30,9 @@ pub fn var_name(name: &str) -> Ident {
 }
 
 /// Replace all non alphanumeric characters with _ for safe idents
-pub fn safe_name(name: &str) -> String {
-    name.chars()
+pub fn safe_name<S: AsRef<str>>(name: S) -> String {
+    name.as_ref()
+        .chars()
         .map(|c| if c.is_ascii_alphanumeric() { c } else { '_' })
         .collect()
 }
@@ -137,12 +138,25 @@ pub fn to_doc_comment(text: &str) -> Vec<TokenStream> {
         .collect::<Vec<_>>()
 }
 
+pub fn property_type(
+    property: &Property,
+    models: &BTreeMap<String, Model>,
+) -> Result<TokenStream, Error> {
+    let model_type = model_type(&property.model, models);
+    if property.required {
+        model_type
+    } else {
+        let model_type = model_type?;
+        Ok(quote! { Option<#model_type> })
+    }
+}
+
 pub fn model_type(model: &Model, models: &BTreeMap<String, Model>) -> Result<TokenStream, Error> {
     Ok(match &model.data {
         ModelData::String => quote! { String },
         ModelData::Integer(format) => format.as_token_stream(),
         ModelData::Number => quote! { f64 },
-        ModelData::Boolean => quote! { f64 },
+        ModelData::Boolean => quote! { bool },
         ModelData::Array(items) => {
             let items = model_type(items, models)?;
             quote! { Vec<#items> }
@@ -154,13 +168,11 @@ pub fn model_type(model: &Model, models: &BTreeMap<String, Model>) -> Result<Tok
             quote! { super::super::models::#struct_name }
         }
         ModelData::HashMap(value, nullable) => {
-            let value = model_type(value, models)?;
-            let map = quote! { std::collections::HashMap::<String, #value> };
+            let mut value = model_type(value, models)?;
             if *nullable {
-                quote! { Option<#map> }
-            } else {
-                map
+                value = quote! { Option<#value> }
             }
+            quote! { std::collections::HashMap::<String, #value> }
         }
         ModelData::Ref(ref_str) => {
             if let Some(ref_model) = models.get(ref_str) {

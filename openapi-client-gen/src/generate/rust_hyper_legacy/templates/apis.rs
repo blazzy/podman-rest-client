@@ -6,14 +6,14 @@ use crate::lang::rust::{
 };
 use crate::{error::Error, spec::Spec, tag::Tag};
 
-pub fn api(spec: &Spec, tag: &Tag) -> Result<String, Error> {
+pub fn api(spec: &Spec, tag: &Tag, common_module: &syn::Path) -> Result<String, Error> {
     let struct_name = struct_name(&tag.name);
     let operations = operations(spec, tag)?;
 
     let code = quote! {
-        use super::super::config::HasConfig;
-        use super::super::Error;
-        use super::super::request;
+        use #common_module::config::HasConfig;
+        use #common_module::Error;
+        use #common_module::request;
 
         #[async_trait::async_trait]
         pub trait #struct_name: HasConfig + Send + Sync {

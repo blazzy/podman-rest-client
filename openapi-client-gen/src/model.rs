@@ -85,7 +85,7 @@ impl std::fmt::Display for IntegerFormat {
 pub struct Property {
     pub name: String,
     pub model: Model,
-    required: bool,
+    pub required: bool,
 }
 
 impl Property {
