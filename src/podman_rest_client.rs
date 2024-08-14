@@ -3,10 +3,12 @@ use std::str::FromStr;
 use hyper_util::client::legacy::Client;
 use hyper_util::rt::TokioExecutor;
 
-use crate::apis;
 use crate::config::Config;
 use crate::error::Error;
-use crate::impl_api_client;
+#[cfg(feature = "v4")]
+use crate::impl_crate_v4_traits;
+#[cfg(feature = "v5")]
+use crate::impl_crate_v5_traits;
 use crate::ssh;
 use crate::unix_socket;
 use crate::APIConfig;
@@ -20,7 +22,17 @@ pub struct PodmanRestClient {
     config: Box<dyn ClientConfig>,
 }
 
-impl_api_client!(PodmanRestClient, config);
+#[cfg(feature = "v5")]
+impl_crate_v5_traits!(PodmanRestClient);
+
+impl HasConfig for PodmanRestClient {
+    fn get_config(&self) -> &dyn ClientConfig {
+        &*self.config
+    }
+}
+
+#[cfg(feature = "v4")]
+impl_crate_v4_traits!(PodmanRestClient);
 
 impl PodmanRestClient {
     pub async fn new(config: Config) -> Result<Self, Error> {

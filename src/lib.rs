@@ -28,8 +28,10 @@
 //! On linux you might initialize a client like this
 //!
 //! ```no_run
+//! #[cfg(feature = "v5")]
 //! # tokio_test::block_on(async {
 //! use podman_rest_client::PodmanRestClient;
+//! use podman_rest_client::v5::Client;
 //! use podman_rest_client::Config;
 //!
 //! // Initialize a client
@@ -47,6 +49,7 @@
 //! On macOs you might initialize a client like this with an ssh url and identity file
 //!
 //! ```no_run
+//! #[cfg(feature = "v5")]
 //! # tokio_test::block_on(async {
 //! # use podman_rest_client::PodmanRestClient;
 //! # use podman_rest_client::Config;
@@ -63,8 +66,10 @@
 //! socket depending on the platform you are on.
 //!
 //! ```no_run
+//! #[cfg(feature = "v5")]
 //! # tokio_test::block_on(async {
 //! # use podman_rest_client::PodmanRestClient;
+//! # use podman_rest_client::v5::Client;
 //! # use podman_rest_client::Config;
 //! // Setup the default configuration
 //! let config = Config::guess().await.unwrap();
@@ -94,7 +99,5 @@ pub mod v5;
 pub use config::Config;
 pub use error::Error;
 pub use podman_rest_client::PodmanRestClient;
-#[cfg(feature = "v5")]
-pub use v5::{apis, models, params};
 
 pub(crate) use api_common::{config::HasConfig, ClientConfig, Config as APIConfig, Connector};
