@@ -1,9 +1,9 @@
 use super::apis;
-use super::config::ClientConfig;
-use super::config::Config;
-use super::config::Connector;
-use super::config::HasConfig;
-use crate::impl_api_client;
+use crate::api_common::config::ClientConfig;
+use crate::api_common::config::Config;
+use crate::api_common::config::Connector;
+use crate::api_common::config::HasConfig;
+use crate::impl_crate_v4_traits;
 pub struct Client {
     config: Box<dyn ClientConfig>,
 }
@@ -14,9 +14,9 @@ impl Client {
         }
     }
 }
-impl_api_client!(Client, config);
+impl_crate_v4_traits!(Client, config);
 #[macro_export]
-macro_rules! impl_api_client {
+macro_rules! impl_crate_v4_traits {
     ($struct_name:ident, $config_field:ident) => {
         impl HasConfig for $struct_name {
             fn get_config(&self) -> &dyn ClientConfig {
@@ -89,21 +89,21 @@ macro_rules! impl_api_client {
                 self
             }
         }
-        impl apis::Containers for $struct_name {}
-        impl apis::ContainersCompat for $struct_name {}
-        impl apis::Exec for $struct_name {}
-        impl apis::ExecCompat for $struct_name {}
-        impl apis::Images for $struct_name {}
-        impl apis::ImagesCompat for $struct_name {}
-        impl apis::Manifests for $struct_name {}
-        impl apis::Networks for $struct_name {}
-        impl apis::NetworksCompat for $struct_name {}
-        impl apis::Pods for $struct_name {}
-        impl apis::Secrets for $struct_name {}
-        impl apis::SecretsCompat for $struct_name {}
-        impl apis::System for $struct_name {}
-        impl apis::SystemCompat for $struct_name {}
-        impl apis::Volumes for $struct_name {}
-        impl apis::VolumesCompat for $struct_name {}
+        impl crate::v4::apis::Containers for $struct_name {}
+        impl crate::v4::apis::ContainersCompat for $struct_name {}
+        impl crate::v4::apis::Exec for $struct_name {}
+        impl crate::v4::apis::ExecCompat for $struct_name {}
+        impl crate::v4::apis::Images for $struct_name {}
+        impl crate::v4::apis::ImagesCompat for $struct_name {}
+        impl crate::v4::apis::Manifests for $struct_name {}
+        impl crate::v4::apis::Networks for $struct_name {}
+        impl crate::v4::apis::NetworksCompat for $struct_name {}
+        impl crate::v4::apis::Pods for $struct_name {}
+        impl crate::v4::apis::Secrets for $struct_name {}
+        impl crate::v4::apis::SecretsCompat for $struct_name {}
+        impl crate::v4::apis::System for $struct_name {}
+        impl crate::v4::apis::SystemCompat for $struct_name {}
+        impl crate::v4::apis::Volumes for $struct_name {}
+        impl crate::v4::apis::VolumesCompat for $struct_name {}
     };
 }

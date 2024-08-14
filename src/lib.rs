@@ -85,18 +85,16 @@ mod ssh;
 mod unix_socket;
 
 #[cfg(feature = "v4")]
-mod v4;
-#[cfg(feature = "v4")]
-pub use v4::{apis, models, params};
-#[cfg(feature = "v4")]
-pub(crate) use v4::{config::HasConfig, ClientConfig, Config as APIConfig, Connector};
+pub mod v4;
+
+pub mod api_common;
 
 #[cfg(feature = "v5")]
-mod v5;
+pub mod v5;
 pub use config::Config;
 pub use error::Error;
 pub use podman_rest_client::PodmanRestClient;
 #[cfg(feature = "v5")]
 pub use v5::{apis, models, params};
-#[cfg(feature = "v5")]
-pub(crate) use v5::{config::HasConfig, ClientConfig, Config as APIConfig, Connector};
+
+pub(crate) use api_common::{config::HasConfig, ClientConfig, Config as APIConfig, Connector};

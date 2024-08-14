@@ -5,9 +5,9 @@ pub struct EndpointResource {
     #[serde(rename = "EndpointID")]
     pub endpoint_id: Option<String>,
     #[serde(rename = "IPv4Address")]
-    pub i_pv_4_address: Option<String>,
+    pub i_pv4_address: Option<String>,
     #[serde(rename = "IPv6Address")]
-    pub i_pv_6_address: Option<String>,
+    pub i_pv6_address: Option<String>,
     #[serde(rename = "MacAddress")]
     pub mac_address: Option<String>,
     #[serde(rename = "Name")]

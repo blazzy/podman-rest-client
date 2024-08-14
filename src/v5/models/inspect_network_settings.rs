@@ -20,10 +20,10 @@ pub struct InspectNetworkSettings {
     pub gateway: Option<String>,
     /// GlobalIPv6Address is the global-scope IPv6 Address for this network.
     #[serde(rename = "GlobalIPv6Address")]
-    pub global_i_pv_6_address: Option<String>,
+    pub global_i_pv6_address: Option<String>,
     /// GlobalIPv6PrefixLen is the length of the subnet mask of this network.
     #[serde(rename = "GlobalIPv6PrefixLen")]
-    pub global_i_pv_6_prefix_len: Option<i64>,
+    pub global_i_pv6_prefix_len: Option<i64>,
     #[serde(rename = "HairpinMode")]
     pub hairpin_mode: Option<bool>,
     /// IPAddress is the IP address for this network.
@@ -34,11 +34,11 @@ pub struct InspectNetworkSettings {
     pub ip_prefix_len: Option<i64>,
     /// IPv6Gateway is the IPv6 gateway this network will use.
     #[serde(rename = "IPv6Gateway")]
-    pub i_pv_6_gateway: Option<String>,
+    pub i_pv6_gateway: Option<String>,
     #[serde(rename = "LinkLocalIPv6Address")]
-    pub link_local_i_pv_6_address: Option<String>,
+    pub link_local_i_pv6_address: Option<String>,
     #[serde(rename = "LinkLocalIPv6PrefixLen")]
-    pub link_local_i_pv_6_prefix_len: Option<i64>,
+    pub link_local_i_pv6_prefix_len: Option<i64>,
     /// MacAddress is the MAC address for the interface in this network.
     #[serde(rename = "MacAddress")]
     pub mac_address: Option<String>,
@@ -63,5 +63,5 @@ pub struct InspectNetworkSettings {
     /// SecondaryIPv6Addresses is a list of extra IPv6 Addresses that the
     /// container has been assigned in this network.
     #[serde(rename = "SecondaryIPv6Addresses")]
-    pub secondary_i_pv_6_addresses: Option<Vec<super::super::models::Address>>,
+    pub secondary_i_pv6_addresses: Option<Vec<super::super::models::Address>>,
 }

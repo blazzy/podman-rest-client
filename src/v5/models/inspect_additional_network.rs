@@ -25,10 +25,10 @@ pub struct InspectAdditionalNetwork {
     pub gateway: Option<String>,
     /// GlobalIPv6Address is the global-scope IPv6 Address for this network.
     #[serde(rename = "GlobalIPv6Address")]
-    pub global_i_pv_6_address: Option<String>,
+    pub global_i_pv6_address: Option<String>,
     /// GlobalIPv6PrefixLen is the length of the subnet mask of this network.
     #[serde(rename = "GlobalIPv6PrefixLen")]
-    pub global_i_pv_6_prefix_len: Option<i64>,
+    pub global_i_pv6_prefix_len: Option<i64>,
     /// IPAMConfig is presently unused and maintained exclusively for
     /// compatibility.
     #[serde(rename = "IPAMConfig")]
@@ -41,7 +41,7 @@ pub struct InspectAdditionalNetwork {
     pub ip_prefix_len: Option<i64>,
     /// IPv6Gateway is the IPv6 gateway this network will use.
     #[serde(rename = "IPv6Gateway")]
-    pub i_pv_6_gateway: Option<String>,
+    pub i_pv6_gateway: Option<String>,
     /// Links is presently unused and maintained exclusively for
     /// compatibility.
     #[serde(rename = "Links")]
@@ -59,5 +59,5 @@ pub struct InspectAdditionalNetwork {
     /// SecondaryIPv6Addresses is a list of extra IPv6 Addresses that the
     /// container has been assigned in this network.
     #[serde(rename = "SecondaryIPv6Addresses")]
-    pub secondary_i_pv_6_addresses: Option<Vec<super::super::models::Address>>,
+    pub secondary_i_pv6_addresses: Option<Vec<super::super::models::Address>>,
 }

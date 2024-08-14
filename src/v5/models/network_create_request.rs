@@ -15,7 +15,7 @@ pub struct NetworkCreateRequest {
     #[serde(rename = "Driver")]
     pub driver: Option<String>,
     #[serde(rename = "EnableIPv6")]
-    pub enable_i_pv_6: Option<bool>,
+    pub enable_i_pv6: Option<bool>,
     #[serde(rename = "IPAM")]
     pub ipam: Option<super::super::models::Ipam>,
     #[serde(rename = "Ingress")]

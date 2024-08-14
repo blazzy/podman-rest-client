@@ -53,7 +53,7 @@ pub struct HostInfo {
     #[serde(rename = "serviceIsRemote")]
     pub service_is_remote: Option<bool>,
     #[serde(rename = "slirp4netns")]
-    pub slirp_4_netns: Option<super::super::models::SlirpInfo>,
+    pub slirp4_netns: Option<super::super::models::SlirpInfo>,
     #[serde(rename = "swapFree")]
     pub swap_free: Option<i64>,
     #[serde(rename = "swapTotal")]

@@ -1,6 +1,6 @@
-use crate::v4::config::HasConfig;
-use crate::v4::request;
-use crate::v4::Error;
+use crate::api_common::config::HasConfig;
+use crate::api_common::request;
+use crate::api_common::Error;
 #[async_trait::async_trait]
 pub trait ContainersCompat: HasConfig + Send + Sync {
     /// POST /commit

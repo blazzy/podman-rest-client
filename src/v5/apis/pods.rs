@@ -1,6 +1,6 @@
-use crate::v5::config::HasConfig;
-use crate::v5::request;
-use crate::v5::Error;
+use crate::api_common::config::HasConfig;
+use crate::api_common::request;
+use crate::api_common::Error;
 #[async_trait::async_trait]
 pub trait Pods: HasConfig + Send + Sync {
     /// DELETE /libpod/pods/{name}

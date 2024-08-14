@@ -15,9 +15,9 @@ pub struct EndpointSettings {
     #[serde(rename = "Gateway")]
     pub gateway: Option<String>,
     #[serde(rename = "GlobalIPv6Address")]
-    pub global_i_pv_6_address: Option<String>,
+    pub global_i_pv6_address: Option<String>,
     #[serde(rename = "GlobalIPv6PrefixLen")]
-    pub global_i_pv_6_prefix_len: Option<i64>,
+    pub global_i_pv6_prefix_len: Option<i64>,
     #[serde(rename = "IPAMConfig")]
     pub ipam_config: Option<super::super::models::EndpointIpamConfig>,
     #[serde(rename = "IPAddress")]
@@ -25,7 +25,7 @@ pub struct EndpointSettings {
     #[serde(rename = "IPPrefixLen")]
     pub ip_prefix_len: Option<i64>,
     #[serde(rename = "IPv6Gateway")]
-    pub i_pv_6_gateway: Option<String>,
+    pub i_pv6_gateway: Option<String>,
     #[serde(rename = "Links")]
     pub links: Option<Vec<String>>,
     /// MacAddress may be used to specify a MAC address when the container is created.

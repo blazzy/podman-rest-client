@@ -17,8 +17,7 @@ pub struct Network {
     /// IPAMOptions contains options used for the ip assignment.
     pub ipam_options: Option<std::collections::HashMap<String, String>>,
     /// IPv6Enabled if set to true an ipv6 subnet should be created for this net.
-    #[serde(rename = "ipv6_enabled")]
-    pub ipv_6_enabled: Option<bool>,
+    pub ipv6_enabled: Option<bool>,
     /// Labels is a set of key-value labels that have been applied to the
     /// Network.
     pub labels: Option<std::collections::HashMap<String, String>>,
