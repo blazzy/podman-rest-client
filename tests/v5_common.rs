@@ -1,6 +1,8 @@
-use podman_rest_client::models::SpecGenerator;
-use podman_rest_client::models::VolumeCreateOptions;
-use podman_rest_client::params;
+#![cfg(feature = "v5")]
+
+use podman_rest_client::v5::models;
+use podman_rest_client::v5::params;
+use podman_rest_client::v5::Client;
 use podman_rest_client::{Config, PodmanRestClient};
 use tokio::sync::OnceCell;
 
@@ -65,10 +67,10 @@ pub async fn pull_nginx_image(client: &PodmanRestClient) {
 }
 
 pub async fn create_nginx_container(client: &PodmanRestClient, container_name: &str) {
-    let create = SpecGenerator {
+    let create = models::SpecGenerator {
         name: Some(container_name.into()),
         image: Some("docker.io/library/nginx:latest".into()),
-        ..podman_rest_client::models::SpecGenerator::default()
+        ..models::SpecGenerator::default()
     };
 
     client
@@ -95,9 +97,9 @@ pub async fn delete_pod(client: &PodmanRestClient, pod_name: &str) {
 }
 
 pub async fn create_volume(client: &PodmanRestClient, volume_name: &str) {
-    let create = VolumeCreateOptions {
+    let create = models::VolumeCreateOptions {
         name: Some(volume_name.into()),
-        ..VolumeCreateOptions::default()
+        ..models::VolumeCreateOptions::default()
     };
 
     client
