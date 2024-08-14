@@ -11,8 +11,8 @@ use tokio::io::AsyncWrite;
 use tokio::net::UnixStream;
 use tower_service::Service;
 
-use crate::error::Error;
 use crate::api_common::Connector;
+use crate::error::Error;
 
 #[derive(Clone)]
 pub(crate) struct UnixConnector {

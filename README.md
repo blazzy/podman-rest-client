@@ -10,7 +10,7 @@
 Provides an interface for querying the Podman REST API. Most of the interface is generated from
 the the official Podman swagger file. This crate adds a layer to make it possible to connect to
 the podman rest api over ssh to a unix socket and directly to a unix socket. Connections over
-ssh are  commonly necessary on macOS where the container runtime runs in a virtual machine
+ssh are  commonly necessary on macOs where the container runtime runs in a virtual machine
 accessible over ssh.
 
 
@@ -37,7 +37,9 @@ systemctl --user enable --now podman.socket
 On linux you might initialize a client like this
 
 ```rust
+#[cfg(feature = "v5")]
 use podman_rest_client::PodmanRestClient;
+use podman_rest_client::v5::Client;
 use podman_rest_client::Config;
 
 // Initialize a client
@@ -51,9 +53,10 @@ let images = client.images().image_list_libpod(None).await.unwrap();
 ```
 ### MacOs
 
-On macOS you might initialize a client like this with an ssh url and identity file
+On macOs you might initialize a client like this with an ssh url and identity file
 
 ```rust
+#[cfg(feature = "v5")]
 let client = PodmanRestClient::new(Config {
     uri: "ssh://core@127.0.0.1:63169/run/user/501/podman/podman.sock".to_string(),
     identity_file: Some("/path/to/identity_file".into()),
@@ -66,6 +69,7 @@ You can also use `Config::guess()` which tries to find the default path to the p
 socket depending on the platform you are on.
 
 ```rust
+#[cfg(feature = "v5")]
 // Setup the default configuration
 let config = Config::guess().await.unwrap();
 
