@@ -12,7 +12,7 @@ use tokio::net::UnixStream;
 use tower_service::Service;
 
 use crate::error::Error;
-use crate::Connector;
+use crate::api_common::Connector;
 
 #[derive(Clone)]
 pub(crate) struct UnixConnector {

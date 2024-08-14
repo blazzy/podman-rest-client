@@ -86,7 +86,9 @@ pub mod cli;
 mod config;
 mod error;
 mod podman_rest_client;
+#[cfg(feature = "ssh")]
 mod ssh;
+#[cfg(feature = "uds")]
 mod unix_socket;
 
 #[cfg(feature = "v4")]
@@ -99,5 +101,3 @@ pub mod v5;
 pub use config::Config;
 pub use error::Error;
 pub use podman_rest_client::PodmanRestClient;
-
-pub(crate) use api_common::{config::HasConfig, ClientConfig, Config as APIConfig, Connector};

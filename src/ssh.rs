@@ -15,8 +15,8 @@ use russh_keys::key;
 use tokio::io::{AsyncRead, AsyncWrite};
 use tower_service::Service;
 
+use crate::api_common::Connector;
 use crate::error::Error;
-use crate::Connector;
 
 #[derive(Clone)]
 pub(crate) struct SshConnector {

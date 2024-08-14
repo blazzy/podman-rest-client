@@ -3,18 +3,20 @@ use std::str::FromStr;
 use hyper_util::client::legacy::Client;
 use hyper_util::rt::TokioExecutor;
 
+use crate::api_common::config::HasConfig;
+use crate::api_common::ClientConfig;
+use crate::api_common::Config as APIConfig;
+use crate::api_common::Connector;
 use crate::config::Config;
 use crate::error::Error;
 #[cfg(feature = "v4")]
 use crate::impl_crate_v4_traits;
 #[cfg(feature = "v5")]
 use crate::impl_crate_v5_traits;
+#[cfg(feature = "ssh")]
 use crate::ssh;
+#[cfg(feature = "uds")]
 use crate::unix_socket;
-use crate::APIConfig;
-use crate::ClientConfig;
-use crate::Connector;
-use crate::HasConfig;
 
 const BASE_PATH: &str = "http://d/v5.1.0";
 
@@ -39,12 +41,19 @@ impl PodmanRestClient {
         let (scheme, rest) = config.uri.split_once("://").ok_or(Error::InvalidScheme)?;
 
         match scheme {
+            #[cfg(feature = "uds")]
             "unix" => Ok(PodmanRestClient::new_unix(rest)),
+            #[cfg(not(feature = "uds"))]
+            "uds" => Err(Error::UdsFeatureFlagNotEnabled),
+            #[cfg(feature = "ssh")]
             "ssh" => PodmanRestClient::new_ssh(config.uri, config.identity_file).await,
+            #[cfg(not(feature = "ssh"))]
+            "ssh" => Err(Error::SshFeatureFlagNotEnabled),
             _ => Err(Error::InvalidScheme),
         }
     }
 
+    #[cfg(feature = "ssh")]
     pub async fn new_ssh(uri: String, key_path: Option<String>) -> Result<PodmanRestClient, Error> {
         let uri = hyper::Uri::from_str(&uri)?;
 
@@ -68,6 +77,7 @@ impl PodmanRestClient {
         Ok(PodmanRestClient::new_connector(connector))
     }
 
+    #[cfg(feature = "uds")]
     pub fn new_unix(path: &str) -> PodmanRestClient {
         let connector = unix_socket::UnixConnector::new(path);
 
