@@ -2,7 +2,7 @@ use quote::quote;
 
 use crate::{error::Error, spec::Spec};
 
-pub fn config(spec: &Spec) -> Result<String, Error> {
+pub fn config(spec: &Spec, common_module: &syn::Path) -> Result<String, Error> {
     let base_path = &spec.base_path;
 
     let code = quote! {
@@ -20,7 +20,7 @@ pub fn config(spec: &Spec) -> Result<String, Error> {
         use hyper_util::client::legacy::Error as HyperError;
         use hyper_util::rt::TokioExecutor;
 
-        use super::Error;
+        use #common_module::Error;
 
         pub trait Connector: Connect + Clone + Send + Sync + 'static {}
         impl Connector for HttpConnector {}

@@ -1,6 +1,6 @@
 use std::collections::BTreeMap;
 
-use convert_case::{Case, Casing};
+use convert_case::{Boundary, Case, Casing};
 use proc_macro2::{Span, TokenStream};
 use quote::quote;
 use regex::Regex;
@@ -18,14 +18,33 @@ pub fn is_keyword(var: &str) -> bool {
     RUST_KEYWORDS.iter().any(|k| k == &var)
 }
 
+fn boundaries() -> Vec<Boundary> {
+    vec![
+        Boundary::Acronym,
+        Boundary::Underscore,
+        Boundary::Hyphen,
+        Boundary::Space,
+        Boundary::LowerUpper,
+        Boundary::UpperDigit,
+        Boundary::DigitUpper,
+        Boundary::DigitLower,
+    ]
+}
+
 /// Format name to a conventional upper camel rust ident for struct and trait names
 pub fn struct_name(name: &str) -> Ident {
-    ident(&safe_name(name).to_case(Case::UpperCamel))
+    ident(
+        &safe_name(name)
+            .with_boundaries(&boundaries())
+            .to_case(Case::UpperCamel),
+    )
 }
 
 /// Format name to a conventional rust snake variable and prefix with r# in case it is a keyword
 pub fn var_name(name: &str) -> Ident {
-    let var_name = safe_name(name).to_case(Case::Snake);
+    let var_name = safe_name(name)
+        .with_boundaries(&boundaries())
+        .to_case(Case::Snake);
     ident(&var_name)
 }
 

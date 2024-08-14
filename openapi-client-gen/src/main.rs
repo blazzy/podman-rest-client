@@ -28,6 +28,9 @@ struct Cli {
     /// same project for different APIs or different versions of the same API (optional)
     #[arg(long)]
     common_dir: Option<String>,
+    /// Module name for api files. If not specified, we guess based on the nearest src folder.
+    #[arg(long)]
+    api_module: Option<String>,
     /// Module name for common files. If not specified, we guess based on the nearest src folder.
     #[arg(long)]
     common_module: Option<String>,
@@ -39,8 +42,7 @@ fn main() -> Result<(), Error> {
 
     match app() {
         Err(err) => {
-            log::error!("Fail");
-            eprintln!("{}", err);
+            log::error!("{}", err);
             Err(err)
         }
         ok => ok,
@@ -65,6 +67,7 @@ fn app() -> Result<(), Error> {
         target_dir: &cli.target_dir,
         is_module: cli.module,
         common_dir: cli.common_dir,
+        api_module: cli.api_module,
         common_module: cli.common_module,
     })?;
 

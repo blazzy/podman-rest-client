@@ -15,6 +15,7 @@ pub struct GeneratorConfig<'a> {
     pub is_module: bool,
     pub target_dir: &'a str,
     pub common_dir: Option<String>,
+    pub api_module: Option<String>,
     pub common_module: Option<String>,
 }
 
@@ -28,6 +29,9 @@ pub fn generate<'a>(config: &'a mut GeneratorConfig<'a>) -> Result<(), Error> {
 
     let common_module = guess_common_module(config).ok_or(Error::CouldNotDetermineCommonModule)?;
     let common_module: syn::Path = syn::parse_str(&common_module)?;
+
+    let api_module_str = guess_api_module(config).ok_or(Error::CouldNotDetermineCommonModule)?;
+
     let spec = config.spec;
 
     let src_dir = if config.is_module {
@@ -99,15 +103,33 @@ pub fn generate<'a>(config: &'a mut GeneratorConfig<'a>) -> Result<(), Error> {
         templates::mod_pub_structs(operations.iter().map(|op| &op.name))?,
     )?;
 
-    files.create(src_dir.join("client.rs"), templates::client::client(spec)?)?;
+    files.create(
+        src_dir.join("client.rs"),
+        templates::client::client(spec, &common_module, &api_module_str)?,
+    )?;
 
-    common_files.create(src_dir.join("config.rs"), templates::config::config(spec)?)?;
+    common_files.create(
+        src_dir.join("config.rs"),
+        templates::config::config(spec, &common_module)?,
+    )?;
     let file_name = src_dir.join("error.rs");
     common_files.create(file_name, include_str!("./templates/error.rs"))?;
     let file_name = src_dir.join("request.rs");
     common_files.create(file_name, include_str!("./templates/request.rs"))?;
 
     Ok(())
+}
+
+fn guess_api_module(config: &GeneratorConfig) -> Option<String> {
+    if !config.is_module {
+        return Some("crate".into());
+    }
+
+    if let Some(api_module) = &config.api_module {
+        return Some(api_module.to_string());
+    }
+
+    guess_module_path(config.target_dir)
 }
 
 fn guess_common_module(config: &GeneratorConfig) -> Option<String> {
