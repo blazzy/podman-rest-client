@@ -43,7 +43,7 @@ async fn it_can_create_a_volume() {
         name: Some("podman_rest_client_volume_test".into()),
         ..models::VolumeCreateOptions::default()
     };
-    let result = client.volumes().volume_create_libpod(create).await;
+    let result = client.v5().volumes().volume_create_libpod(create).await;
     result.expect("Failed to create a volume");
 
     common::delete_volume(&client, "podman_rest_client_volume_test").await;
