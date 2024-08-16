@@ -4,7 +4,6 @@ use crate::api_common::config::Config;
 use crate::api_common::config::Connector;
 use crate::api_common::config::HasConfig;
 use crate::impl_crate_v5_traits;
-use std::marker::Sized;
 pub struct APIClient {
     config: Box<dyn ClientConfig>,
 }
@@ -24,7 +23,6 @@ pub trait Client:
     HasConfig
     + Send
     + Sync
-    + Sized
     + apis::Containers
     + apis::ContainersCompat
     + apis::Exec
@@ -43,75 +41,108 @@ pub trait Client:
     + apis::VolumesCompat
 {
     /// Actions related to containers
-    fn containers(&self) -> &dyn apis::Containers {
-        self
-    }
+    fn containers(&self) -> &dyn apis::Containers;
     /// Actions related to containers for the compatibility endpoints
-    fn containers_compat(&self) -> &dyn apis::ContainersCompat {
-        self
-    }
+    fn containers_compat(&self) -> &dyn apis::ContainersCompat;
     /// Actions related to exec
-    fn exec(&self) -> &dyn apis::Exec {
-        self
-    }
+    fn exec(&self) -> &dyn apis::Exec;
     /// Actions related to exec for the compatibility endpoints
-    fn exec_compat(&self) -> &dyn apis::ExecCompat {
-        self
-    }
+    fn exec_compat(&self) -> &dyn apis::ExecCompat;
     /// Actions related to images
-    fn images(&self) -> &dyn apis::Images {
-        self
-    }
+    fn images(&self) -> &dyn apis::Images;
     /// Actions related to images for the compatibility endpoints
-    fn images_compat(&self) -> &dyn apis::ImagesCompat {
-        self
-    }
+    fn images_compat(&self) -> &dyn apis::ImagesCompat;
     /// Actions related to manifests
-    fn manifests(&self) -> &dyn apis::Manifests {
-        self
-    }
+    fn manifests(&self) -> &dyn apis::Manifests;
     /// Actions related to networks
-    fn networks(&self) -> &dyn apis::Networks {
-        self
-    }
+    fn networks(&self) -> &dyn apis::Networks;
     /// Actions related to networks for the compatibility endpoints
-    fn networks_compat(&self) -> &dyn apis::NetworksCompat {
-        self
-    }
+    fn networks_compat(&self) -> &dyn apis::NetworksCompat;
     /// Actions related to pods
-    fn pods(&self) -> &dyn apis::Pods {
-        self
-    }
+    fn pods(&self) -> &dyn apis::Pods;
     /// Actions related to secrets
-    fn secrets(&self) -> &dyn apis::Secrets {
-        self
-    }
+    fn secrets(&self) -> &dyn apis::Secrets;
     /// Actions related to secrets for the compatibility endpoints
-    fn secrets_compat(&self) -> &dyn apis::SecretsCompat {
-        self
-    }
+    fn secrets_compat(&self) -> &dyn apis::SecretsCompat;
     /// Actions related to Podman engine
-    fn system(&self) -> &dyn apis::System {
-        self
-    }
+    fn system(&self) -> &dyn apis::System;
     /// Actions related to Podman and compatibility engines
-    fn system_compat(&self) -> &dyn apis::SystemCompat {
-        self
-    }
+    fn system_compat(&self) -> &dyn apis::SystemCompat;
     /// Actions related to volumes
-    fn volumes(&self) -> &dyn apis::Volumes {
-        self
-    }
+    fn volumes(&self) -> &dyn apis::Volumes;
     /// Actions related to volumes for the compatibility endpoints
-    fn volumes_compat(&self) -> &dyn apis::VolumesCompat {
-        self
-    }
+    fn volumes_compat(&self) -> &dyn apis::VolumesCompat;
 }
 impl_crate_v5_traits!(APIClient);
 #[macro_export]
 macro_rules! impl_crate_v5_traits {
     ($struct_name:ident) => {
-        impl crate::v5::Client for $struct_name {}
+        impl crate::v5::Client for $struct_name {
+            #[doc = " Actions related to containers"]
+            fn containers(&self) -> &dyn crate::v5::apis::Containers {
+                self
+            }
+            #[doc = " Actions related to containers for the compatibility endpoints"]
+            fn containers_compat(&self) -> &dyn crate::v5::apis::ContainersCompat {
+                self
+            }
+            #[doc = " Actions related to exec"]
+            fn exec(&self) -> &dyn crate::v5::apis::Exec {
+                self
+            }
+            #[doc = " Actions related to exec for the compatibility endpoints"]
+            fn exec_compat(&self) -> &dyn crate::v5::apis::ExecCompat {
+                self
+            }
+            #[doc = " Actions related to images"]
+            fn images(&self) -> &dyn crate::v5::apis::Images {
+                self
+            }
+            #[doc = " Actions related to images for the compatibility endpoints"]
+            fn images_compat(&self) -> &dyn crate::v5::apis::ImagesCompat {
+                self
+            }
+            #[doc = " Actions related to manifests"]
+            fn manifests(&self) -> &dyn crate::v5::apis::Manifests {
+                self
+            }
+            #[doc = " Actions related to networks"]
+            fn networks(&self) -> &dyn crate::v5::apis::Networks {
+                self
+            }
+            #[doc = " Actions related to networks for the compatibility endpoints"]
+            fn networks_compat(&self) -> &dyn crate::v5::apis::NetworksCompat {
+                self
+            }
+            #[doc = " Actions related to pods"]
+            fn pods(&self) -> &dyn crate::v5::apis::Pods {
+                self
+            }
+            #[doc = " Actions related to secrets"]
+            fn secrets(&self) -> &dyn crate::v5::apis::Secrets {
+                self
+            }
+            #[doc = " Actions related to secrets for the compatibility endpoints"]
+            fn secrets_compat(&self) -> &dyn crate::v5::apis::SecretsCompat {
+                self
+            }
+            #[doc = " Actions related to Podman engine"]
+            fn system(&self) -> &dyn crate::v5::apis::System {
+                self
+            }
+            #[doc = " Actions related to Podman and compatibility engines"]
+            fn system_compat(&self) -> &dyn crate::v5::apis::SystemCompat {
+                self
+            }
+            #[doc = " Actions related to volumes"]
+            fn volumes(&self) -> &dyn crate::v5::apis::Volumes {
+                self
+            }
+            #[doc = " Actions related to volumes for the compatibility endpoints"]
+            fn volumes_compat(&self) -> &dyn crate::v5::apis::VolumesCompat {
+                self
+            }
+        }
         impl crate::v5::apis::Containers for $struct_name {}
         impl crate::v5::apis::ContainersCompat for $struct_name {}
         impl crate::v5::apis::Exec for $struct_name {}
