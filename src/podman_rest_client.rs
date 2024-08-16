@@ -94,4 +94,14 @@ impl PodmanRestClient {
             }),
         }
     }
+
+    #[cfg(feature = "v5")]
+    pub fn v5(&self) -> &dyn crate::v5::Client {
+        self
+    }
+
+    #[cfg(feature = "v4")]
+    pub fn v4(&self) -> &dyn crate::v4::Client {
+        self
+    }
 }
