@@ -11,7 +11,8 @@ pub fn client(
 ) -> Result<String, Error> {
     let api_module: syn::Path = syn::parse_str(api_module_str)?;
     let api_implementations = api_implementations(spec, &api_module);
-    let api_functions = api_functions(spec);
+    let api_trait_functions = api_trait_functions(spec);
+    let api_impl_functions = api_impl_functions(spec, &api_module);
     let apis = spec.tags.values().map(|tag| {
         let struct_name = struct_name(&tag.name);
         quote! {
@@ -22,7 +23,6 @@ pub fn client(
     log::warn!("{}", macro_name);
 
     let code = quote! {
-        use std::marker::Sized;
         use super::apis;
         use #common_module::config::HasConfig;
         use #common_module::config::ClientConfig;
@@ -48,8 +48,8 @@ pub fn client(
             }
         }
 
-        pub trait Client: HasConfig + Send + Sync + Sized + #(#apis+)* {
-            #(#api_functions)*
+        pub trait Client: HasConfig + Send + Sync + #(#apis+)* {
+            #(#api_trait_functions)*
         }
 
         #macro_name!(APIClient);
@@ -57,7 +57,9 @@ pub fn client(
         #[macro_export]
         macro_rules! #macro_name {
             ($struct_name:ident) => {
-                impl #api_module::Client for $struct_name {}
+                impl #api_module::Client for $struct_name {
+                    #(#api_impl_functions)*
+                }
                 #(#api_implementations)*
             };
         }
@@ -81,7 +83,7 @@ fn api_implementations<'a>(
     })
 }
 
-fn api_functions<'a>(spec: &'a Spec) -> impl Iterator<Item = TokenStream> + 'a {
+fn api_trait_functions<'a>(spec: &'a Spec) -> impl Iterator<Item = TokenStream> + 'a {
     spec.tags.values().map(move |tag| {
         let struct_name = struct_name(&tag.name);
         let var_name = var_name(&tag.name);
@@ -89,7 +91,23 @@ fn api_functions<'a>(spec: &'a Spec) -> impl Iterator<Item = TokenStream> + 'a {
 
         quote! {
             #(#doc_comments)*
-            fn #var_name(&self) -> &dyn apis::#struct_name {
+            fn #var_name(&self) -> &dyn apis::#struct_name;
+        }
+    })
+}
+
+fn api_impl_functions<'a>(
+    spec: &'a Spec,
+    api_module: &'a syn::Path,
+) -> impl Iterator<Item = TokenStream> + 'a {
+    spec.tags.values().map(move |tag| {
+        let struct_name = struct_name(&tag.name);
+        let var_name = var_name(&tag.name);
+        let doc_comments = to_doc_comment(&tag.description);
+
+        quote! {
+            #(#doc_comments)*
+            fn #var_name(&self) -> &dyn #api_module::apis::#struct_name {
                 self
             }
         }

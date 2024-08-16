@@ -11,11 +11,13 @@ pub fn api(spec: &Spec, tag: &Tag, common_module: &syn::Path) -> Result<String, 
     let operations = operations(spec, tag)?;
 
     let code = quote! {
+        use std::future::Future;
+        use std::pin::Pin;
+
         use #common_module::config::HasConfig;
         use #common_module::Error;
         use #common_module::request;
 
-        #[async_trait::async_trait]
         pub trait #struct_name: HasConfig + Send + Sync {
             #(#operations)*
         }
@@ -53,7 +55,7 @@ pub fn operations(spec: &Spec, tag: &Tag) -> Result<Vec<TokenStream>, Error> {
                 .iter()
                 .map(|param| {
                     let var_name = var_name(&param.name);
-                    let param_type = param.type_as_token_stream(None);
+                    let param_type = param.type_as_token_stream(Some(quote! {'a}));
                     Ok(quote! { #var_name: #param_type, })
                 })
                 .collect::<Result<Vec<_>, Error>>()?;
@@ -166,39 +168,39 @@ pub fn operations(spec: &Spec, tag: &Tag) -> Result<Vec<TokenStream>, Error> {
             let path = &operation.path;
             let method = &operation.method.to_string();
             let fn_lifetime = if operation.params_struct_has_str() {
-                quote! { <'a> }
-            } else {
-                TokenStream::new()
-            };
+                Some(quote! { <'a> })
+            } else { None };
 
             Ok(quote! {
                 #[doc = #title]
                 #(#summary)*
                 #(#description)*
-                async fn #fn_name #fn_lifetime(
-                    &self,
+                fn #fn_name<'a>(
+                    &'a self,
                     #(#path_params)*
                     #params_struct #body_param
-                ) -> Result<#response, Error> {
-                    let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
+                ) -> Pin<Box<dyn Future<Output=Result<#response, Error>> + Send + 'a>> {
+                    Box::pin(async move {
+                        let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
 
-                    let mut request_path = request_url.path().to_owned();
-                    if request_path.ends_with('/') {
-                        request_path.pop();
-                    }
-                    request_path.push_str(#path);
-                    #set_path_params
-                    request_url.set_path(&request_path);
+                        let mut request_path = request_url.path().to_owned();
+                        if request_path.ends_with('/') {
+                            request_path.pop();
+                        }
+                        request_path.push_str(#path);
+                        #set_path_params
+                        request_url.set_path(&request_path);
 
-                    let mut req_builder = self.get_config().req_builder(#method)?;
+                        let mut req_builder = self.get_config().req_builder(#method)?;
 
-                    #process_params_struct
+                        #process_params_struct
 
-                    let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
-                    req_builder = req_builder.uri(hyper_uri);
+                        let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
+                        req_builder = req_builder.uri(hyper_uri);
 
-                    #create_body
-                    #execute_request
+                        #create_body
+                        #execute_request
+                    })
                 }
             })
         })
