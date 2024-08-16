@@ -67,7 +67,10 @@ pub trait Volumes: HasConfig + Send + Sync {
     }
     /// POST /libpod/volumes/create
     /// Create a volume
-    async fn volume_create_libpod(&self, create: ()) -> Result<(), Error> {
+    async fn volume_create_libpod(
+        &self,
+        create: super::super::models::VolumeCreateOptions,
+    ) -> Result<(), Error> {
         let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
         let mut request_path = request_url.path().to_owned();
         if request_path.ends_with('/') {

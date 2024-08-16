@@ -224,7 +224,7 @@ pub trait Pods: HasConfig + Send + Sync {
     }
     /// POST /libpod/pods/create
     /// Create a pod
-    async fn pod_create_libpod(&self, create: ()) -> Result<(), Error> {
+    async fn pod_create_libpod(&self, create: serde_json::Value) -> Result<(), Error> {
         let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
         let mut request_path = request_url.path().to_owned();
         if request_path.ends_with('/') {

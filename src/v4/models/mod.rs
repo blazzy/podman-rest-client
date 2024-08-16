@@ -1,3 +1,5 @@
+mod volume_create_options;
+pub use volume_create_options::VolumeCreateOptions;
 mod container_exec_body;
 pub use container_exec_body::ContainerExecBody;
 mod container_exec_libpod_body;
