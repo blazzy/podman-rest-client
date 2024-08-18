@@ -97,7 +97,7 @@
 //!
 //! ### Traits
 //!
-//! If you import the `podman_rest_client::v5::Client` trait you don't need to invoke v5() and can 
+//! If you import the `podman_rest_client::v5::Client` trait you don't need to invoke v5() and can
 //! directly call the api functions like `client.images()`
 //!
 //! ```

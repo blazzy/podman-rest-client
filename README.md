@@ -171,6 +171,8 @@ More adjustments likely to come as we run into issues and should be documented h
 ### v0.11.0 (Unreleased)
 
 * Use new api client generator to generate client from swagger file. Big breaking changes
+* New feature flag for ssh support
+* New feature flag for early v4 support
 
 #### Breaking Changes
 
@@ -178,6 +180,8 @@ More adjustments likely to come as we run into issues and should be documented h
 * Body parameters are no longer optional.
 * Some i32/u32 fields became i16/u16
 * API functions no longer have the _api suffix
+* API functions not in scope unless the `v5::Client` trait is in scope or
+alternatively they can be invoked via `client.v5()`
 
 ### v0.10.2
 
