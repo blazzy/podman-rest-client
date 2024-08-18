@@ -31,7 +31,7 @@
 //!
 //! On macOS you might need to invoke something like:
 //!
-//! ```
+//! ```sh
 //! podman machine init // Create your podman virtual machine
 //! podman machine start // Start the machine
 //! ```

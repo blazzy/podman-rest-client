@@ -40,7 +40,7 @@ systemctl --user enable --now podman.socket // Enable the podman unix domain soc
 
 On macOS you might need to invoke something like:
 
-```rust
+```sh
 podman machine init // Create your podman virtual machine
 podman machine start // Start the machine
 ```
@@ -96,7 +96,7 @@ let images = client.v5().images().image_list_libpod(None).await.unwrap();
 
 ### Traits
 
-If you import the `podman_rest_client::v5::Client` trait you don't need to invoke v5() and can 
+If you import the `podman_rest_client::v5::Client` trait you don't need to invoke v5() and can
 directly call the api functions like `client.images()`
 
 ```rust
