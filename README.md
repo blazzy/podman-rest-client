@@ -166,7 +166,7 @@ More adjustments likely to come as we run into issues and should be documented h
 
 ## Changelog
 
-### v0.11.0 (Unreleased)
+### v0.11.0
 
 * Use new api client generator to generate client from swagger file. Big breaking changes
 * New feature flag for ssh support
