@@ -95,10 +95,10 @@
 //! # })
 //! ```
 //!
-//! ### Traits
+//! ### Client/API Traits
 //!
-//! If you import the `podman_rest_client::v5::Client` trait you don't need to invoke v5() and can
-//! directly call the api functions like `client.images()`
+//! If you import the `podman_rest_client::v5::Client` trait you  can directly call the api
+//! functions from a client:
 //!
 //! ```
 //! #[cfg(feature = "v5")]
@@ -109,12 +109,12 @@
 //! # let config = Config::guess().await.unwrap();
 //! # // Initialize a client
 //! # let client = PodmanRestClient::new(config).await.unwrap();
-//! let images = client.images().image_list_libpod(None).await.unwrap();
+//! client.images().image_list_libpod(None).await;
 //! # })
 //! ```
 //!
-//! You can also use traits like `podman_rest_client::apis::Images` and directly call the
-//! individual request functions like so:
+//! You can also use various api traits like `podman_rest_client::v5::apis::Images` and directly
+//! call the individual request functions:
 //!
 //! ```
 //! #[cfg(feature = "v5")]
@@ -125,7 +125,7 @@
 //! # let config = Config::guess().await.unwrap();
 //! # // Initialize a client
 //! # let client = PodmanRestClient::new(config).await.unwrap();
-//! let images = client.image_list_libpod(None).await.unwrap();
+//! client.image_list_libpod(None).await;
 //! # })
 //! ```
 //!
