@@ -53,6 +53,7 @@ impl PodmanRestClient {
         }
     }
 
+    #[cfg_attr(docsrs, doc(cfg(feature = "ssh")))]
     #[cfg(feature = "ssh")]
     pub async fn new_ssh(uri: String, key_path: Option<String>) -> Result<PodmanRestClient, Error> {
         let uri = hyper::Uri::from_str(&uri)?;
@@ -100,6 +101,7 @@ impl PodmanRestClient {
         self
     }
 
+    #[cfg_attr(docsrs, doc(cfg(feature = "v4")))]
     #[cfg(feature = "v4")]
     pub fn v4(&self) -> &dyn crate::v4::Client {
         self
