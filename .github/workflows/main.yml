@@ -16,7 +16,7 @@ jobs:
     - uses: dtolnay/rust-toolchain@nightly
 
     - name: build docs
-      run: RUSTDOCFLAGS="--cfg docsrs" cargo doc
+      run: RUSTDOCFLAGS="--cfg docsrs" cargo doc --all-features
 
   build:
     runs-on: ubuntu-24.04
