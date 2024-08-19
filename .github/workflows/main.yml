@@ -12,6 +12,12 @@ env:
   RUST_BACKTRACE: 1
 
 jobs:
+  doc-build:
+    - uses: dtolnay/rust-toolchain@nightly
+
+    - name: build docs
+      run: RUSTDOCFLAGS="--cfg docsrs" cargo doc
+
   build:
     runs-on: ubuntu-24.04
     steps:
