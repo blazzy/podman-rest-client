@@ -1,3 +1,4 @@
+#![cfg_attr(docsrs, feature(doc_cfg))]
 //! Provides an interface for querying the Podman REST API. Most of the interface is generated from
 //! the official Podman swagger file. It can connect to the Podman API over ssh to a unix socket
 //! and directly to a unix socket. Connections over ssh are  commonly necessary on macOs where the
@@ -43,7 +44,7 @@
 //! On linux you might initialize a client like this
 //!
 //! ```no_run
-//! #[cfg(feature = "v5")]
+//! # #[cfg(feature = "v5")]
 //! # tokio_test::block_on(async {
 //! use podman_rest_client::PodmanRestClient;
 //! use podman_rest_client::Config;
@@ -63,7 +64,7 @@
 //! On macOs you might initialize a client like this with an ssh url and identity file
 //!
 //! ```no_run
-//! #[cfg(feature = "v5")]
+//! # #[cfg(feature = "v5")]
 //! # tokio_test::block_on(async {
 //! # use podman_rest_client::PodmanRestClient;
 //! # use podman_rest_client::Config;
@@ -80,7 +81,7 @@
 //! socket depending on the platform you are on.
 //!
 //! ```no_run
-//! #[cfg(feature = "v5")]
+//! # #[cfg(feature = "v5")]
 //! # tokio_test::block_on(async {
 //! # use podman_rest_client::PodmanRestClient;
 //! # use podman_rest_client::Config;
@@ -101,7 +102,7 @@
 //! functions from a client:
 //!
 //! ```
-//! #[cfg(feature = "v5")]
+//! # #[cfg(feature = "v5")]
 //! # tokio_test::block_on(async {
 //! # use podman_rest_client::PodmanRestClient;
 //! # use podman_rest_client::Config;
@@ -117,7 +118,7 @@
 //! call the individual request functions:
 //!
 //! ```
-//! #[cfg(feature = "v5")]
+//! # #[cfg(feature = "v5")]
 //! # tokio_test::block_on(async {
 //! # use podman_rest_client::PodmanRestClient;
 //! # use podman_rest_client::Config;
@@ -132,7 +133,7 @@
 //!
 //! ## Features
 //!
-//! The default feature set is ["v5", "uds", "ssh"].
+//! The default feature set is `["v5", "uds", "ssh"]`.
 //!
 //! - `ssh`: Support for connecting to a podman through an ssh server.
 //! - `uds`: Support for connecting to podman through a unix domain socket.

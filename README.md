@@ -52,7 +52,6 @@ podman machine start // Start the machine
 On linux you might initialize a client like this
 
 ```rust
-#[cfg(feature = "v5")]
 use podman_rest_client::PodmanRestClient;
 use podman_rest_client::Config;
 
@@ -70,7 +69,6 @@ let images = client.v5().images().image_list_libpod(None).await.unwrap();
 On macOs you might initialize a client like this with an ssh url and identity file
 
 ```rust
-#[cfg(feature = "v5")]
 let client = PodmanRestClient::new(Config {
     uri: "ssh://core@127.0.0.1:63169/run/user/501/podman/podman.sock".to_string(),
     identity_file: Some("/path/to/identity_file".into()),
@@ -83,7 +81,6 @@ You can also use `Config::guess()` which tries to find the default path to the p
 socket depending on the platform you are on.
 
 ```rust
-#[cfg(feature = "v5")]
 // Setup the default configuration
 let config = Config::guess().await.unwrap();
 
@@ -100,7 +97,6 @@ If you import the `podman_rest_client::v5::Client` trait you  can directly call 
 functions from a client:
 
 ```rust
-#[cfg(feature = "v5")]
 use podman_rest_client::v5::Client;
 client.images().image_list_libpod(None).await;
 ```
@@ -109,7 +105,6 @@ You can also use various api traits like `podman_rest_client::v5::apis::Images` 
 call the individual request functions:
 
 ```rust
-#[cfg(feature = "v5")]
 use podman_rest_client::v5::apis::Images;
 client.image_list_libpod(None).await;
 ```
@@ -117,7 +112,7 @@ client.image_list_libpod(None).await;
 
 ## Features
 
-The default feature set is ["v5", "uds", "ssh"].
+The default feature set is `["v5", "uds", "ssh"]`.
 
 - `ssh`: Support for connecting to a podman through an ssh server.
 - `uds`: Support for connecting to podman through a unix domain socket.

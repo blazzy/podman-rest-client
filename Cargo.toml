@@ -49,3 +49,6 @@ v5 = []
 v4 = []
 uds = []
 ssh = ["dep:russh", "dep:russh-keys"]
+
+[package.metadata.docs.rs]
+all-features = true
