@@ -154,7 +154,7 @@ mod unix_socket;
 #[cfg(feature = "v4")]
 pub mod v4;
 
-pub mod api_common;
+mod api_common;
 
 #[cfg_attr(docsrs, doc(cfg(feature = "v5")))]
 #[cfg(feature = "v5")]
