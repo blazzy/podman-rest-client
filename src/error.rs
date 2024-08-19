@@ -1,5 +1,5 @@
 #[derive(thiserror::Error, Debug)]
-pub enum Error {
+pub enum ClientError {
     #[cfg(feature = "ssh")]
     #[error("SSH error: {0}")]
     Ssh(#[from] russh::Error),

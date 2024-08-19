@@ -16,7 +16,7 @@ use tokio::io::{AsyncRead, AsyncWrite};
 use tower_service::Service;
 
 use crate::api_common::Connector;
-use crate::error::Error;
+use crate::error::ClientError;
 
 #[derive(Clone)]
 pub(crate) struct SshConnector {
@@ -32,7 +32,7 @@ impl SshConnector {
         key: &str,
         address: &str,
         socket_path: &str,
-    ) -> Result<SshConnector, Error> {
+    ) -> Result<SshConnector, ClientError> {
         let config = Arc::new(Config::default());
         let sh = Client {};
         let mut session = ssh_client::connect(config, address, sh).await?;
@@ -41,7 +41,7 @@ impl SshConnector {
             .authenticate_publickey(user, Arc::new(key_pair))
             .await?;
         if !auth_res {
-            return Err(Error::AuthenticationFailed);
+            return Err(ClientError::AuthenticationFailed);
         }
         Ok(SshConnector {
             session: Arc::new(session),
@@ -52,7 +52,7 @@ impl SshConnector {
 
 impl Service<Uri> for SshConnector {
     type Response = WrapChannelStream;
-    type Error = Error;
+    type Error = ClientError;
     type Future = Pin<Box<dyn Future<Output = Result<Self::Response, Self::Error>> + Send>>;
 
     fn poll_ready(&mut self, _cx: &mut Context<'_>) -> Poll<Result<(), Self::Error>> {

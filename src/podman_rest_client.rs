@@ -8,7 +8,7 @@ use crate::api_common::ClientConfig;
 use crate::api_common::Config as APIConfig;
 use crate::api_common::Connector;
 use crate::config::Config;
-use crate::error::Error;
+use crate::error::ClientError;
 #[cfg(feature = "v4")]
 use crate::impl_crate_v4_traits;
 #[cfg(feature = "v5")]
@@ -37,25 +37,31 @@ impl HasConfig for PodmanRestClient {
 impl_crate_v4_traits!(PodmanRestClient);
 
 impl PodmanRestClient {
-    pub async fn new(config: Config) -> Result<Self, Error> {
-        let (scheme, rest) = config.uri.split_once("://").ok_or(Error::InvalidScheme)?;
+    pub async fn new(config: Config) -> Result<Self, ClientError> {
+        let (scheme, rest) = config
+            .uri
+            .split_once("://")
+            .ok_or(ClientError::InvalidScheme)?;
 
         match scheme {
             #[cfg(feature = "uds")]
             "unix" => Ok(PodmanRestClient::new_unix(rest)),
             #[cfg(not(feature = "uds"))]
-            "uds" => Err(Error::UdsFeatureFlagNotEnabled),
+            "uds" => Err(ClientError::UdsFeatureFlagNotEnabled),
             #[cfg(feature = "ssh")]
             "ssh" => PodmanRestClient::new_ssh(config.uri, config.identity_file).await,
             #[cfg(not(feature = "ssh"))]
-            "ssh" => Err(Error::SshFeatureFlagNotEnabled),
-            _ => Err(Error::InvalidScheme),
+            "ssh" => Err(ClientError::SshFeatureFlagNotEnabled),
+            _ => Err(ClientError::InvalidScheme),
         }
     }
 
     #[cfg_attr(docsrs, doc(cfg(feature = "ssh")))]
     #[cfg(feature = "ssh")]
-    pub async fn new_ssh(uri: String, key_path: Option<String>) -> Result<PodmanRestClient, Error> {
+    pub async fn new_ssh(
+        uri: String,
+        key_path: Option<String>,
+    ) -> Result<PodmanRestClient, ClientError> {
         let uri = hyper::Uri::from_str(&uri)?;
 
         let user_name = uri.authority().and_then(|authority| {
@@ -66,9 +72,9 @@ impl PodmanRestClient {
             }
         });
 
-        let user_name = user_name.ok_or(Error::SshUserNameRequired)?;
-        let key_path = key_path.ok_or(Error::SshKeyPathRequired)?;
-        let host = uri.host().ok_or(Error::SshHostRequired)?;
+        let user_name = user_name.ok_or(ClientError::SshUserNameRequired)?;
+        let key_path = key_path.ok_or(ClientError::SshKeyPathRequired)?;
+        let host = uri.host().ok_or(ClientError::SshHostRequired)?;
         let address = uri
             .port()
             .map_or(host.to_string(), |port| format!("{}:{}", host, port));
@@ -78,6 +84,7 @@ impl PodmanRestClient {
         Ok(PodmanRestClient::new_connector(connector))
     }
 
+    #[cfg_attr(docsrs, doc(cfg(feature = "uds")))]
     #[cfg(feature = "uds")]
     pub fn new_unix(path: &str) -> PodmanRestClient {
         let connector = unix_socket::UnixConnector::new(path);
