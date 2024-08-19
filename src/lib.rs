@@ -1,3 +1,4 @@
+#![feature(doc_cfg)]
 //! Provides an interface for querying the Podman REST API. Most of the interface is generated from
 //! the official Podman swagger file. It can connect to the Podman API over ssh to a unix socket
 //! and directly to a unix socket. Connections over ssh are  commonly necessary on macOs where the
