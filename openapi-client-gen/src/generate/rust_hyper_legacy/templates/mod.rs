@@ -1,3 +1,4 @@
+pub mod api_specific_mod;
 pub mod apis;
 pub mod client;
 pub mod config;

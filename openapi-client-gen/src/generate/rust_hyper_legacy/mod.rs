@@ -17,6 +17,7 @@ pub struct GeneratorConfig<'a> {
     pub common_dir: Option<String>,
     pub api_module: Option<String>,
     pub common_module: Option<String>,
+    pub skip_default_client: bool,
 }
 
 pub fn generate<'a>(config: &'a mut GeneratorConfig<'a>) -> Result<(), Error> {
@@ -52,7 +53,7 @@ pub fn generate<'a>(config: &'a mut GeneratorConfig<'a>) -> Result<(), Error> {
         )?;
         files.create(
             src_dir.join("mod.rs"),
-            include_str!("./templates/api_specific_mod.rs"),
+            templates::api_specific_mod::render(config.skip_default_client)?,
         )?;
     } else {
         files.create(src_dir.join("mod.rs"), include_str!("./templates/lib.rs"))?;
@@ -105,7 +106,12 @@ pub fn generate<'a>(config: &'a mut GeneratorConfig<'a>) -> Result<(), Error> {
 
     files.create(
         src_dir.join("client.rs"),
-        templates::client::client(spec, &common_module, &api_module_str)?,
+        templates::client::client(
+            spec,
+            &common_module,
+            &api_module_str,
+            config.skip_default_client,
+        )?,
     )?;
 
     common_files.create(
