@@ -13,6 +13,8 @@ env:
 
 jobs:
   doc-build:
+    runs-on: ubuntu-24.04
+    steps:
     - uses: dtolnay/rust-toolchain@nightly
 
     - name: build docs
