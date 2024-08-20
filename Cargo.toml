@@ -2,7 +2,7 @@
 members = [".", "openapi-client-gen"]
 
 [workspace.package]
-version = "0.11.1"
+version = "0.12.0"
 license = "MIT OR Apache-2.0"
 edition = "2021"
 repository = "https://github.com/blazzy/podman-rest-client"
@@ -52,3 +52,7 @@ ssh = ["dep:russh", "dep:russh-keys"]
 
 [package.metadata.docs.rs]
 all-features = true
+
+[package.metadata.release]
+pre-release-commit-message="v{{version}}"
+consolidate-commits = false
