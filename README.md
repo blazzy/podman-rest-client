@@ -161,6 +161,14 @@ More adjustments likely to come as we run into issues and should be documented h
 
 ## Changelog
 
+### v0.12.0
+
+#### Breaking Changes
+
+* The old enum `Error` is now `ClientError`
+* The struct `APIClient` and the module `api_common` are no longer available
+* The new enum `Error` is represents the error returned from api requests
+
 ### v0.11.1
 
 * Fix docs.rs build
