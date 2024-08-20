@@ -4,7 +4,7 @@ use assert_matches::assert_matches;
 use podman_rest_client::v5::models;
 use podman_rest_client::v5::params;
 use podman_rest_client::v5::Client;
-use podman_rest_client::Error;
+use podman_rest_client::ClientError;
 use podman_rest_client::{Config, PodmanRestClient};
 
 mod v5_common;
@@ -256,5 +256,5 @@ async fn it_errors_on_invalid_uris() {
     .err()
     .unwrap();
 
-    assert_matches!(err, Error::InvalidScheme);
+    assert_matches!(err, ClientError::InvalidScheme);
 }
