@@ -52,3 +52,7 @@ ssh = ["dep:russh", "dep:russh-keys"]
 
 [package.metadata.docs.rs]
 all-features = true
+
+[package.metadata.release]
+pre-release-commit-message="v{{version}}"
+consolidate-commits = false
