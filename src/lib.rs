@@ -150,13 +150,16 @@ mod ssh;
 #[cfg(feature = "uds")]
 mod unix_socket;
 
+#[cfg_attr(docsrs, doc(cfg(feature = "v4")))]
 #[cfg(feature = "v4")]
 pub mod v4;
 
-pub mod api_common;
+mod api_common;
 
+#[cfg_attr(docsrs, doc(cfg(feature = "v5")))]
 #[cfg(feature = "v5")]
 pub mod v5;
+pub use api_common::Error;
 pub use config::Config;
-pub use error::Error;
+pub use error::ClientError;
 pub use podman_rest_client::PodmanRestClient;

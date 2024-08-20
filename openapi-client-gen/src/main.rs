@@ -34,6 +34,9 @@ struct Cli {
     /// Module name for common files. If not specified, we guess based on the nearest src folder.
     #[arg(long)]
     common_module: Option<String>,
+    /// Do not generate the default client struct
+    #[arg(long)]
+    skip_default_client: bool,
 }
 
 fn main() -> Result<(), Error> {
@@ -55,13 +58,6 @@ fn app() -> Result<(), Error> {
     let contents = fs::read_to_string(cli.input_spec_file)?;
     let spec = spec::Spec::from_yaml_string(&contents)?;
 
-    //let mut file_tracker = FileTracker::new(cli.target_dir);
-    //let common_file_tracker: &mut FileTracker = if let Some(common_dir) = cli.common_dir {
-    //    &mut FileTracker::new(common_dir)
-    //} else {
-    //    &mut file_tracker
-    //};
-
     generate::rust_hyper_legacy::generate(&mut generate::rust_hyper_legacy::GeneratorConfig {
         spec: &spec,
         target_dir: &cli.target_dir,
@@ -69,6 +65,7 @@ fn app() -> Result<(), Error> {
         common_dir: cli.common_dir,
         api_module: cli.api_module,
         common_module: cli.common_module,
+        skip_default_client: cli.skip_default_client,
     })?;
 
     Ok(())

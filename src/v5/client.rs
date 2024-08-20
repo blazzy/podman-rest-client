@@ -1,24 +1,5 @@
 use super::apis;
-use crate::api_common::config::ClientConfig;
-use crate::api_common::config::Config;
-use crate::api_common::config::Connector;
 use crate::api_common::config::HasConfig;
-use crate::impl_crate_v5_traits;
-pub struct APIClient {
-    config: Box<dyn ClientConfig>,
-}
-impl APIClient {
-    pub fn new<C: Connector>(config: Config<C>) -> APIClient {
-        APIClient {
-            config: Box::new(config),
-        }
-    }
-}
-impl HasConfig for APIClient {
-    fn get_config(&self) -> &dyn ClientConfig {
-        &*self.config
-    }
-}
 pub trait Client:
     HasConfig
     + Send
@@ -73,7 +54,6 @@ pub trait Client:
     /// Actions related to volumes for the compatibility endpoints
     fn volumes_compat(&self) -> &dyn apis::VolumesCompat;
 }
-impl_crate_v5_traits!(APIClient);
 #[macro_export]
 macro_rules! impl_crate_v5_traits {
     ($struct_name:ident) => {

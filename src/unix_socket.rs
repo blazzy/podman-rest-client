@@ -12,7 +12,7 @@ use tokio::net::UnixStream;
 use tower_service::Service;
 
 use crate::api_common::Connector;
-use crate::error::Error;
+use crate::error::ClientError;
 
 #[derive(Clone)]
 pub(crate) struct UnixConnector {
@@ -33,7 +33,7 @@ impl Connector for UnixConnector {}
 
 impl Service<Uri> for UnixConnector {
     type Response = UnixStreamWrapper;
-    type Error = Error;
+    type Error = ClientError;
     type Future = Pin<Box<dyn Future<Output = Result<Self::Response, Self::Error>> + Send>>;
 
     fn poll_ready(&mut self, _cx: &mut Context<'_>) -> Poll<Result<(), Self::Error>> {
