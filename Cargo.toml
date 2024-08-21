@@ -57,6 +57,9 @@ ssh = ["dep:russh", "dep:russh-keys"]
 all-features = true
 
 [workspace.metadata.release]
-allow-branch = ["master"]
+allow-branch = ["main"]
 pre-release-commit-message = "v{{version}}"
 consolidate-commits = false
+pre-release-replacements = [
+  {file="CHANGELOG.md", search="^## \\[Unreleased\\]", replace="## [{{version}}] - {{date}}"},
+]
