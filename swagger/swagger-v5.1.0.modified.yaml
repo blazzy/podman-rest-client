@@ -13467,7 +13467,7 @@ paths:
                   required: true
                   type: string
             produces:
-                - application/json
+                - application/x-tar
             responses:
                 "200":
                     description: tarball is returned in body
@@ -14906,7 +14906,7 @@ paths:
                   name: ociAcceptUncompressedLayers
                   type: boolean
             produces:
-                - application/json
+                - application/x-tar
             responses:
                 "200":
                     description: no error
