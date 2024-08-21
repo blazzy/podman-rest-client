@@ -285,3 +285,23 @@ async fn it_exports_images() {
 
     assert!(tar::Archive::new(c).entries().unwrap().count() > 0)
 }
+
+#[tokio::test]
+async fn it_exports_containers() {
+    common::test_init().await;
+
+    let config = Config::guess().await.unwrap();
+    let client = PodmanRestClient::new(config).await.unwrap();
+
+    common::pull_nginx_image(&client).await;
+    common::create_nginx_container(&client, "podman_rest_client_container_export_test").await;
+
+    let stream = client
+        .containers()
+        .container_export_libpod("podman_rest_client_container_export_test");
+
+    let bytes: Vec<u8> = stream.map_ok(|b| b.to_vec()).try_concat().await.unwrap();
+    let c = std::io::Cursor::new(bytes);
+
+    assert!(tar::Archive::new(c).entries().unwrap().count() > 0)
+}
