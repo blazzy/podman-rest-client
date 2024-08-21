@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [0.12.1] - 2024-08-21
 
 * ImageExportLibpod and ContainerExportLibpod operations return streams of bytes ([#14](https://github.com/blazzy/podman-rest-client/pull/14))
 
