@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## v0.12.2 - 2024-08-21
 
 * Improve formatting in generated docs with extra whitespace and removal redundant lines
 

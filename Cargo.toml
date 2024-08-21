@@ -2,7 +2,7 @@
 members = [".", "openapi-client-gen"]
 
 [workspace.package]
-version = "0.12.1"
+version = "0.12.2"
 license = "MIT OR Apache-2.0"
 edition = "2021"
 repository = "https://github.com/blazzy/podman-rest-client"
