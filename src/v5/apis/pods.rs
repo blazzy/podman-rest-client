@@ -12,27 +12,29 @@ pub trait Pods: HasConfig + Send + Sync {
         params: Option<super::super::params::PodDeleteLibpod>,
     ) -> Pin<Box<dyn Future<Output = Result<super::super::models::PodRmReport, Error>> + Send + 'a>>
     {
-        Box::pin(async move {
-            let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
-            let mut request_path = request_url.path().to_owned();
-            if request_path.ends_with('/') {
-                request_path.pop();
-            }
-            request_path.push_str("/libpod/pods/{name}");
-            request_path = request_path.replace("{name}", name);
-            request_url.set_path(&request_path);
-            let mut req_builder = self.get_config().req_builder("DELETE")?;
-            if let Some(params) = params {
-                let mut query_pairs = request_url.query_pairs_mut();
-                if let Some(force) = params.force {
-                    query_pairs.append_pair("force", &force.to_string());
+        Box::pin(request::execute_request_json(
+            self.get_config(),
+            (|| {
+                let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
+                let mut request_path = request_url.path().to_owned();
+                if request_path.ends_with('/') {
+                    request_path.pop();
                 }
-            }
-            let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
-            req_builder = req_builder.uri(hyper_uri);
-            let request = req_builder.body(String::new())?;
-            request::execute_request_json(self.get_config(), request).await
-        })
+                request_path.push_str("/libpod/pods/{name}");
+                request_path = request_path.replace("{name}", name);
+                request_url.set_path(&request_path);
+                let mut req_builder = self.get_config().req_builder("DELETE")?;
+                if let Some(params) = params {
+                    let mut query_pairs = request_url.query_pairs_mut();
+                    if let Some(force) = params.force {
+                        query_pairs.append_pair("force", &force.to_string());
+                    }
+                }
+                let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
+                req_builder = req_builder.uri(hyper_uri);
+                Ok(req_builder.body(String::new())?)
+            })(),
+        ))
     }
     /// GET /libpod/pods/{name}/exists
     /// Pod exists
@@ -41,21 +43,23 @@ pub trait Pods: HasConfig + Send + Sync {
         &'a self,
         name: &'a str,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
-        Box::pin(async move {
-            let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
-            let mut request_path = request_url.path().to_owned();
-            if request_path.ends_with('/') {
-                request_path.pop();
-            }
-            request_path.push_str("/libpod/pods/{name}/exists");
-            request_path = request_path.replace("{name}", name);
-            request_url.set_path(&request_path);
-            let mut req_builder = self.get_config().req_builder("GET")?;
-            let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
-            req_builder = req_builder.uri(hyper_uri);
-            let request = req_builder.body(String::new())?;
-            request::execute_request_unit(self.get_config(), request).await
-        })
+        Box::pin(request::execute_request_unit(
+            self.get_config(),
+            (|| {
+                let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
+                let mut request_path = request_url.path().to_owned();
+                if request_path.ends_with('/') {
+                    request_path.pop();
+                }
+                request_path.push_str("/libpod/pods/{name}/exists");
+                request_path = request_path.replace("{name}", name);
+                request_url.set_path(&request_path);
+                let mut req_builder = self.get_config().req_builder("GET")?;
+                let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
+                req_builder = req_builder.uri(hyper_uri);
+                Ok(req_builder.body(String::new())?)
+            })(),
+        ))
     }
     /// GET /libpod/pods/{name}/json
     /// Inspect pod
@@ -65,21 +69,23 @@ pub trait Pods: HasConfig + Send + Sync {
     ) -> Pin<
         Box<dyn Future<Output = Result<super::super::models::InspectPodData, Error>> + Send + 'a>,
     > {
-        Box::pin(async move {
-            let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
-            let mut request_path = request_url.path().to_owned();
-            if request_path.ends_with('/') {
-                request_path.pop();
-            }
-            request_path.push_str("/libpod/pods/{name}/json");
-            request_path = request_path.replace("{name}", name);
-            request_url.set_path(&request_path);
-            let mut req_builder = self.get_config().req_builder("GET")?;
-            let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
-            req_builder = req_builder.uri(hyper_uri);
-            let request = req_builder.body(String::new())?;
-            request::execute_request_json(self.get_config(), request).await
-        })
+        Box::pin(request::execute_request_json(
+            self.get_config(),
+            (|| {
+                let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
+                let mut request_path = request_url.path().to_owned();
+                if request_path.ends_with('/') {
+                    request_path.pop();
+                }
+                request_path.push_str("/libpod/pods/{name}/json");
+                request_path = request_path.replace("{name}", name);
+                request_url.set_path(&request_path);
+                let mut req_builder = self.get_config().req_builder("GET")?;
+                let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
+                req_builder = req_builder.uri(hyper_uri);
+                Ok(req_builder.body(String::new())?)
+            })(),
+        ))
     }
     /// POST /libpod/pods/{name}/kill
     /// Kill a pod
@@ -89,27 +95,29 @@ pub trait Pods: HasConfig + Send + Sync {
         params: Option<super::super::params::PodKillLibpod<'a>>,
     ) -> Pin<Box<dyn Future<Output = Result<super::super::models::PodKillReport, Error>> + Send + 'a>>
     {
-        Box::pin(async move {
-            let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
-            let mut request_path = request_url.path().to_owned();
-            if request_path.ends_with('/') {
-                request_path.pop();
-            }
-            request_path.push_str("/libpod/pods/{name}/kill");
-            request_path = request_path.replace("{name}", name);
-            request_url.set_path(&request_path);
-            let mut req_builder = self.get_config().req_builder("POST")?;
-            if let Some(params) = params {
-                let mut query_pairs = request_url.query_pairs_mut();
-                if let Some(signal) = params.signal {
-                    query_pairs.append_pair("signal", signal);
+        Box::pin(request::execute_request_json(
+            self.get_config(),
+            (|| {
+                let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
+                let mut request_path = request_url.path().to_owned();
+                if request_path.ends_with('/') {
+                    request_path.pop();
                 }
-            }
-            let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
-            req_builder = req_builder.uri(hyper_uri);
-            let request = req_builder.body(String::new())?;
-            request::execute_request_json(self.get_config(), request).await
-        })
+                request_path.push_str("/libpod/pods/{name}/kill");
+                request_path = request_path.replace("{name}", name);
+                request_url.set_path(&request_path);
+                let mut req_builder = self.get_config().req_builder("POST")?;
+                if let Some(params) = params {
+                    let mut query_pairs = request_url.query_pairs_mut();
+                    if let Some(signal) = params.signal {
+                        query_pairs.append_pair("signal", signal);
+                    }
+                }
+                let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
+                req_builder = req_builder.uri(hyper_uri);
+                Ok(req_builder.body(String::new())?)
+            })(),
+        ))
     }
     /// POST /libpod/pods/{name}/pause
     /// Pause a pod
@@ -120,21 +128,23 @@ pub trait Pods: HasConfig + Send + Sync {
     ) -> Pin<
         Box<dyn Future<Output = Result<super::super::models::PodPauseReport, Error>> + Send + 'a>,
     > {
-        Box::pin(async move {
-            let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
-            let mut request_path = request_url.path().to_owned();
-            if request_path.ends_with('/') {
-                request_path.pop();
-            }
-            request_path.push_str("/libpod/pods/{name}/pause");
-            request_path = request_path.replace("{name}", name);
-            request_url.set_path(&request_path);
-            let mut req_builder = self.get_config().req_builder("POST")?;
-            let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
-            req_builder = req_builder.uri(hyper_uri);
-            let request = req_builder.body(String::new())?;
-            request::execute_request_json(self.get_config(), request).await
-        })
+        Box::pin(request::execute_request_json(
+            self.get_config(),
+            (|| {
+                let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
+                let mut request_path = request_url.path().to_owned();
+                if request_path.ends_with('/') {
+                    request_path.pop();
+                }
+                request_path.push_str("/libpod/pods/{name}/pause");
+                request_path = request_path.replace("{name}", name);
+                request_url.set_path(&request_path);
+                let mut req_builder = self.get_config().req_builder("POST")?;
+                let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
+                req_builder = req_builder.uri(hyper_uri);
+                Ok(req_builder.body(String::new())?)
+            })(),
+        ))
     }
     /// POST /libpod/pods/{name}/restart
     /// Restart a pod
@@ -144,21 +154,23 @@ pub trait Pods: HasConfig + Send + Sync {
     ) -> Pin<
         Box<dyn Future<Output = Result<super::super::models::PodRestartReport, Error>> + Send + 'a>,
     > {
-        Box::pin(async move {
-            let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
-            let mut request_path = request_url.path().to_owned();
-            if request_path.ends_with('/') {
-                request_path.pop();
-            }
-            request_path.push_str("/libpod/pods/{name}/restart");
-            request_path = request_path.replace("{name}", name);
-            request_url.set_path(&request_path);
-            let mut req_builder = self.get_config().req_builder("POST")?;
-            let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
-            req_builder = req_builder.uri(hyper_uri);
-            let request = req_builder.body(String::new())?;
-            request::execute_request_json(self.get_config(), request).await
-        })
+        Box::pin(request::execute_request_json(
+            self.get_config(),
+            (|| {
+                let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
+                let mut request_path = request_url.path().to_owned();
+                if request_path.ends_with('/') {
+                    request_path.pop();
+                }
+                request_path.push_str("/libpod/pods/{name}/restart");
+                request_path = request_path.replace("{name}", name);
+                request_url.set_path(&request_path);
+                let mut req_builder = self.get_config().req_builder("POST")?;
+                let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
+                req_builder = req_builder.uri(hyper_uri);
+                Ok(req_builder.body(String::new())?)
+            })(),
+        ))
     }
     /// POST /libpod/pods/{name}/start
     /// Start a pod
@@ -168,21 +180,23 @@ pub trait Pods: HasConfig + Send + Sync {
     ) -> Pin<
         Box<dyn Future<Output = Result<super::super::models::PodStartReport, Error>> + Send + 'a>,
     > {
-        Box::pin(async move {
-            let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
-            let mut request_path = request_url.path().to_owned();
-            if request_path.ends_with('/') {
-                request_path.pop();
-            }
-            request_path.push_str("/libpod/pods/{name}/start");
-            request_path = request_path.replace("{name}", name);
-            request_url.set_path(&request_path);
-            let mut req_builder = self.get_config().req_builder("POST")?;
-            let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
-            req_builder = req_builder.uri(hyper_uri);
-            let request = req_builder.body(String::new())?;
-            request::execute_request_json(self.get_config(), request).await
-        })
+        Box::pin(request::execute_request_json(
+            self.get_config(),
+            (|| {
+                let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
+                let mut request_path = request_url.path().to_owned();
+                if request_path.ends_with('/') {
+                    request_path.pop();
+                }
+                request_path.push_str("/libpod/pods/{name}/start");
+                request_path = request_path.replace("{name}", name);
+                request_url.set_path(&request_path);
+                let mut req_builder = self.get_config().req_builder("POST")?;
+                let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
+                req_builder = req_builder.uri(hyper_uri);
+                Ok(req_builder.body(String::new())?)
+            })(),
+        ))
     }
     /// POST /libpod/pods/{name}/stop
     /// Stop a pod
@@ -192,27 +206,29 @@ pub trait Pods: HasConfig + Send + Sync {
         params: Option<super::super::params::PodStopLibpod>,
     ) -> Pin<Box<dyn Future<Output = Result<super::super::models::PodStopReport, Error>> + Send + 'a>>
     {
-        Box::pin(async move {
-            let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
-            let mut request_path = request_url.path().to_owned();
-            if request_path.ends_with('/') {
-                request_path.pop();
-            }
-            request_path.push_str("/libpod/pods/{name}/stop");
-            request_path = request_path.replace("{name}", name);
-            request_url.set_path(&request_path);
-            let mut req_builder = self.get_config().req_builder("POST")?;
-            if let Some(params) = params {
-                let mut query_pairs = request_url.query_pairs_mut();
-                if let Some(t) = params.t {
-                    query_pairs.append_pair("t", &t.to_string());
+        Box::pin(request::execute_request_json(
+            self.get_config(),
+            (|| {
+                let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
+                let mut request_path = request_url.path().to_owned();
+                if request_path.ends_with('/') {
+                    request_path.pop();
                 }
-            }
-            let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
-            req_builder = req_builder.uri(hyper_uri);
-            let request = req_builder.body(String::new())?;
-            request::execute_request_json(self.get_config(), request).await
-        })
+                request_path.push_str("/libpod/pods/{name}/stop");
+                request_path = request_path.replace("{name}", name);
+                request_url.set_path(&request_path);
+                let mut req_builder = self.get_config().req_builder("POST")?;
+                if let Some(params) = params {
+                    let mut query_pairs = request_url.query_pairs_mut();
+                    if let Some(t) = params.t {
+                        query_pairs.append_pair("t", &t.to_string());
+                    }
+                }
+                let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
+                req_builder = req_builder.uri(hyper_uri);
+                Ok(req_builder.body(String::new())?)
+            })(),
+        ))
     }
     /// GET /libpod/pods/{name}/top
     /// List processes
@@ -223,33 +239,35 @@ pub trait Pods: HasConfig + Send + Sync {
         params: Option<super::super::params::PodTopLibpod<'a>>,
     ) -> Pin<Box<dyn Future<Output = Result<super::super::models::PodTopOkBody, Error>> + Send + 'a>>
     {
-        Box::pin(async move {
-            let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
-            let mut request_path = request_url.path().to_owned();
-            if request_path.ends_with('/') {
-                request_path.pop();
-            }
-            request_path.push_str("/libpod/pods/{name}/top");
-            request_path = request_path.replace("{name}", name);
-            request_url.set_path(&request_path);
-            let mut req_builder = self.get_config().req_builder("GET")?;
-            if let Some(params) = params {
-                let mut query_pairs = request_url.query_pairs_mut();
-                if let Some(stream) = params.stream {
-                    query_pairs.append_pair("stream", &stream.to_string());
+        Box::pin(request::execute_request_json(
+            self.get_config(),
+            (|| {
+                let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
+                let mut request_path = request_url.path().to_owned();
+                if request_path.ends_with('/') {
+                    request_path.pop();
                 }
-                if let Some(delay) = params.delay {
-                    query_pairs.append_pair("delay", &delay.to_string());
+                request_path.push_str("/libpod/pods/{name}/top");
+                request_path = request_path.replace("{name}", name);
+                request_url.set_path(&request_path);
+                let mut req_builder = self.get_config().req_builder("GET")?;
+                if let Some(params) = params {
+                    let mut query_pairs = request_url.query_pairs_mut();
+                    if let Some(stream) = params.stream {
+                        query_pairs.append_pair("stream", &stream.to_string());
+                    }
+                    if let Some(delay) = params.delay {
+                        query_pairs.append_pair("delay", &delay.to_string());
+                    }
+                    if let Some(ps_args) = params.ps_args {
+                        query_pairs.append_pair("ps_args", ps_args);
+                    }
                 }
-                if let Some(ps_args) = params.ps_args {
-                    query_pairs.append_pair("ps_args", ps_args);
-                }
-            }
-            let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
-            req_builder = req_builder.uri(hyper_uri);
-            let request = req_builder.body(String::new())?;
-            request::execute_request_json(self.get_config(), request).await
-        })
+                let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
+                req_builder = req_builder.uri(hyper_uri);
+                Ok(req_builder.body(String::new())?)
+            })(),
+        ))
     }
     /// POST /libpod/pods/{name}/unpause
     /// Unpause a pod
@@ -259,21 +277,23 @@ pub trait Pods: HasConfig + Send + Sync {
     ) -> Pin<
         Box<dyn Future<Output = Result<super::super::models::PodUnpauseReport, Error>> + Send + 'a>,
     > {
-        Box::pin(async move {
-            let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
-            let mut request_path = request_url.path().to_owned();
-            if request_path.ends_with('/') {
-                request_path.pop();
-            }
-            request_path.push_str("/libpod/pods/{name}/unpause");
-            request_path = request_path.replace("{name}", name);
-            request_url.set_path(&request_path);
-            let mut req_builder = self.get_config().req_builder("POST")?;
-            let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
-            req_builder = req_builder.uri(hyper_uri);
-            let request = req_builder.body(String::new())?;
-            request::execute_request_json(self.get_config(), request).await
-        })
+        Box::pin(request::execute_request_json(
+            self.get_config(),
+            (|| {
+                let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
+                let mut request_path = request_url.path().to_owned();
+                if request_path.ends_with('/') {
+                    request_path.pop();
+                }
+                request_path.push_str("/libpod/pods/{name}/unpause");
+                request_path = request_path.replace("{name}", name);
+                request_url.set_path(&request_path);
+                let mut req_builder = self.get_config().req_builder("POST")?;
+                let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
+                req_builder = req_builder.uri(hyper_uri);
+                Ok(req_builder.body(String::new())?)
+            })(),
+        ))
     }
     /// POST /libpod/pods/create
     /// Create a pod
@@ -282,23 +302,25 @@ pub trait Pods: HasConfig + Send + Sync {
         create: super::super::models::PodSpecGenerator,
     ) -> Pin<Box<dyn Future<Output = Result<super::super::models::IdResponse, Error>> + Send + 'a>>
     {
-        Box::pin(async move {
-            let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
-            let mut request_path = request_url.path().to_owned();
-            if request_path.ends_with('/') {
-                request_path.pop();
-            }
-            request_path.push_str("/libpod/pods/create");
-            request_url.set_path(&request_path);
-            let mut req_builder = self.get_config().req_builder("POST")?;
-            let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
-            req_builder = req_builder.uri(hyper_uri);
-            let body = serde_json::to_string(&create)?;
-            req_builder = req_builder.header(hyper::header::CONTENT_TYPE, "application/json");
-            req_builder = req_builder.header(hyper::header::CONTENT_LENGTH, body.len());
-            let request = req_builder.body(body)?;
-            request::execute_request_json(self.get_config(), request).await
-        })
+        Box::pin(request::execute_request_json(
+            self.get_config(),
+            (|| {
+                let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
+                let mut request_path = request_url.path().to_owned();
+                if request_path.ends_with('/') {
+                    request_path.pop();
+                }
+                request_path.push_str("/libpod/pods/create");
+                request_url.set_path(&request_path);
+                let mut req_builder = self.get_config().req_builder("POST")?;
+                let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
+                req_builder = req_builder.uri(hyper_uri);
+                let body = serde_json::to_string(&create)?;
+                req_builder = req_builder.header(hyper::header::CONTENT_TYPE, "application/json");
+                req_builder = req_builder.header(hyper::header::CONTENT_LENGTH, body.len());
+                Ok(req_builder.body(body)?)
+            })(),
+        ))
     }
     /// GET /libpod/pods/json
     /// List pods
@@ -312,26 +334,28 @@ pub trait Pods: HasConfig + Send + Sync {
                 + 'a,
         >,
     > {
-        Box::pin(async move {
-            let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
-            let mut request_path = request_url.path().to_owned();
-            if request_path.ends_with('/') {
-                request_path.pop();
-            }
-            request_path.push_str("/libpod/pods/json");
-            request_url.set_path(&request_path);
-            let mut req_builder = self.get_config().req_builder("GET")?;
-            if let Some(params) = params {
-                let mut query_pairs = request_url.query_pairs_mut();
-                if let Some(filters) = params.filters {
-                    query_pairs.append_pair("filters", filters);
+        Box::pin(request::execute_request_json(
+            self.get_config(),
+            (|| {
+                let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
+                let mut request_path = request_url.path().to_owned();
+                if request_path.ends_with('/') {
+                    request_path.pop();
                 }
-            }
-            let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
-            req_builder = req_builder.uri(hyper_uri);
-            let request = req_builder.body(String::new())?;
-            request::execute_request_json(self.get_config(), request).await
-        })
+                request_path.push_str("/libpod/pods/json");
+                request_url.set_path(&request_path);
+                let mut req_builder = self.get_config().req_builder("GET")?;
+                if let Some(params) = params {
+                    let mut query_pairs = request_url.query_pairs_mut();
+                    if let Some(filters) = params.filters {
+                        query_pairs.append_pair("filters", filters);
+                    }
+                }
+                let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
+                req_builder = req_builder.uri(hyper_uri);
+                Ok(req_builder.body(String::new())?)
+            })(),
+        ))
     }
     /// POST /libpod/pods/prune
     /// Prune unused pods
@@ -340,20 +364,22 @@ pub trait Pods: HasConfig + Send + Sync {
     ) -> Pin<
         Box<dyn Future<Output = Result<super::super::models::PodPruneReport, Error>> + Send + 'a>,
     > {
-        Box::pin(async move {
-            let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
-            let mut request_path = request_url.path().to_owned();
-            if request_path.ends_with('/') {
-                request_path.pop();
-            }
-            request_path.push_str("/libpod/pods/prune");
-            request_url.set_path(&request_path);
-            let mut req_builder = self.get_config().req_builder("POST")?;
-            let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
-            req_builder = req_builder.uri(hyper_uri);
-            let request = req_builder.body(String::new())?;
-            request::execute_request_json(self.get_config(), request).await
-        })
+        Box::pin(request::execute_request_json(
+            self.get_config(),
+            (|| {
+                let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
+                let mut request_path = request_url.path().to_owned();
+                if request_path.ends_with('/') {
+                    request_path.pop();
+                }
+                request_path.push_str("/libpod/pods/prune");
+                request_url.set_path(&request_path);
+                let mut req_builder = self.get_config().req_builder("POST")?;
+                let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
+                req_builder = req_builder.uri(hyper_uri);
+                Ok(req_builder.body(String::new())?)
+            })(),
+        ))
     }
     /// GET /libpod/pods/stats
     /// Statistics for one or more pods
@@ -368,35 +394,32 @@ pub trait Pods: HasConfig + Send + Sync {
                 + 'a,
         >,
     > {
-        Box::pin(async move {
-            let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
-            let mut request_path = request_url.path().to_owned();
-            if request_path.ends_with('/') {
-                request_path.pop();
-            }
-            request_path.push_str("/libpod/pods/stats");
-            request_url.set_path(&request_path);
-            let mut req_builder = self.get_config().req_builder("GET")?;
-            if let Some(params) = params {
-                let mut query_pairs = request_url.query_pairs_mut();
-                if let Some(all) = params.all {
-                    query_pairs.append_pair("all", &all.to_string());
+        Box::pin(request::execute_request_json(
+            self.get_config(),
+            (|| {
+                let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
+                let mut request_path = request_url.path().to_owned();
+                if request_path.ends_with('/') {
+                    request_path.pop();
                 }
-                if let Some(names_or_i_ds) = params.names_or_i_ds {
-                    query_pairs.append_pair(
-                        "namesOrIDs",
-                        &names_or_i_ds
-                            .iter()
-                            .map(|e| e.to_string())
-                            .collect::<Vec<_>>()
-                            .join(","),
-                    );
+                request_path.push_str("/libpod/pods/stats");
+                request_url.set_path(&request_path);
+                let mut req_builder = self.get_config().req_builder("GET")?;
+                if let Some(params) = params {
+                    let mut query_pairs = request_url.query_pairs_mut();
+                    if let Some(all) = params.all {
+                        query_pairs.append_pair("all", &all.to_string());
+                    }
+                    if let Some(names_or_i_ds) = params.names_or_i_ds {
+                        for value in names_or_i_ds {
+                            query_pairs.append_pair("namesOrIDs", &value.to_string());
+                        }
+                    }
                 }
-            }
-            let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
-            req_builder = req_builder.uri(hyper_uri);
-            let request = req_builder.body(String::new())?;
-            request::execute_request_json(self.get_config(), request).await
-        })
+                let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
+                req_builder = req_builder.uri(hyper_uri);
+                Ok(req_builder.body(String::new())?)
+            })(),
+        ))
     }
 }
