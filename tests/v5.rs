@@ -1,6 +1,7 @@
 #![cfg(feature = "v5")]
 
 use assert_matches::assert_matches;
+use futures::stream::TryStreamExt;
 use podman_rest_client::v5::models;
 use podman_rest_client::v5::params;
 use podman_rest_client::v5::Client;
@@ -257,4 +258,30 @@ async fn it_errors_on_invalid_uris() {
     .unwrap();
 
     assert_matches!(err, ClientError::InvalidScheme);
+}
+
+#[tokio::test]
+async fn it_exports_images() {
+    common::test_init().await;
+
+    let config = Config::guess().await.unwrap();
+    let client = PodmanRestClient::new(config).await.unwrap();
+
+    futures::join!(
+        common::pull_alpine_image(&client),
+        common::pull_nginx_image(&client),
+    );
+
+    let params = params::ImageExportLibpod {
+        compress: None,
+        format: Some("docker-archive"),
+        oci_accept_uncompressed_layers: None,
+        references: Some(["nginx"].to_vec()),
+    };
+    let stream = client.images().image_export_libpod(Some(params));
+
+    let bytes: Vec<u8> = stream.map_ok(|b| b.to_vec()).try_concat().await.unwrap();
+    let c = std::io::Cursor::new(bytes);
+
+    assert!(tar::Archive::new(c).entries().unwrap().count() > 0)
 }
