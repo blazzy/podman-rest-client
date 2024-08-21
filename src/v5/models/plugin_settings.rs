@@ -7,11 +7,11 @@ pub struct PluginSettings {
     pub args: Vec<String>,
     /// devices
     #[serde(rename = "Devices")]
-    pub devices: Vec<super::super::models::PluginDevice>,
+    pub devices: Vec<crate::v5::models::PluginDevice>,
     /// env
     #[serde(rename = "Env")]
     pub env: Vec<String>,
     /// mounts
     #[serde(rename = "Mounts")]
-    pub mounts: Vec<super::super::models::PluginMount>,
+    pub mounts: Vec<crate::v5::models::PluginMount>,
 }

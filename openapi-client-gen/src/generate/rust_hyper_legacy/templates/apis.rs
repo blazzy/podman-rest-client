@@ -6,9 +6,14 @@ use crate::lang::rust::{
 };
 use crate::{error::Error, spec::Spec, tag::Tag};
 
-pub fn api(spec: &Spec, tag: &Tag, common_module: &syn::Path) -> Result<String, Error> {
+pub fn api(
+    spec: &Spec,
+    tag: &Tag,
+    common_module: &syn::Path,
+    api_module: &syn::Path,
+) -> Result<String, Error> {
     let struct_name = struct_name(&tag.name);
-    let operations = operations(spec, tag)?;
+    let operations = operations(spec, tag, api_module)?;
 
     let code = quote! {
         use std::future::Future;
@@ -27,7 +32,11 @@ pub fn api(spec: &Spec, tag: &Tag, common_module: &syn::Path) -> Result<String, 
     Ok(prettyplease::unparse(&syn_file))
 }
 
-pub fn operations(spec: &Spec, tag: &Tag) -> Result<Vec<TokenStream>, Error> {
+pub fn operations(
+    spec: &Spec,
+    tag: &Tag,
+    api_module: &syn::Path,
+) -> Result<Vec<TokenStream>, Error> {
     tag
         .operations
         .iter()
@@ -36,7 +45,7 @@ pub fn operations(spec: &Spec, tag: &Tag) -> Result<Vec<TokenStream>, Error> {
 
             let success = operation.success_response();
             let response = success
-                .map(|m| model_type(m, &spec.models))
+                .map(|m| model_type(m, &spec.models, api_module))
                 .unwrap_or_else(|| Ok(quote! { () }))?;
 
             let return_type = if Some(true) == success.map(|m| m.data.is_stream()) {
@@ -67,14 +76,14 @@ pub fn operations(spec: &Spec, tag: &Tag) -> Result<Vec<TokenStream>, Error> {
                 .collect::<Result<Vec<_>, Error>>()?;
 
             let params_struct = if operation.should_use_params_struct() {
-                let struct_type = operation.params_struct_as_token_stream();
+                let struct_type = operation.params_struct_as_token_stream(api_module);
                 quote! { params: #struct_type, }
             } else {
                 TokenStream::new()
             };
             let (body_param, create_body) = if let Some(body) = &operation.body_param {
                 let var_name = var_name(&body.name);
-                let body_type = model_type(&body.model, &spec.models)?;
+                let body_type = model_type(&body.model, &spec.models, api_module)?;
                 let body_param = quote! { #var_name: #body_type, };
                 let create_body =  quote! {
                     let body = serde_json::to_string(&#var_name)?;

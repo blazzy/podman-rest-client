@@ -11,8 +11,7 @@ pub struct ContainerNetworkConfig {
     /// will be joined to the default network.
     /// Optional.
     #[serde(rename = "Networks")]
-    pub networks:
-        Option<std::collections::HashMap<String, super::super::models::PerNetworkOptions>>,
+    pub networks: Option<std::collections::HashMap<String, crate::v5::models::PerNetworkOptions>>,
     /// BaseHostsFile is the path to a hosts file, the entries from this file
     /// are added to the containers hosts file. As special value "image" is
     /// allowed which uses the /etc/hosts file from within the image and "none"
@@ -61,14 +60,14 @@ pub struct ContainerNetworkConfig {
     /// Conflicts with UseImageHosts.
     /// Optional.
     pub hostadd: Option<Vec<String>>,
-    pub netns: Option<super::super::models::Namespace>,
+    pub netns: Option<crate::v5::models::Namespace>,
     /// NetworkOptions are additional options for each network
     /// Optional.
     pub network_options: Option<std::collections::HashMap<String, Vec<String>>>,
     /// PortBindings is a set of ports to map into the container.
     /// Only available if NetNS is set to bridge, slirp, or pasta.
     /// Optional.
-    pub portmappings: Option<Vec<super::super::models::PortMapping>>,
+    pub portmappings: Option<Vec<crate::v5::models::PortMapping>>,
     /// PublishExposedPorts will publish ports specified in the image to
     /// random unused ports (guaranteed to be above 1024) on the host.
     /// This is based on ports set in Expose below, and any ports specified

@@ -5,5 +5,5 @@ pub struct NetworkConnect {
     #[serde(rename = "Container")]
     pub container: Option<String>,
     #[serde(rename = "EndpointConfig")]
-    pub endpoint_config: Option<super::super::models::EndpointSettings>,
+    pub endpoint_config: Option<crate::v5::models::EndpointSettings>,
 }

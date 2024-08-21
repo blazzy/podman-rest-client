@@ -14,7 +14,7 @@ pub trait Manifests: HasConfig + Send + Sync {
         name: &'a str,
     ) -> Pin<
         Box<
-            dyn Future<Output = Result<super::super::models::LibpodImagesRemoveReport, Error>>
+            dyn Future<Output = Result<crate::v5::models::LibpodImagesRemoveReport, Error>>
                 + Send
                 + 'a,
         >,
@@ -43,9 +43,9 @@ pub trait Manifests: HasConfig + Send + Sync {
     fn manifest_create_libpod<'a>(
         &'a self,
         name: &'a str,
-        params: Option<super::super::params::ManifestCreateLibpod<'a>>,
-        options: super::super::models::ManifestModifyOptions,
-    ) -> Pin<Box<dyn Future<Output = Result<super::super::models::IdResponse, Error>> + Send + 'a>>
+        params: Option<crate::v5::params::ManifestCreateLibpod<'a>>,
+        options: crate::v5::models::ManifestModifyOptions,
+    ) -> Pin<Box<dyn Future<Output = Result<crate::v5::models::IdResponse, Error>> + Send + 'a>>
     {
         Box::pin(request::execute_request_json(
             self.get_config(),
@@ -88,13 +88,11 @@ pub trait Manifests: HasConfig + Send + Sync {
     fn manifest_modify_libpod<'a>(
         &'a self,
         name: &'a str,
-        params: Option<super::super::params::ManifestModifyLibpod>,
-        options: super::super::models::ManifestModifyOptions,
+        params: Option<crate::v5::params::ManifestModifyLibpod>,
+        options: crate::v5::models::ManifestModifyOptions,
     ) -> Pin<
         Box<
-            dyn Future<Output = Result<super::super::models::ManifestModifyReport, Error>>
-                + Send
-                + 'a,
+            dyn Future<Output = Result<crate::v5::models::ManifestModifyReport, Error>> + Send + 'a,
         >,
     > {
         Box::pin(request::execute_request_json(
@@ -132,8 +130,8 @@ pub trait Manifests: HasConfig + Send + Sync {
     fn manifest_add_libpod<'a>(
         &'a self,
         name: &'a str,
-        options: super::super::models::ManifestAddOptions,
-    ) -> Pin<Box<dyn Future<Output = Result<super::super::models::IdResponse, Error>> + Send + 'a>>
+        options: crate::v5::models::ManifestAddOptions,
+    ) -> Pin<Box<dyn Future<Output = Result<crate::v5::models::IdResponse, Error>> + Send + 'a>>
     {
         Box::pin(request::execute_request_json(
             self.get_config(),
@@ -189,11 +187,9 @@ pub trait Manifests: HasConfig + Send + Sync {
     fn manifest_inspect_libpod<'a>(
         &'a self,
         name: &'a str,
-        params: Option<super::super::params::ManifestInspectLibpod>,
+        params: Option<crate::v5::params::ManifestInspectLibpod>,
     ) -> Pin<
-        Box<
-            dyn Future<Output = Result<super::super::models::Schema2ListPublic, Error>> + Send + 'a,
-        >,
+        Box<dyn Future<Output = Result<crate::v5::models::Schema2ListPublic, Error>> + Send + 'a>,
     > {
         Box::pin(request::execute_request_json(
             self.get_config(),
@@ -227,8 +223,8 @@ pub trait Manifests: HasConfig + Send + Sync {
     fn manifest_push_v_3_libpod<'a>(
         &'a self,
         name: &'a str,
-        params: Option<super::super::params::ManifestPushV3Libpod<'a>>,
-    ) -> Pin<Box<dyn Future<Output = Result<super::super::models::IdResponse, Error>> + Send + 'a>>
+        params: Option<crate::v5::params::ManifestPushV3Libpod<'a>>,
+    ) -> Pin<Box<dyn Future<Output = Result<crate::v5::models::IdResponse, Error>> + Send + 'a>>
     {
         Box::pin(request::execute_request_json(
             self.get_config(),
@@ -264,8 +260,8 @@ pub trait Manifests: HasConfig + Send + Sync {
         &'a self,
         name: &'a str,
         destination: &'a str,
-        params: Option<super::super::params::ManifestPushLibpod<'a>>,
-    ) -> Pin<Box<dyn Future<Output = Result<super::super::models::IdResponse, Error>> + Send + 'a>>
+        params: Option<crate::v5::params::ManifestPushLibpod<'a>>,
+    ) -> Pin<Box<dyn Future<Output = Result<crate::v5::models::IdResponse, Error>> + Send + 'a>>
     {
         Box::pin(request::execute_request_json(
             self.get_config(),

@@ -10,7 +10,7 @@ pub trait ExecCompat: HasConfig + Send + Sync {
     fn container_exec<'a>(
         &'a self,
         name: &'a str,
-        control: super::super::models::ContainerExecBody,
+        control: crate::v4::models::ContainerExecBody,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
@@ -64,7 +64,7 @@ pub trait ExecCompat: HasConfig + Send + Sync {
     fn exec_resize<'a>(
         &'a self,
         id: &'a str,
-        params: Option<super::super::params::ExecResize>,
+        params: Option<crate::v4::params::ExecResize>,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
@@ -102,7 +102,7 @@ pub trait ExecCompat: HasConfig + Send + Sync {
     fn exec_start<'a>(
         &'a self,
         id: &'a str,
-        control: super::super::models::ExecStartBody,
+        control: crate::v4::models::ExecStartBody,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),

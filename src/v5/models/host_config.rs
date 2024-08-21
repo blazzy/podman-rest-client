@@ -12,17 +12,17 @@ pub struct HostConfig {
     #[serde(rename = "Binds")]
     pub binds: Option<Vec<String>>,
     #[serde(rename = "BlkioDeviceReadBps")]
-    pub blkio_device_read_bps: Option<Vec<super::super::models::ThrottleDevice>>,
+    pub blkio_device_read_bps: Option<Vec<crate::v5::models::ThrottleDevice>>,
     #[serde(rename = "BlkioDeviceReadIOps")]
-    pub blkio_device_read_i_ops: Option<Vec<super::super::models::ThrottleDevice>>,
+    pub blkio_device_read_i_ops: Option<Vec<crate::v5::models::ThrottleDevice>>,
     #[serde(rename = "BlkioDeviceWriteBps")]
-    pub blkio_device_write_bps: Option<Vec<super::super::models::ThrottleDevice>>,
+    pub blkio_device_write_bps: Option<Vec<crate::v5::models::ThrottleDevice>>,
     #[serde(rename = "BlkioDeviceWriteIOps")]
-    pub blkio_device_write_i_ops: Option<Vec<super::super::models::ThrottleDevice>>,
+    pub blkio_device_write_i_ops: Option<Vec<crate::v5::models::ThrottleDevice>>,
     #[serde(rename = "BlkioWeight")]
     pub blkio_weight: Option<u16>,
     #[serde(rename = "BlkioWeightDevice")]
-    pub blkio_weight_device: Option<Vec<super::super::models::WeightDevice>>,
+    pub blkio_weight_device: Option<Vec<crate::v5::models::WeightDevice>>,
     #[serde(rename = "CapAdd")]
     pub cap_add: Option<Vec<String>>,
     #[serde(rename = "CapDrop")]
@@ -61,9 +61,9 @@ pub struct HostConfig {
     #[serde(rename = "DeviceCgroupRules")]
     pub device_cgroup_rules: Option<Vec<String>>,
     #[serde(rename = "DeviceRequests")]
-    pub device_requests: Option<Vec<super::super::models::DeviceRequest>>,
+    pub device_requests: Option<Vec<crate::v5::models::DeviceRequest>>,
     #[serde(rename = "Devices")]
-    pub devices: Option<Vec<super::super::models::DeviceMapping>>,
+    pub devices: Option<Vec<crate::v5::models::DeviceMapping>>,
     #[serde(rename = "Dns")]
     pub dns: Option<Vec<String>>,
     #[serde(rename = "DnsOptions")]
@@ -94,7 +94,7 @@ pub struct HostConfig {
     #[serde(rename = "Links")]
     pub links: Option<Vec<String>>,
     #[serde(rename = "LogConfig")]
-    pub log_config: Option<super::super::models::LogConfig>,
+    pub log_config: Option<crate::v5::models::LogConfig>,
     /// MaskedPaths is the list of paths to be masked inside the container (this overrides the default set of paths)
     #[serde(rename = "MaskedPaths")]
     pub masked_paths: Option<Vec<String>>,
@@ -108,7 +108,7 @@ pub struct HostConfig {
     pub memory_swappiness: Option<i64>,
     /// Mounts specs used by the container
     #[serde(rename = "Mounts")]
-    pub mounts: Option<Vec<super::super::models::Mount>>,
+    pub mounts: Option<Vec<crate::v5::models::Mount>>,
     #[serde(rename = "NanoCpus")]
     pub nano_cpus: Option<i64>,
     #[serde(rename = "NetworkMode")]
@@ -123,7 +123,7 @@ pub struct HostConfig {
     pub pids_limit: Option<i64>,
     #[serde(rename = "PortBindings")]
     pub port_bindings:
-        Option<std::collections::HashMap<String, Vec<super::super::models::PortBinding>>>,
+        Option<std::collections::HashMap<String, Vec<crate::v5::models::PortBinding>>>,
     #[serde(rename = "Privileged")]
     pub privileged: Option<bool>,
     #[serde(rename = "PublishAllPorts")]
@@ -134,7 +134,7 @@ pub struct HostConfig {
     #[serde(rename = "ReadonlyRootfs")]
     pub readonly_rootfs: Option<bool>,
     #[serde(rename = "RestartPolicy")]
-    pub restart_policy: Option<super::super::models::RestartPolicy>,
+    pub restart_policy: Option<crate::v5::models::RestartPolicy>,
     #[serde(rename = "Runtime")]
     pub runtime: Option<String>,
     #[serde(rename = "SecurityOpt")]
@@ -150,7 +150,7 @@ pub struct HostConfig {
     #[serde(rename = "UTSMode")]
     pub uts_mode: Option<String>,
     #[serde(rename = "Ulimits")]
-    pub ulimits: Option<Vec<super::super::models::Ulimit>>,
+    pub ulimits: Option<Vec<crate::v5::models::Ulimit>>,
     #[serde(rename = "UsernsMode")]
     pub userns_mode: Option<String>,
     #[serde(rename = "VolumeDriver")]

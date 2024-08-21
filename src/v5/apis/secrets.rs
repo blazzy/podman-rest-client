@@ -9,7 +9,7 @@ pub trait Secrets: HasConfig + Send + Sync {
     fn secret_delete_libpod<'a>(
         &'a self,
         name: &'a str,
-        params: Option<super::super::params::SecretDeleteLibpod>,
+        params: Option<crate::v5::params::SecretDeleteLibpod>,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
@@ -64,10 +64,9 @@ pub trait Secrets: HasConfig + Send + Sync {
     fn secret_inspect_libpod<'a>(
         &'a self,
         name: &'a str,
-        params: Option<super::super::params::SecretInspectLibpod>,
-    ) -> Pin<
-        Box<dyn Future<Output = Result<super::super::models::SecretInfoReport, Error>> + Send + 'a>,
-    > {
+        params: Option<crate::v5::params::SecretInspectLibpod>,
+    ) -> Pin<Box<dyn Future<Output = Result<crate::v5::models::SecretInfoReport, Error>> + Send + 'a>>
+    {
         Box::pin(request::execute_request_json(
             self.get_config(),
             (|| {
@@ -96,13 +95,11 @@ pub trait Secrets: HasConfig + Send + Sync {
     /// Create a secret
     fn secret_create_libpod<'a>(
         &'a self,
-        params: Option<super::super::params::SecretCreateLibpod<'a>>,
+        params: Option<crate::v5::params::SecretCreateLibpod<'a>>,
         request: String,
     ) -> Pin<
         Box<
-            dyn Future<Output = Result<super::super::models::SecretCreateResponse, Error>>
-                + Send
-                + 'a,
+            dyn Future<Output = Result<crate::v5::models::SecretCreateResponse, Error>> + Send + 'a,
         >,
     > {
         Box::pin(request::execute_request_json(
@@ -143,10 +140,10 @@ pub trait Secrets: HasConfig + Send + Sync {
     /// Returns a list of secrets
     fn secret_list_libpod<'a>(
         &'a self,
-        params: Option<super::super::params::SecretListLibpod<'a>>,
+        params: Option<crate::v5::params::SecretListLibpod<'a>>,
     ) -> Pin<
         Box<
-            dyn Future<Output = Result<Vec<super::super::models::SecretInfoReport>, Error>>
+            dyn Future<Output = Result<Vec<crate::v5::models::SecretInfoReport>, Error>>
                 + Send
                 + 'a,
         >,

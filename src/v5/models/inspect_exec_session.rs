@@ -39,7 +39,7 @@ pub struct InspectExecSession {
     #[serde(rename = "Pid")]
     pub pid: Option<i64>,
     #[serde(rename = "ProcessConfig")]
-    pub process_config: Option<super::super::models::InspectExecProcess>,
+    pub process_config: Option<crate::v5::models::InspectExecProcess>,
     /// Running is whether the exec session is running.
     #[serde(rename = "Running")]
     pub running: Option<bool>,

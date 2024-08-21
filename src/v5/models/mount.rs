@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 /// Mount represents a mount (volume).
 pub struct Mount {
     #[serde(rename = "BindOptions")]
-    pub bind_options: Option<super::super::models::BindOptions>,
+    pub bind_options: Option<crate::v5::models::BindOptions>,
     #[serde(rename = "ClusterOptions")]
     pub cluster_options: Option<serde_json::Value>,
     #[serde(rename = "Consistency")]
@@ -18,9 +18,9 @@ pub struct Mount {
     #[serde(rename = "Destination")]
     pub destination: Option<String>,
     #[serde(rename = "TmpfsOptions")]
-    pub tmpfs_options: Option<super::super::models::TmpfsOptions>,
+    pub tmpfs_options: Option<crate::v5::models::TmpfsOptions>,
     #[serde(rename = "Type")]
     pub r#type: Option<String>,
     #[serde(rename = "VolumeOptions")]
-    pub volume_options: Option<super::super::models::VolumeOptions>,
+    pub volume_options: Option<crate::v5::models::VolumeOptions>,
 }

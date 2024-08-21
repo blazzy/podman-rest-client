@@ -9,7 +9,7 @@ pub trait VolumesCompat: HasConfig + Send + Sync {
     /// Returns a list of volume
     fn volume_list<'a>(
         &'a self,
-        params: Option<super::super::params::VolumeList<'a>>,
+        params: Option<crate::v4::params::VolumeList<'a>>,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
@@ -39,7 +39,7 @@ pub trait VolumesCompat: HasConfig + Send + Sync {
     fn volume_delete<'a>(
         &'a self,
         name: &'a str,
-        params: Option<super::super::params::VolumeDelete>,
+        params: Option<crate::v4::params::VolumeDelete>,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
@@ -119,7 +119,7 @@ pub trait VolumesCompat: HasConfig + Send + Sync {
     /// Prune volumes
     fn volume_prune<'a>(
         &'a self,
-        params: Option<super::super::params::VolumePrune<'a>>,
+        params: Option<crate::v4::params::VolumePrune<'a>>,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),

@@ -14,15 +14,15 @@ pub struct ContainerStorageConfig {
     pub create_working_dir: Option<bool>,
     /// DeviceCgroupRule are device cgroup rules that allow containers
     /// to use additional types of devices.
-    pub device_cgroup_rule: Option<Vec<super::super::models::LinuxDeviceCgroup>>,
+    pub device_cgroup_rule: Option<Vec<crate::v5::models::LinuxDeviceCgroup>>,
     /// Devices are devices that will be added to the container.
     /// Optional.
-    pub devices: Option<Vec<super::super::models::LinuxDevice>>,
+    pub devices: Option<Vec<crate::v5::models::LinuxDevice>>,
     /// DevicesFrom specifies that this container will mount the device(s) from other container(s).
     /// Optional.
     pub devices_from: Option<Vec<String>>,
     /// HostDeviceList is used to recreate the mounted device on inherited containers
-    pub host_device_list: Option<Vec<super::super::models::LinuxDevice>>,
+    pub host_device_list: Option<Vec<crate::v5::models::LinuxDevice>>,
     /// Image is the image the container will be based on. The image will be
     /// used as the container's root filesystem, and its environment vars,
     /// volumes, and other configuration will be applied to the container.
@@ -49,7 +49,7 @@ pub struct ContainerStorageConfig {
     pub image_volume_mode: Option<String>,
     /// Image volumes bind-mount a container-image mount into the container.
     /// Optional.
-    pub image_volumes: Option<Vec<super::super::models::ImageVolume>>,
+    pub image_volumes: Option<Vec<crate::v5::models::ImageVolume>>,
     /// Init specifies that an init binary will be mounted into the
     /// container, and will be used as PID1.
     /// Optional.
@@ -59,15 +59,15 @@ pub struct ContainerStorageConfig {
     /// Libpod config will be used. Ignored if Init above is not set.
     /// Optional.
     pub init_path: Option<String>,
-    pub ipcns: Option<super::super::models::Namespace>,
+    pub ipcns: Option<crate::v5::models::Namespace>,
     /// Mounts are mounts that will be added to the container.
     /// These will supersede Image Volumes and VolumesFrom volumes where
     /// there are conflicts.
     /// Optional.
-    pub mounts: Option<Vec<super::super::models::Mount>>,
+    pub mounts: Option<Vec<crate::v5::models::Mount>>,
     /// Overlay volumes are named volumes that will be added to the container.
     /// Optional.
-    pub overlay_volumes: Option<Vec<super::super::models::OverlayVolume>>,
+    pub overlay_volumes: Option<Vec<crate::v5::models::OverlayVolume>>,
     /// RawImageName is the user-specified and unprocessed input referring
     /// to a local or a remote image.
     /// Optional, but strongly encouraged to be set if Image is set.
@@ -90,7 +90,7 @@ pub struct ContainerStorageConfig {
     pub rootfs_propagation: Option<String>,
     /// Secrets are the secrets that will be added to the container
     /// Optional.
-    pub secrets: Option<Vec<super::super::models::Secret>>,
+    pub secrets: Option<Vec<crate::v5::models::Secret>>,
     /// ShmSize is the size of the tmpfs to mount in at /dev/shm, in bytes.
     /// Conflicts with ShmSize if IpcNS is not private.
     /// Optional.
@@ -110,7 +110,7 @@ pub struct ContainerStorageConfig {
     /// These will supersede Image Volumes and VolumesFrom volumes where
     /// there are conflicts.
     /// Optional.
-    pub volumes: Option<Vec<super::super::models::NamedVolume>>,
+    pub volumes: Option<Vec<crate::v5::models::NamedVolume>>,
     /// VolumesFrom is a set of containers whose volumes will be added to
     /// this container. The name or ID of the container must be provided, and
     /// may optionally be followed by a : and then one or more

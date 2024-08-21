@@ -32,6 +32,7 @@ pub fn generate<'a>(config: &'a mut GeneratorConfig<'a>) -> Result<(), Error> {
     let common_module: syn::Path = syn::parse_str(&common_module)?;
 
     let api_module_str = guess_api_module(config).ok_or(Error::CouldNotDetermineCommonModule)?;
+    let api_module: syn::Path = syn::parse_str(&api_module_str)?;
 
     let spec = config.spec;
 
@@ -61,7 +62,10 @@ pub fn generate<'a>(config: &'a mut GeneratorConfig<'a>) -> Result<(), Error> {
 
     for tag in spec.tags.values() {
         let file_name = apis_dir.join(rust::file_name(&tag.name));
-        files.create(file_name, templates::apis::api(spec, tag, &common_module)?)?;
+        files.create(
+            file_name,
+            templates::apis::api(spec, tag, &common_module, &api_module)?,
+        )?;
     }
     files.create(
         apis_dir.join("mod.rs"),
@@ -73,7 +77,7 @@ pub fn generate<'a>(config: &'a mut GeneratorConfig<'a>) -> Result<(), Error> {
         if let ModelData::Object(properties) = &model.data {
             files.create(
                 models_dir.join(rust::file_name(&model.name)),
-                templates::models::models(model, properties, &spec.models)?,
+                templates::models::models(model, properties, &spec.models, &api_module)?,
             )?;
         }
     }

@@ -9,10 +9,10 @@ pub trait SecretsCompat: HasConfig + Send + Sync {
     /// Returns a list of secrets
     fn secret_list<'a>(
         &'a self,
-        params: Option<super::super::params::SecretList<'a>>,
+        params: Option<crate::v5::params::SecretList<'a>>,
     ) -> Pin<
         Box<
-            dyn Future<Output = Result<Vec<super::super::models::SecretInfoReportCompat>, Error>>
+            dyn Future<Output = Result<Vec<crate::v5::models::SecretInfoReportCompat>, Error>>
                 + Send
                 + 'a,
         >,
@@ -71,7 +71,7 @@ pub trait SecretsCompat: HasConfig + Send + Sync {
         name: &'a str,
     ) -> Pin<
         Box<
-            dyn Future<Output = Result<super::super::models::SecretInfoReportCompat, Error>>
+            dyn Future<Output = Result<crate::v5::models::SecretInfoReportCompat, Error>>
                 + Send
                 + 'a,
         >,
@@ -98,12 +98,10 @@ pub trait SecretsCompat: HasConfig + Send + Sync {
     /// Create a secret
     fn secret_create<'a>(
         &'a self,
-        create: super::super::models::SecretCreate,
+        create: crate::v5::models::SecretCreate,
     ) -> Pin<
         Box<
-            dyn Future<Output = Result<super::super::models::SecretCreateResponse, Error>>
-                + Send
-                + 'a,
+            dyn Future<Output = Result<crate::v5::models::SecretCreateResponse, Error>> + Send + 'a,
         >,
     > {
         Box::pin(request::execute_request_json(

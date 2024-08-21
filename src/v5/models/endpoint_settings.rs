@@ -19,7 +19,7 @@ pub struct EndpointSettings {
     #[serde(rename = "GlobalIPv6PrefixLen")]
     pub global_i_pv6_prefix_len: Option<i64>,
     #[serde(rename = "IPAMConfig")]
-    pub ipam_config: Option<super::super::models::EndpointIpamConfig>,
+    pub ipam_config: Option<crate::v5::models::EndpointIpamConfig>,
     #[serde(rename = "IPAddress")]
     pub ip_address: Option<String>,
     #[serde(rename = "IPPrefixLen")]

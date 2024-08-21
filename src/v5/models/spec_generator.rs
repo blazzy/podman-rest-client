@@ -11,8 +11,7 @@ pub struct SpecGenerator {
     /// will be joined to the default network.
     /// Optional.
     #[serde(rename = "Networks")]
-    pub networks:
-        Option<std::collections::HashMap<String, super::super::models::PerNetworkOptions>>,
+    pub networks: Option<std::collections::HashMap<String, crate::v5::models::PerNetworkOptions>>,
     /// Annotations are key-value options passed into the container runtime
     /// that can be used to trigger special behavior.
     /// Optional.
@@ -40,7 +39,7 @@ pub struct SpecGenerator {
     /// If not set, the default for the current cgroup driver will be used.
     /// Optional.
     pub cgroup_parent: Option<String>,
-    pub cgroupns: Option<super::super::models::Namespace>,
+    pub cgroupns: Option<crate::v5::models::Namespace>,
     /// CgroupsMode sets a policy for how cgroups will be created for the
     /// container, including the ability to disable creation entirely.
     /// Optional.
@@ -88,10 +87,10 @@ pub struct SpecGenerator {
     pub dependency_containers: Option<Vec<String>>,
     /// DeviceCgroupRule are device cgroup rules that allow containers
     /// to use additional types of devices.
-    pub device_cgroup_rule: Option<Vec<super::super::models::LinuxDeviceCgroup>>,
+    pub device_cgroup_rule: Option<Vec<crate::v5::models::LinuxDeviceCgroup>>,
     /// Devices are devices that will be added to the container.
     /// Optional.
-    pub devices: Option<Vec<super::super::models::LinuxDevice>>,
+    pub devices: Option<Vec<crate::v5::models::LinuxDevice>>,
     /// DevicesFrom specifies that this container will mount the device(s) from other container(s).
     /// Optional.
     pub devices_from: Option<Vec<String>>,
@@ -147,9 +146,9 @@ pub struct SpecGenerator {
     /// Optional.
     pub groups: Option<Vec<String>>,
     pub health_check_on_failure_action: Option<i64>,
-    pub healthconfig: Option<super::super::models::Schema2HealthConfig>,
+    pub healthconfig: Option<crate::v5::models::Schema2HealthConfig>,
     /// HostDeviceList is used to recreate the mounted device on inherited containers
-    pub host_device_list: Option<Vec<super::super::models::LinuxDevice>>,
+    pub host_device_list: Option<Vec<crate::v5::models::LinuxDevice>>,
     /// HostAdd is a set of hosts which will be added to the container's
     /// etc/hosts file.
     /// Conflicts with UseImageHosts.
@@ -168,7 +167,7 @@ pub struct SpecGenerator {
     /// should be added to container
     /// Optional.
     pub httpproxy: Option<bool>,
-    pub idmappings: Option<super::super::models::IdMappingOptions>,
+    pub idmappings: Option<crate::v5::models::IdMappingOptions>,
     /// Image is the image the container will be based on. The image will be
     /// used as the container's root filesystem, and its environment vars,
     /// volumes, and other configuration will be applied to the container.
@@ -195,7 +194,7 @@ pub struct SpecGenerator {
     pub image_volume_mode: Option<String>,
     /// Image volumes bind-mount a container-image mount into the container.
     /// Optional.
-    pub image_volumes: Option<Vec<super::super::models::ImageVolume>>,
+    pub image_volumes: Option<Vec<crate::v5::models::ImageVolume>>,
     /// Init specifies that an init binary will be mounted into the
     /// container, and will be used as PID1.
     /// Optional.
@@ -210,8 +209,8 @@ pub struct SpecGenerator {
     /// Optional.
     pub init_path: Option<String>,
     #[serde(rename = "intelRdt")]
-    pub intel_rdt: Option<super::super::models::LinuxIntelRdt>,
-    pub ipcns: Option<super::super::models::Namespace>,
+    pub intel_rdt: Option<crate::v5::models::LinuxIntelRdt>,
+    pub ipcns: Option<crate::v5::models::Namespace>,
     /// LabelNested indicates whether or not the container is allowed to
     /// run fully nested containers including SELinux labelling.
     /// Optional.
@@ -220,7 +219,7 @@ pub struct SpecGenerator {
     /// containers.
     /// Optional.
     pub labels: Option<std::collections::HashMap<String, String>>,
-    pub log_configuration: Option<super::super::models::LogConfigLibpod>,
+    pub log_configuration: Option<crate::v5::models::LogConfigLibpod>,
     /// Passwd is a container run option that determines if we are validating users/groups before running the container
     pub manage_password: Option<bool>,
     /// Mask is the path we want to mask in the container. This masks the paths
@@ -231,12 +230,12 @@ pub struct SpecGenerator {
     /// These will supersede Image Volumes and VolumesFrom volumes where
     /// there are conflicts.
     /// Optional.
-    pub mounts: Option<Vec<super::super::models::Mount>>,
+    pub mounts: Option<Vec<crate::v5::models::Mount>>,
     /// Name is the name the container will be given.
     /// If no name is provided, one will be randomly generated.
     /// Optional.
     pub name: Option<String>,
-    pub netns: Option<super::super::models::Namespace>,
+    pub netns: Option<crate::v5::models::Namespace>,
     /// NetworkOptions are additional options for each network
     /// Optional.
     pub network_options: Option<std::collections::HashMap<String, Vec<String>>>,
@@ -256,19 +255,19 @@ pub struct SpecGenerator {
     pub oom_score_adj: Option<i64>,
     /// Overlay volumes are named volumes that will be added to the container.
     /// Optional.
-    pub overlay_volumes: Option<Vec<super::super::models::OverlayVolume>>,
+    pub overlay_volumes: Option<Vec<crate::v5::models::OverlayVolume>>,
     /// PasswdEntry specifies an arbitrary string to append to the container's /etc/passwd file.
     /// Optional.
     pub passwd_entry: Option<String>,
-    pub personality: Option<super::super::models::LinuxPersonality>,
-    pub pidns: Option<super::super::models::Namespace>,
+    pub personality: Option<crate::v5::models::LinuxPersonality>,
+    pub pidns: Option<crate::v5::models::Namespace>,
     /// Pod is the ID of the pod the container will join.
     /// Optional.
     pub pod: Option<String>,
     /// PortBindings is a set of ports to map into the container.
     /// Only available if NetNS is set to bridge, slirp, or pasta.
     /// Optional.
-    pub portmappings: Option<Vec<super::super::models::PortMapping>>,
+    pub portmappings: Option<Vec<crate::v5::models::PortMapping>>,
     /// Privileged is whether the container is privileged.
     /// Privileged does the following:
     /// Adds all devices on the system to the container.
@@ -290,7 +289,7 @@ pub struct SpecGenerator {
     pub publish_image_ports: Option<bool>,
     /// Rlimits are POSIX rlimits to apply to the container.
     /// Optional.
-    pub r_limits: Option<Vec<super::super::models::PosixRlimit>>,
+    pub r_limits: Option<Vec<crate::v5::models::PosixRlimit>>,
     /// RawImageName is the user-specified and unprocessed input referring
     /// to a local or a remote image.
     /// Optional, but strongly encouraged to be set if Image is set.
@@ -307,7 +306,7 @@ pub struct SpecGenerator {
     /// and exits.
     /// Optional.
     pub remove: Option<bool>,
-    pub resource_limits: Option<super::super::models::LinuxResources>,
+    pub resource_limits: Option<crate::v5::models::LinuxResources>,
     /// RestartPolicy is the container's restart policy - an action which
     /// will be taken when the container exits.
     /// If not given, the default policy, which does nothing, will be used.
@@ -354,7 +353,7 @@ pub struct SpecGenerator {
     pub secret_env: Option<std::collections::HashMap<String, String>>,
     /// Secrets are the secrets that will be added to the container
     /// Optional.
-    pub secrets: Option<Vec<super::super::models::Secret>>,
+    pub secrets: Option<Vec<crate::v5::models::Secret>>,
     /// SelinuxProcessLabel is the process label the container will use.
     /// If SELinux is enabled and this is not specified, a label will be
     /// automatically generated if not specified.
@@ -369,7 +368,7 @@ pub struct SpecGenerator {
     /// Optional
     pub shm_size_systemd: Option<i64>,
     #[serde(rename = "startupHealthConfig")]
-    pub startup_health_config: Option<super::super::models::StartupHealthCheck>,
+    pub startup_health_config: Option<crate::v5::models::StartupHealthCheck>,
     /// Stdin is whether the container will keep its STDIN open.
     /// Optional.
     pub stdin: Option<bool>,
@@ -403,19 +402,19 @@ pub struct SpecGenerator {
     /// IO read rate limit per cgroup per device, bytes per second
     #[serde(rename = "throttleReadBpsDevice")]
     pub throttle_read_bps_device:
-        Option<std::collections::HashMap<String, super::super::models::LinuxThrottleDevice>>,
+        Option<std::collections::HashMap<String, crate::v5::models::LinuxThrottleDevice>>,
     /// IO read rate limit per cgroup per device, IO per second
     #[serde(rename = "throttleReadIOPSDevice")]
     pub throttle_read_iops_device:
-        Option<std::collections::HashMap<String, super::super::models::LinuxThrottleDevice>>,
+        Option<std::collections::HashMap<String, crate::v5::models::LinuxThrottleDevice>>,
     /// IO write rate limit per cgroup per device, bytes per second
     #[serde(rename = "throttleWriteBpsDevice")]
     pub throttle_write_bps_device:
-        Option<std::collections::HashMap<String, super::super::models::LinuxThrottleDevice>>,
+        Option<std::collections::HashMap<String, crate::v5::models::LinuxThrottleDevice>>,
     /// IO write rate limit per cgroup per device, IO per second
     #[serde(rename = "throttleWriteIOPSDevice")]
     pub throttle_write_iops_device:
-        Option<std::collections::HashMap<String, super::super::models::LinuxThrottleDevice>>,
+        Option<std::collections::HashMap<String, crate::v5::models::LinuxThrottleDevice>>,
     /// Timeout is a maximum time in seconds the container will run before
     /// main process is sent SIGKILL.
     /// If 0 is used, signal will not be sent. Container can run indefinitely
@@ -460,8 +459,8 @@ pub struct SpecGenerator {
     /// If unset, the container will be run as root.
     /// Optional.
     pub user: Option<String>,
-    pub userns: Option<super::super::models::Namespace>,
-    pub utsns: Option<super::super::models::Namespace>,
+    pub userns: Option<crate::v5::models::Namespace>,
+    pub utsns: Option<crate::v5::models::Namespace>,
     /// Volatile specifies whether the container storage can be optimized
     /// at the cost of not syncing all the dirty files in memory.
     /// Optional.
@@ -470,7 +469,7 @@ pub struct SpecGenerator {
     /// These will supersede Image Volumes and VolumesFrom volumes where
     /// there are conflicts.
     /// Optional.
-    pub volumes: Option<Vec<super::super::models::NamedVolume>>,
+    pub volumes: Option<Vec<crate::v5::models::NamedVolume>>,
     /// VolumesFrom is a set of containers whose volumes will be added to
     /// this container. The name or ID of the container must be provided, and
     /// may optionally be followed by a : and then one or more
@@ -481,7 +480,7 @@ pub struct SpecGenerator {
     /// Weight per cgroup per device, can override BlkioWeight
     #[serde(rename = "weightDevice")]
     pub weight_device:
-        Option<std::collections::HashMap<String, super::super::models::LinuxWeightDevice>>,
+        Option<std::collections::HashMap<String, crate::v5::models::LinuxWeightDevice>>,
     /// WorkDir is the container's working directory.
     /// If unset, the default, /, will be used.
     /// Optional.

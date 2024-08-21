@@ -6,5 +6,5 @@ pub struct LinuxNetwork {
     #[serde(rename = "classID")]
     pub class_id: Option<u32>,
     /// Set priority of network traffic for container
-    pub priorities: Option<Vec<super::super::models::LinuxInterfacePriority>>,
+    pub priorities: Option<Vec<crate::v5::models::LinuxInterfacePriority>>,
 }

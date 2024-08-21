@@ -10,7 +10,7 @@ pub trait Networks: HasConfig + Send + Sync {
     fn network_delete_libpod<'a>(
         &'a self,
         name: &'a str,
-        params: Option<super::super::params::NetworkDeleteLibpod>,
+        params: Option<crate::v4::params::NetworkDeleteLibpod>,
     ) -> Pin<Box<dyn Future<Output = Result<Vec<()>, Error>> + Send + 'a>> {
         Box::pin(request::execute_request_json(
             self.get_config(),
@@ -206,7 +206,7 @@ pub trait Networks: HasConfig + Send + Sync {
     ///   - In a 200 response, all of the fields named Bytes are returned as a Base64 encoded string.
     fn network_list_libpod<'a>(
         &'a self,
-        params: Option<super::super::params::NetworkListLibpod<'a>>,
+        params: Option<crate::v4::params::NetworkListLibpod<'a>>,
     ) -> Pin<Box<dyn Future<Output = Result<Vec<()>, Error>> + Send + 'a>> {
         Box::pin(request::execute_request_json(
             self.get_config(),
@@ -236,7 +236,7 @@ pub trait Networks: HasConfig + Send + Sync {
     /// Remove networks that do not have containers
     fn network_prune_libpod<'a>(
         &'a self,
-        params: Option<super::super::params::NetworkPruneLibpod<'a>>,
+        params: Option<crate::v4::params::NetworkPruneLibpod<'a>>,
     ) -> Pin<Box<dyn Future<Output = Result<Vec<()>, Error>> + Send + 'a>> {
         Box::pin(request::execute_request_json(
             self.get_config(),

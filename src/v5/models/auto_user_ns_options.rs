@@ -5,11 +5,11 @@ pub struct AutoUserNsOptions {
     /// AdditionalGIDMappings specified additional GID mappings to include in
     /// the generated user namespace.
     #[serde(rename = "AdditionalGIDMappings")]
-    pub additional_gid_mappings: Option<Vec<super::super::models::IdMap>>,
+    pub additional_gid_mappings: Option<Vec<crate::v5::models::IdMap>>,
     /// AdditionalUIDMappings specified additional UID mappings to include in
     /// the generated user namespace.
     #[serde(rename = "AdditionalUIDMappings")]
-    pub additional_uid_mappings: Option<Vec<super::super::models::IdMap>>,
+    pub additional_uid_mappings: Option<Vec<crate::v5::models::IdMap>>,
     /// GroupFile to use if the container uses a volume.
     #[serde(rename = "GroupFile")]
     pub group_file: Option<String>,

@@ -13,12 +13,12 @@ pub struct ImageInspect {
     #[serde(rename = "Comment")]
     pub comment: Option<String>,
     #[serde(rename = "Config")]
-    pub config: Option<super::super::models::Config>,
+    pub config: Option<crate::v5::models::Config>,
     /// Container is for backwards compat but is basically unused
     #[serde(rename = "Container")]
     pub container: Option<String>,
     #[serde(rename = "ContainerConfig")]
-    pub container_config: Option<super::super::models::Config>,
+    pub container_config: Option<crate::v5::models::Config>,
     /// Created is the date and time at which the image was created, formatted in
     /// RFC 3339 nano-seconds (time.RFC3339Nano).
     ///
@@ -32,7 +32,7 @@ pub struct ImageInspect {
     #[serde(rename = "DockerVersion")]
     pub docker_version: Option<String>,
     #[serde(rename = "GraphDriver")]
-    pub graph_driver: Option<super::super::models::GraphDriverData>,
+    pub graph_driver: Option<crate::v5::models::GraphDriverData>,
     /// ID is the content-addressable ID of an image.
     ///
     /// This identifier is a content-addressable digest calculated from the
@@ -44,7 +44,7 @@ pub struct ImageInspect {
     #[serde(rename = "Id")]
     pub id: Option<String>,
     #[serde(rename = "Metadata")]
-    pub metadata: Option<super::super::models::Metadata>,
+    pub metadata: Option<crate::v5::models::Metadata>,
     /// OS is the Operating System the image is built to run on.
     #[serde(rename = "Os")]
     pub os: Option<String>,
@@ -77,7 +77,7 @@ pub struct ImageInspect {
     #[serde(rename = "RepoTags")]
     pub repo_tags: Option<Vec<String>>,
     #[serde(rename = "RootFS")]
-    pub root_fs: Option<super::super::models::RootFs>,
+    pub root_fs: Option<crate::v5::models::RootFs>,
     /// Size is the total size of the image including all layers it is composed of.
     #[serde(rename = "Size")]
     pub size: Option<i64>,

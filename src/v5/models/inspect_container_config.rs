@@ -37,7 +37,7 @@ pub struct InspectContainerConfig {
     #[serde(rename = "Env")]
     pub env: Option<Vec<String>>,
     #[serde(rename = "Healthcheck")]
-    pub healthcheck: Option<super::super::models::Schema2HealthConfig>,
+    pub healthcheck: Option<crate::v5::models::Schema2HealthConfig>,
     /// HealthcheckOnFailureAction defines an action to take once the container turns unhealthy.
     #[serde(rename = "HealthcheckOnFailureAction")]
     pub healthcheck_on_failure_action: Option<String>,
@@ -61,7 +61,7 @@ pub struct InspectContainerConfig {
     pub passwd: Option<bool>,
     /// Secrets are the secrets mounted in the container
     #[serde(rename = "Secrets")]
-    pub secrets: Option<Vec<super::super::models::InspectSecret>>,
+    pub secrets: Option<Vec<crate::v5::models::InspectSecret>>,
     /// Whether STDIN is only left open once.
     /// Presently not supported by Podman, unused.
     #[serde(rename = "StdinOnce")]

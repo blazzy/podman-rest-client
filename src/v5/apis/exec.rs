@@ -10,7 +10,7 @@ pub trait Exec: HasConfig + Send + Sync {
     fn container_exec_libpod<'a>(
         &'a self,
         name: &'a str,
-        control: super::super::models::ContainerExecLibpodBody,
+        control: crate::v5::models::ContainerExecLibpodBody,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
@@ -64,7 +64,7 @@ pub trait Exec: HasConfig + Send + Sync {
     fn exec_resize_libpod<'a>(
         &'a self,
         id: &'a str,
-        params: Option<super::super::params::ExecResizeLibpod>,
+        params: Option<crate::v5::params::ExecResizeLibpod>,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
@@ -100,7 +100,7 @@ pub trait Exec: HasConfig + Send + Sync {
     fn exec_start_libpod<'a>(
         &'a self,
         id: &'a str,
-        control: super::super::models::ExecStartLibpodBody,
+        control: crate::v5::models::ExecStartLibpodBody,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),

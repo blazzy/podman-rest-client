@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 /// Plugin A plugin for the Engine API
 pub struct Plugin {
     #[serde(rename = "Config")]
-    pub config: super::super::models::PluginConfig,
+    pub config: crate::v5::models::PluginConfig,
     /// True if the plugin is running. False if the plugin is not running, only installed.
     #[serde(rename = "Enabled")]
     pub enabled: bool,
@@ -17,5 +17,5 @@ pub struct Plugin {
     #[serde(rename = "PluginReference")]
     pub plugin_reference: Option<String>,
     #[serde(rename = "Settings")]
-    pub settings: super::super::models::PluginSettings,
+    pub settings: crate::v5::models::PluginSettings,
 }

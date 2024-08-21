@@ -9,7 +9,7 @@ pub struct NetworkCreate {
     #[serde(rename = "CheckDuplicate")]
     pub check_duplicate: Option<bool>,
     #[serde(rename = "ConfigFrom")]
-    pub config_from: Option<super::super::models::ConfigReference>,
+    pub config_from: Option<crate::v5::models::ConfigReference>,
     #[serde(rename = "ConfigOnly")]
     pub config_only: Option<bool>,
     #[serde(rename = "Driver")]
@@ -17,7 +17,7 @@ pub struct NetworkCreate {
     #[serde(rename = "EnableIPv6")]
     pub enable_i_pv6: Option<bool>,
     #[serde(rename = "IPAM")]
-    pub ipam: Option<super::super::models::Ipam>,
+    pub ipam: Option<crate::v5::models::Ipam>,
     #[serde(rename = "Ingress")]
     pub ingress: Option<bool>,
     #[serde(rename = "Internal")]

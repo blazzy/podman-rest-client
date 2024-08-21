@@ -41,9 +41,8 @@ pub struct InspectPodInfraConfig {
     /// PortBindings are ports that will be forwarded to the infra container
     /// and then shared with the pod.
     #[serde(rename = "PortBindings")]
-    pub port_bindings: Option<
-        std::collections::HashMap<String, Option<Vec<super::super::models::InspectHostPort>>>,
-    >,
+    pub port_bindings:
+        Option<std::collections::HashMap<String, Option<Vec<crate::v5::models::InspectHostPort>>>>,
     /// StaticIP is a static IPv4 that will be assigned to the infra
     /// container and then used by the pod.
     #[serde(rename = "StaticIP")]

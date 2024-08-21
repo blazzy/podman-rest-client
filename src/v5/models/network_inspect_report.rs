@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Default, Debug, Serialize, Deserialize)]
 pub struct NetworkInspectReport {
     pub containers:
-        Option<std::collections::HashMap<String, super::super::models::NetworkContainerInfo>>,
+        Option<std::collections::HashMap<String, crate::v5::models::NetworkContainerInfo>>,
     /// Created contains the timestamp when this network was created.
     pub created: Option<String>,
     /// DNSEnabled is whether name resolution is active for container on
@@ -34,7 +34,7 @@ pub struct NetworkInspectReport {
     /// the Network.
     pub options: Option<std::collections::HashMap<String, String>>,
     /// Routes to use for this network.
-    pub routes: Option<Vec<super::super::models::Route>>,
+    pub routes: Option<Vec<crate::v5::models::Route>>,
     /// Subnets to use for this network.
-    pub subnets: Option<Vec<super::super::models::Subnet>>,
+    pub subnets: Option<Vec<crate::v5::models::Subnet>>,
 }

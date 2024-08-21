@@ -6,7 +6,7 @@ pub struct StoreInfo {
     #[serde(rename = "configFile")]
     pub config_file: Option<String>,
     #[serde(rename = "containerStore")]
-    pub container_store: Option<super::super::models::ContainerStore>,
+    pub container_store: Option<crate::v5::models::ContainerStore>,
     #[serde(rename = "graphDriverName")]
     pub graph_driver_name: Option<String>,
     #[serde(rename = "graphOptions")]
@@ -24,7 +24,7 @@ pub struct StoreInfo {
     #[serde(rename = "imageCopyTmpDir")]
     pub image_copy_tmp_dir: Option<String>,
     #[serde(rename = "imageStore")]
-    pub image_store: Option<super::super::models::ImageStore>,
+    pub image_store: Option<crate::v5::models::ImageStore>,
     #[serde(rename = "runRoot")]
     pub run_root: Option<String>,
     #[serde(rename = "transientStore")]

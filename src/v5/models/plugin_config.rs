@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 /// PluginConfig The config of a plugin.
 pub struct PluginConfig {
     #[serde(rename = "Args")]
-    pub args: super::super::models::PluginConfigArgs,
+    pub args: crate::v5::models::PluginConfigArgs,
     /// description
     #[serde(rename = "Description")]
     pub description: String,
@@ -18,19 +18,19 @@ pub struct PluginConfig {
     pub entrypoint: Vec<String>,
     /// env
     #[serde(rename = "Env")]
-    pub env: Vec<super::super::models::PluginEnv>,
+    pub env: Vec<crate::v5::models::PluginEnv>,
     #[serde(rename = "Interface")]
-    pub interface: super::super::models::PluginConfigInterface,
+    pub interface: crate::v5::models::PluginConfigInterface,
     /// ipc host
     #[serde(rename = "IpcHost")]
     pub ipc_host: bool,
     #[serde(rename = "Linux")]
-    pub linux: super::super::models::PluginConfigLinux,
+    pub linux: crate::v5::models::PluginConfigLinux,
     /// mounts
     #[serde(rename = "Mounts")]
-    pub mounts: Vec<super::super::models::PluginMount>,
+    pub mounts: Vec<crate::v5::models::PluginMount>,
     #[serde(rename = "Network")]
-    pub network: super::super::models::PluginConfigNetwork,
+    pub network: crate::v5::models::PluginConfigNetwork,
     /// pid host
     #[serde(rename = "PidHost")]
     pub pid_host: bool,
@@ -38,9 +38,9 @@ pub struct PluginConfig {
     #[serde(rename = "PropagatedMount")]
     pub propagated_mount: String,
     #[serde(rename = "User")]
-    pub user: Option<super::super::models::PluginConfigUser>,
+    pub user: Option<crate::v5::models::PluginConfigUser>,
     /// work dir
     #[serde(rename = "WorkDir")]
     pub work_dir: String,
-    pub rootfs: Option<super::super::models::PluginConfigRootfs>,
+    pub rootfs: Option<crate::v5::models::PluginConfigRootfs>,
 }

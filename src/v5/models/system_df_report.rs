@@ -3,11 +3,11 @@ use serde::{Deserialize, Serialize};
 /// SystemDfReport describes the response for df information
 pub struct SystemDfReport {
     #[serde(rename = "Containers")]
-    pub containers: Option<Vec<super::super::models::SystemDfContainerReport>>,
+    pub containers: Option<Vec<crate::v5::models::SystemDfContainerReport>>,
     #[serde(rename = "Images")]
-    pub images: Option<Vec<super::super::models::SystemDfImageReport>>,
+    pub images: Option<Vec<crate::v5::models::SystemDfImageReport>>,
     #[serde(rename = "ImagesSize")]
     pub images_size: Option<i64>,
     #[serde(rename = "Volumes")]
-    pub volumes: Option<Vec<super::super::models::SystemDfVolumeReport>>,
+    pub volumes: Option<Vec<crate::v5::models::SystemDfVolumeReport>>,
 }

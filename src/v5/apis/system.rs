@@ -9,7 +9,7 @@ pub trait System: HasConfig + Send + Sync {
     /// Returns events filtered on query parameters
     fn system_events_libpod<'a>(
         &'a self,
-        params: Option<super::super::params::SystemEventsLibpod<'a>>,
+        params: Option<crate::v5::params::SystemEventsLibpod<'a>>,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
@@ -48,7 +48,7 @@ pub trait System: HasConfig + Send + Sync {
     /// Returns information on the system and libpod configuration
     fn system_info_libpod<'a>(
         &'a self,
-    ) -> Pin<Box<dyn Future<Output = Result<super::super::models::LibpodInfo, Error>> + Send + 'a>>
+    ) -> Pin<Box<dyn Future<Output = Result<crate::v5::models::LibpodInfo, Error>> + Send + 'a>>
     {
         Box::pin(request::execute_request_json(
             self.get_config(),
@@ -72,9 +72,8 @@ pub trait System: HasConfig + Send + Sync {
     /// Return information about disk usage for containers, images, and volumes
     fn system_data_usage_libpod<'a>(
         &'a self,
-    ) -> Pin<
-        Box<dyn Future<Output = Result<super::super::models::SystemDfReport, Error>> + Send + 'a>,
-    > {
+    ) -> Pin<Box<dyn Future<Output = Result<crate::v5::models::SystemDfReport, Error>> + Send + 'a>>
+    {
         Box::pin(request::execute_request_json(
             self.get_config(),
             (|| {
@@ -97,9 +96,7 @@ pub trait System: HasConfig + Send + Sync {
     fn system_prune_libpod<'a>(
         &'a self,
     ) -> Pin<
-        Box<
-            dyn Future<Output = Result<super::super::models::SystemPruneReport, Error>> + Send + 'a,
-        >,
+        Box<dyn Future<Output = Result<crate::v5::models::SystemPruneReport, Error>> + Send + 'a>,
     > {
         Box::pin(request::execute_request_json(
             self.get_config(),
@@ -124,7 +121,7 @@ pub trait System: HasConfig + Send + Sync {
         &'a self,
     ) -> Pin<
         Box<
-            dyn Future<Output = Result<super::super::models::SystemComponentVersion, Error>>
+            dyn Future<Output = Result<crate::v5::models::SystemComponentVersion, Error>>
                 + Send
                 + 'a,
         >,

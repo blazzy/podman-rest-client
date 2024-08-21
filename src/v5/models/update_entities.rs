@@ -3,5 +3,5 @@ use serde::{Deserialize, Serialize};
 /// UpdateEntities used to wrap the oci resource spec in a swagger model
 pub struct UpdateEntities {
     #[serde(rename = "Resources")]
-    pub resources: Option<super::super::models::LinuxResources>,
+    pub resources: Option<crate::v5::models::LinuxResources>,
 }

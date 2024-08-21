@@ -5,7 +5,7 @@ pub struct Health {
     #[serde(rename = "FailingStreak")]
     pub failing_streak: Option<i64>,
     #[serde(rename = "Log")]
-    pub log: Option<Vec<super::super::models::HealthcheckResult>>,
+    pub log: Option<Vec<crate::v5::models::HealthcheckResult>>,
     #[serde(rename = "Status")]
     pub status: Option<String>,
 }

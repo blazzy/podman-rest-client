@@ -10,5 +10,5 @@ pub struct PluginConfigLinux {
     pub capabilities: Vec<String>,
     /// devices
     #[serde(rename = "Devices")]
-    pub devices: Vec<super::super::models::PluginDevice>,
+    pub devices: Vec<crate::v5::models::PluginDevice>,
 }

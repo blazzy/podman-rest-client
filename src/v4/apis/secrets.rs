@@ -9,7 +9,7 @@ pub trait Secrets: HasConfig + Send + Sync {
     fn secret_delete_libpod<'a>(
         &'a self,
         name: &'a str,
-        params: Option<super::super::params::SecretDeleteLibpod>,
+        params: Option<crate::v4::params::SecretDeleteLibpod>,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
@@ -64,7 +64,7 @@ pub trait Secrets: HasConfig + Send + Sync {
     fn secret_inspect_libpod<'a>(
         &'a self,
         name: &'a str,
-        params: Option<super::super::params::SecretInspectLibpod>,
+        params: Option<crate::v4::params::SecretInspectLibpod>,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
@@ -94,7 +94,7 @@ pub trait Secrets: HasConfig + Send + Sync {
     /// Create a secret
     fn secret_create_libpod<'a>(
         &'a self,
-        params: Option<super::super::params::SecretCreateLibpod<'a>>,
+        params: Option<crate::v4::params::SecretCreateLibpod<'a>>,
         request: String,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
@@ -135,7 +135,7 @@ pub trait Secrets: HasConfig + Send + Sync {
     /// Returns a list of secrets
     fn secret_list_libpod<'a>(
         &'a self,
-        params: Option<super::super::params::SecretListLibpod<'a>>,
+        params: Option<crate::v4::params::SecretListLibpod<'a>>,
     ) -> Pin<Box<dyn Future<Output = Result<Vec<()>, Error>> + Send + 'a>> {
         Box::pin(request::execute_request_json(
             self.get_config(),

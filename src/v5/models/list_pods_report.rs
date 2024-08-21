@@ -4,7 +4,7 @@ pub struct ListPodsReport {
     #[serde(rename = "Cgroup")]
     pub cgroup: Option<String>,
     #[serde(rename = "Containers")]
-    pub containers: Option<Vec<super::super::models::ListPodContainer>>,
+    pub containers: Option<Vec<crate::v5::models::ListPodContainer>>,
     #[serde(rename = "Created")]
     pub created: Option<String>,
     #[serde(rename = "Id")]

@@ -7,7 +7,7 @@ pub struct ContainerCgroupConfig {
     /// If not set, the default for the current cgroup driver will be used.
     /// Optional.
     pub cgroup_parent: Option<String>,
-    pub cgroupns: Option<super::super::models::Namespace>,
+    pub cgroupns: Option<crate::v5::models::Namespace>,
     /// CgroupsMode sets a policy for how cgroups will be created for the
     /// container, including the ability to disable creation entirely.
     /// Optional.

@@ -4,17 +4,17 @@ use serde::{Deserialize, Serialize};
 /// Those attributes can be updated at runtime.
 pub struct UpdateConfig {
     #[serde(rename = "BlkioDeviceReadBps")]
-    pub blkio_device_read_bps: Option<Vec<super::super::models::ThrottleDevice>>,
+    pub blkio_device_read_bps: Option<Vec<crate::v5::models::ThrottleDevice>>,
     #[serde(rename = "BlkioDeviceReadIOps")]
-    pub blkio_device_read_i_ops: Option<Vec<super::super::models::ThrottleDevice>>,
+    pub blkio_device_read_i_ops: Option<Vec<crate::v5::models::ThrottleDevice>>,
     #[serde(rename = "BlkioDeviceWriteBps")]
-    pub blkio_device_write_bps: Option<Vec<super::super::models::ThrottleDevice>>,
+    pub blkio_device_write_bps: Option<Vec<crate::v5::models::ThrottleDevice>>,
     #[serde(rename = "BlkioDeviceWriteIOps")]
-    pub blkio_device_write_i_ops: Option<Vec<super::super::models::ThrottleDevice>>,
+    pub blkio_device_write_i_ops: Option<Vec<crate::v5::models::ThrottleDevice>>,
     #[serde(rename = "BlkioWeight")]
     pub blkio_weight: Option<u16>,
     #[serde(rename = "BlkioWeightDevice")]
-    pub blkio_weight_device: Option<Vec<super::super::models::WeightDevice>>,
+    pub blkio_weight_device: Option<Vec<crate::v5::models::WeightDevice>>,
     /// Applicable to UNIX platforms
     #[serde(rename = "CgroupParent")]
     pub cgroup_parent: Option<String>,
@@ -41,9 +41,9 @@ pub struct UpdateConfig {
     #[serde(rename = "DeviceCgroupRules")]
     pub device_cgroup_rules: Option<Vec<String>>,
     #[serde(rename = "DeviceRequests")]
-    pub device_requests: Option<Vec<super::super::models::DeviceRequest>>,
+    pub device_requests: Option<Vec<crate::v5::models::DeviceRequest>>,
     #[serde(rename = "Devices")]
-    pub devices: Option<Vec<super::super::models::DeviceMapping>>,
+    pub devices: Option<Vec<crate::v5::models::DeviceMapping>>,
     #[serde(rename = "IOMaximumBandwidth")]
     pub io_maximum_bandwidth: Option<u64>,
     #[serde(rename = "IOMaximumIOps")]
@@ -69,7 +69,7 @@ pub struct UpdateConfig {
     #[serde(rename = "PidsLimit")]
     pub pids_limit: Option<i64>,
     #[serde(rename = "RestartPolicy")]
-    pub restart_policy: Option<super::super::models::RestartPolicy>,
+    pub restart_policy: Option<crate::v5::models::RestartPolicy>,
     #[serde(rename = "Ulimits")]
-    pub ulimits: Option<Vec<super::super::models::Ulimit>>,
+    pub ulimits: Option<Vec<crate::v5::models::Ulimit>>,
 }

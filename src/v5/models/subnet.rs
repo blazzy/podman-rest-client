@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 pub struct Subnet {
     /// Gateway IP for this Network.
     pub gateway: Option<String>,
-    pub lease_range: Option<super::super::models::LeaseRange>,
+    pub lease_range: Option<crate::v5::models::LeaseRange>,
     /// Subnet for this Network in CIDR form.
     pub subnet: Option<String>,
 }

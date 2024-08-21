@@ -54,7 +54,7 @@ pub struct ListContainer {
     #[serde(rename = "Names")]
     pub names: Option<Vec<String>>,
     #[serde(rename = "Namespaces")]
-    pub namespaces: Option<super::super::models::ListContainerNamespaces>,
+    pub namespaces: Option<crate::v5::models::ListContainerNamespaces>,
     /// The network names assigned to the container
     #[serde(rename = "Networks")]
     pub networks: Option<Vec<String>>,
@@ -71,14 +71,14 @@ pub struct ListContainer {
     pub pod_name: Option<String>,
     /// Port mappings
     #[serde(rename = "Ports")]
-    pub ports: Option<Vec<super::super::models::PortMapping>>,
+    pub ports: Option<Vec<crate::v5::models::PortMapping>>,
     /// Restarts is how many times the container was restarted by its
     /// restart policy. This is NOT incremented by normal container restarts
     /// (only by restart policy).
     #[serde(rename = "Restarts")]
     pub restarts: Option<u64>,
     #[serde(rename = "Size")]
-    pub size: Option<super::super::models::ContainerSize>,
+    pub size: Option<crate::v5::models::ContainerSize>,
     /// Time when container started
     #[serde(rename = "StartedAt")]
     pub started_at: Option<i64>,

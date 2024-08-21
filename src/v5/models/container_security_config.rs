@@ -19,7 +19,7 @@ pub struct ContainerSecurityConfig {
     /// be granted access to.
     /// Optional.
     pub groups: Option<Vec<String>>,
-    pub idmappings: Option<super::super::models::IdMappingOptions>,
+    pub idmappings: Option<crate::v5::models::IdMappingOptions>,
     /// LabelNested indicates whether or not the container is allowed to
     /// run fully nested containers including SELinux labelling.
     /// Optional.
@@ -79,5 +79,5 @@ pub struct ContainerSecurityConfig {
     /// If unset, the container will be run as root.
     /// Optional.
     pub user: Option<String>,
-    pub userns: Option<super::super::models::Namespace>,
+    pub userns: Option<crate::v5::models::Namespace>,
 }

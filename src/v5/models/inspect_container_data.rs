@@ -13,7 +13,7 @@ pub struct InspectContainerData {
     #[serde(rename = "BoundingCaps")]
     pub bounding_caps: Option<Vec<String>>,
     #[serde(rename = "Config")]
-    pub config: Option<super::super::models::InspectContainerConfig>,
+    pub config: Option<crate::v5::models::InspectContainerConfig>,
     #[serde(rename = "ConmonPidFile")]
     pub conmon_pid_file: Option<String>,
     #[serde(rename = "Created")]
@@ -27,9 +27,9 @@ pub struct InspectContainerData {
     #[serde(rename = "ExecIDs")]
     pub exec_i_ds: Option<Vec<String>>,
     #[serde(rename = "GraphDriver")]
-    pub graph_driver: Option<super::super::models::DriverData>,
+    pub graph_driver: Option<crate::v5::models::DriverData>,
     #[serde(rename = "HostConfig")]
-    pub host_config: Option<super::super::models::InspectContainerHostConfig>,
+    pub host_config: Option<crate::v5::models::InspectContainerHostConfig>,
     #[serde(rename = "HostnamePath")]
     pub hostname_path: Option<String>,
     #[serde(rename = "HostsPath")]
@@ -51,13 +51,13 @@ pub struct InspectContainerData {
     #[serde(rename = "MountLabel")]
     pub mount_label: Option<String>,
     #[serde(rename = "Mounts")]
-    pub mounts: Option<Vec<super::super::models::InspectMount>>,
+    pub mounts: Option<Vec<crate::v5::models::InspectMount>>,
     #[serde(rename = "Name")]
     pub name: Option<String>,
     #[serde(rename = "Namespace")]
     pub namespace: Option<String>,
     #[serde(rename = "NetworkSettings")]
-    pub network_settings: Option<super::super::models::InspectNetworkSettings>,
+    pub network_settings: Option<crate::v5::models::InspectNetworkSettings>,
     #[serde(rename = "OCIConfigPath")]
     pub oci_config_path: Option<String>,
     #[serde(rename = "OCIRuntime")]
@@ -81,7 +81,7 @@ pub struct InspectContainerData {
     #[serde(rename = "SizeRw")]
     pub size_rw: Option<i64>,
     #[serde(rename = "State")]
-    pub state: Option<super::super::models::InspectContainerState>,
+    pub state: Option<crate::v5::models::InspectContainerState>,
     #[serde(rename = "StaticDir")]
     pub static_dir: Option<String>,
     #[serde(rename = "lockNumber")]

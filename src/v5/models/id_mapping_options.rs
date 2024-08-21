@@ -6,9 +6,9 @@ pub struct IdMappingOptions {
     #[serde(rename = "AutoUserNs")]
     pub auto_user_ns: Option<bool>,
     #[serde(rename = "AutoUserNsOpts")]
-    pub auto_user_ns_opts: Option<super::super::models::AutoUserNsOptions>,
+    pub auto_user_ns_opts: Option<crate::v5::models::AutoUserNsOptions>,
     #[serde(rename = "GIDMap")]
-    pub gid_map: Option<Vec<super::super::models::IdMap>>,
+    pub gid_map: Option<Vec<crate::v5::models::IdMap>>,
     #[serde(rename = "HostGIDMapping")]
     pub host_gid_mapping: Option<bool>,
     /// UIDMap and GIDMap are used for setting up a layer's root filesystem
@@ -23,5 +23,5 @@ pub struct IdMappingOptions {
     #[serde(rename = "HostUIDMapping")]
     pub host_uid_mapping: Option<bool>,
     #[serde(rename = "UIDMap")]
-    pub uid_map: Option<Vec<super::super::models::IdMap>>,
+    pub uid_map: Option<Vec<crate::v5::models::IdMap>>,
 }

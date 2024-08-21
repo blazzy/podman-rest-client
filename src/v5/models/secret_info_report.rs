@@ -8,7 +8,7 @@ pub struct SecretInfoReport {
     #[serde(rename = "SecretData")]
     pub secret_data: Option<String>,
     #[serde(rename = "Spec")]
-    pub spec: Option<super::super::models::SecretSpec>,
+    pub spec: Option<crate::v5::models::SecretSpec>,
     #[serde(rename = "UpdatedAt")]
     pub updated_at: Option<String>,
 }

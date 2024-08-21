@@ -19,7 +19,7 @@ pub struct PodCreateOptions {
     pub ipc: Option<String>,
     pub labels: Option<std::collections::HashMap<String, String>>,
     pub name: Option<String>,
-    pub net: Option<super::super::models::NetOptions>,
+    pub net: Option<crate::v5::models::NetOptions>,
     pub pid: Option<String>,
     pub restart: Option<String>,
     pub security_opt: Option<Vec<String>>,

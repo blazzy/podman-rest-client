@@ -9,7 +9,7 @@ pub trait System: HasConfig + Send + Sync {
     /// Returns events filtered on query parameters
     fn system_events_libpod<'a>(
         &'a self,
-        params: Option<super::super::params::SystemEventsLibpod<'a>>,
+        params: Option<crate::v4::params::SystemEventsLibpod<'a>>,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),

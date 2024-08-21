@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 /// OK response to ContainerWait operation
 pub struct WaitResponse {
     #[serde(rename = "Error")]
-    pub error: Option<super::super::models::WaitExitError>,
+    pub error: Option<crate::v5::models::WaitExitError>,
     /// Exit code of the container
     #[serde(rename = "StatusCode")]
     pub status_code: i64,

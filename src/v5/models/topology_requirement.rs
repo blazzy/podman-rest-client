@@ -78,7 +78,7 @@ pub struct TopologyRequirement {
     /// requisite. If that's not possible, it should fall back  to a
     /// combination of other possibilities from the list of requisite.
     #[serde(rename = "Preferred")]
-    pub preferred: Option<Vec<super::super::models::Topology>>,
+    pub preferred: Option<Vec<crate::v5::models::Topology>>,
     /// Requisite specifies a list of Topologies, at least one of which the
     /// volume must be accessible from.
     ///
@@ -141,5 +141,5 @@ pub struct TopologyRequirement {
     /// "R1" and the "zone" "Z2" and the SP may select the second zone
     /// independently, e.g. "R1/Z4".
     #[serde(rename = "Requisite")]
-    pub requisite: Option<Vec<super::super::models::Topology>>,
+    pub requisite: Option<Vec<crate::v5::models::Topology>>,
 }

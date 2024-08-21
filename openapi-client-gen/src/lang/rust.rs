@@ -101,9 +101,9 @@ impl model::IntegerFormat {
 }
 
 impl operation::Operation {
-    pub fn params_struct_as_token_stream(&self) -> TokenStream {
+    pub fn params_struct_as_token_stream(&self, module: &syn::Path) -> TokenStream {
         let struct_name = struct_name(&self.name);
-        let mut base = quote! { super::super::params::#struct_name };
+        let mut base = quote! { #module::params::#struct_name };
 
         if self.params_struct_has_str() {
             base = quote! { #base<'a> }
@@ -160,8 +160,9 @@ pub fn to_doc_comment(text: &str) -> Vec<TokenStream> {
 pub fn property_type(
     property: &Property,
     models: &BTreeMap<String, Model>,
+    module: &syn::Path,
 ) -> Result<TokenStream, Error> {
-    let model_type = model_type(&property.model, models);
+    let model_type = model_type(&property.model, models, module);
     if property.required {
         model_type
     } else {
@@ -170,24 +171,28 @@ pub fn property_type(
     }
 }
 
-pub fn model_type(model: &Model, models: &BTreeMap<String, Model>) -> Result<TokenStream, Error> {
+pub fn model_type(
+    model: &Model,
+    models: &BTreeMap<String, Model>,
+    module: &syn::Path,
+) -> Result<TokenStream, Error> {
     Ok(match &model.data {
         ModelData::String => quote! { String },
         ModelData::Integer(format) => format.as_token_stream(),
         ModelData::Number => quote! { f64 },
         ModelData::Boolean => quote! { bool },
         ModelData::Array(items) => {
-            let items = model_type(items, models)?;
+            let items = model_type(items, models, module)?;
             quote! { Vec<#items> }
         }
         ModelData::ArbitraryValue => quote! { serde_json::Value },
         ModelData::NoValue => quote! { () },
         ModelData::Object(_) => {
             let struct_name = struct_name(&model.name);
-            quote! { super::super::models::#struct_name }
+            quote! { #module::models::#struct_name }
         }
         ModelData::HashMap(value, nullable) => {
-            let mut value = model_type(value, models)?;
+            let mut value = model_type(value, models, module)?;
             if *nullable {
                 value = quote! { Option<#value> }
             }
@@ -195,7 +200,7 @@ pub fn model_type(model: &Model, models: &BTreeMap<String, Model>) -> Result<Tok
         }
         ModelData::Ref(ref_str) => {
             if let Some(ref_model) = models.get(ref_str) {
-                model_type(ref_model, models)?
+                model_type(ref_model, models, module)?
             } else {
                 Err(Error::MissingModelRef(ref_str.into()))?
             }

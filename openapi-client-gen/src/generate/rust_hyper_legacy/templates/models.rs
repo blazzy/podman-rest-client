@@ -11,6 +11,7 @@ pub fn models(
     model: &Model,
     properties: &[Property],
     models: &BTreeMap<String, Model>,
+    api_module: &syn::Path,
 ) -> Result<String, Error> {
     let title = model
         .title
@@ -29,7 +30,7 @@ pub fn models(
     };
 
     let struct_name = struct_name(&model.name);
-    let properties = render_properties(properties, models)?;
+    let properties = render_properties(properties, models, api_module)?;
 
     let code = quote! {
         use serde::{Serialize, Deserialize};
@@ -49,6 +50,7 @@ pub fn models(
 fn render_properties(
     properties: &[Property],
     models: &BTreeMap<String, Model>,
+    api_module: &syn::Path,
 ) -> Result<Vec<TokenStream>, Error> {
     properties
         .iter()
@@ -68,7 +70,7 @@ fn render_properties(
                 .unwrap_or_default();
 
             let var_name = var_name(&property.name);
-            let property_type = property_type(property, models)?;
+            let property_type = property_type(property, models, api_module)?;
             let serde_annotation = if var_name != property.name {
                 let name = &property.name;
                 quote! { #[serde(rename = #name)] }

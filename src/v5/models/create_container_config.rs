@@ -23,9 +23,9 @@ pub struct CreateContainerConfig {
     #[serde(rename = "ExposedPorts")]
     pub exposed_ports: Option<std::collections::HashMap<String, serde_json::Value>>,
     #[serde(rename = "Healthcheck")]
-    pub healthcheck: Option<super::super::models::HealthcheckConfig>,
+    pub healthcheck: Option<crate::v5::models::HealthcheckConfig>,
     #[serde(rename = "HostConfig")]
-    pub host_config: Option<super::super::models::HostConfig>,
+    pub host_config: Option<crate::v5::models::HostConfig>,
     #[serde(rename = "Hostname")]
     pub hostname: Option<String>,
     #[serde(rename = "Image")]
@@ -42,7 +42,7 @@ pub struct CreateContainerConfig {
     #[serde(rename = "NetworkDisabled")]
     pub network_disabled: Option<bool>,
     #[serde(rename = "NetworkingConfig")]
-    pub networking_config: Option<super::super::models::NetworkingConfig>,
+    pub networking_config: Option<crate::v5::models::NetworkingConfig>,
     #[serde(rename = "OnBuild")]
     pub on_build: Option<Vec<String>>,
     #[serde(rename = "OpenStdin")]

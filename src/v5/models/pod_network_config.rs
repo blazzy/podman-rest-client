@@ -9,8 +9,7 @@ pub struct PodNetworkConfig {
     /// If the map is empty and the bridge network mode is set the container
     /// will be joined to the default network.
     #[serde(rename = "Networks")]
-    pub networks:
-        Option<std::collections::HashMap<String, super::super::models::PerNetworkOptions>>,
+    pub networks: Option<std::collections::HashMap<String, crate::v5::models::PerNetworkOptions>>,
     /// CNINetworks is a list of CNI networks to join the container to.
     /// If this list is empty, the default CNI network will be joined
     /// instead. If at least one entry is present, we will not join the
@@ -48,7 +47,7 @@ pub struct PodNetworkConfig {
     /// Conflicts with NoInfra=true and NoManageHosts.
     /// Optional.
     pub hostadd: Option<Vec<String>>,
-    pub netns: Option<super::super::models::Namespace>,
+    pub netns: Option<crate::v5::models::Namespace>,
     /// NetworkOptions are additional options for each network
     /// Optional.
     pub network_options: Option<std::collections::HashMap<String, Vec<String>>>,
@@ -68,5 +67,5 @@ pub struct PodNetworkConfig {
     /// container, this will forward the ports to the entire pod.
     /// Only available if NetNS is set to Bridge, Slirp, or Pasta.
     /// Optional.
-    pub portmappings: Option<Vec<super::super::models::PortMapping>>,
+    pub portmappings: Option<Vec<crate::v5::models::PortMapping>>,
 }

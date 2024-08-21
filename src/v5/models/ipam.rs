@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 /// IPAM represents IP Address Management
 pub struct Ipam {
     #[serde(rename = "Config")]
-    pub config: Option<Vec<super::super::models::IpamConfig>>,
+    pub config: Option<Vec<crate::v5::models::IpamConfig>>,
     #[serde(rename = "Driver")]
     pub driver: Option<String>,
     #[serde(rename = "Options")]

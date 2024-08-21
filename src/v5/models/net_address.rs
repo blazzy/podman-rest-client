@@ -4,5 +4,5 @@ use serde::{Deserialize, Serialize};
 pub struct NetAddress {
     /// Gateway for the network. This can be empty if there is no gateway, e.g. internal network.
     pub gateway: Option<String>,
-    pub ipnet: Option<super::super::models::IpNet>,
+    pub ipnet: Option<crate::v5::models::IpNet>,
 }

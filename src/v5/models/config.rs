@@ -26,7 +26,7 @@ pub struct Config {
     #[serde(rename = "ExposedPorts")]
     pub exposed_ports: Option<std::collections::HashMap<String, serde_json::Value>>,
     #[serde(rename = "Healthcheck")]
-    pub healthcheck: Option<super::super::models::HealthcheckConfig>,
+    pub healthcheck: Option<crate::v5::models::HealthcheckConfig>,
     #[serde(rename = "Hostname")]
     pub hostname: Option<String>,
     #[serde(rename = "Image")]

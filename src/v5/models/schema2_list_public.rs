@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 /// This is publicly visible as c/image/manifest.Schema2List.
 /// Internal users should usually use Schema2List instead.
 pub struct Schema2ListPublic {
-    pub manifests: Option<Vec<super::super::models::Schema2ManifestDescriptor>>,
+    pub manifests: Option<Vec<crate::v5::models::Schema2ManifestDescriptor>>,
     #[serde(rename = "mediaType")]
     pub media_type: Option<String>,
     #[serde(rename = "schemaVersion")]

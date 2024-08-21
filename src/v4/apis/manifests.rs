@@ -9,7 +9,7 @@ pub trait Manifests: HasConfig + Send + Sync {
     /// Create a manifest list
     fn manifest_create_libpod<'a>(
         &'a self,
-        params: Option<super::super::params::ManifestCreateLibpod<'a>>,
+        params: Option<crate::v4::params::ManifestCreateLibpod<'a>>,
         options: (),
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
@@ -80,7 +80,7 @@ pub trait Manifests: HasConfig + Send + Sync {
     fn manifest_modify_libpod<'a>(
         &'a self,
         name: &'a str,
-        params: Option<super::super::params::ManifestModifyLibpod>,
+        params: Option<crate::v4::params::ManifestModifyLibpod>,
         options: (),
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
@@ -174,7 +174,7 @@ pub trait Manifests: HasConfig + Send + Sync {
     fn manifest_inspect_libpod<'a>(
         &'a self,
         name: &'a str,
-        params: Option<super::super::params::ManifestInspectLibpod>,
+        params: Option<crate::v4::params::ManifestInspectLibpod>,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
@@ -208,7 +208,7 @@ pub trait Manifests: HasConfig + Send + Sync {
     fn manifest_push_v_3_libpod<'a>(
         &'a self,
         name: &'a str,
-        params: Option<super::super::params::ManifestPushV3Libpod<'a>>,
+        params: Option<crate::v4::params::ManifestPushV3Libpod<'a>>,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
@@ -244,7 +244,7 @@ pub trait Manifests: HasConfig + Send + Sync {
         &'a self,
         name: &'a str,
         destination: &'a str,
-        params: Option<super::super::params::ManifestPushLibpod<'a>>,
+        params: Option<crate::v4::params::ManifestPushLibpod<'a>>,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),

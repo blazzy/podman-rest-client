@@ -6,7 +6,7 @@ pub struct Info {
     /// AccessibleTopolgoy is the topology this volume is actually accessible
     /// from.
     #[serde(rename = "AccessibleTopology")]
-    pub accessible_topology: Option<Vec<super::super::models::Topology>>,
+    pub accessible_topology: Option<Vec<crate::v5::models::Topology>>,
     /// CapacityBytes is the capacity of the volume in bytes. A value of 0
     /// indicates that the capacity is unknown.
     #[serde(rename = "CapacityBytes")]

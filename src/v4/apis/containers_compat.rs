@@ -9,7 +9,7 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
     /// Create a new image from a container
     fn image_commit<'a>(
         &'a self,
-        params: Option<super::super::params::ImageCommit<'a>>,
+        params: Option<crate::v4::params::ImageCommit<'a>>,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
@@ -60,7 +60,7 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
     fn container_delete<'a>(
         &'a self,
         name: &'a str,
-        params: Option<super::super::params::ContainerDelete>,
+        params: Option<crate::v4::params::ContainerDelete>,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
@@ -98,7 +98,7 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
     fn container_archive<'a>(
         &'a self,
         name: &'a str,
-        params: Option<super::super::params::ContainerArchive<'a>>,
+        params: Option<crate::v4::params::ContainerArchive<'a>>,
     ) -> Pin<Box<dyn Future<Output = Result<String, Error>> + Send + 'a>> {
         Box::pin(request::execute_request_json(
             self.get_config(),
@@ -128,7 +128,7 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
     fn put_container_archive<'a>(
         &'a self,
         name: &'a str,
-        params: Option<super::super::params::PutContainerArchive<'a>>,
+        params: Option<crate::v4::params::PutContainerArchive<'a>>,
         request: String,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
@@ -172,7 +172,7 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
     fn container_attach<'a>(
         &'a self,
         name: &'a str,
-        params: Option<super::super::params::ContainerAttach<'a>>,
+        params: Option<crate::v4::params::ContainerAttach<'a>>,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
@@ -244,7 +244,7 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
     fn container_inspect<'a>(
         &'a self,
         name: &'a str,
-        params: Option<super::super::params::ContainerInspect>,
+        params: Option<crate::v4::params::ContainerInspect>,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
@@ -276,7 +276,7 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
     fn container_kill<'a>(
         &'a self,
         name: &'a str,
-        params: Option<super::super::params::ContainerKill<'a>>,
+        params: Option<crate::v4::params::ContainerKill<'a>>,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
@@ -311,7 +311,7 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
     fn container_logs<'a>(
         &'a self,
         name: &'a str,
-        params: Option<super::super::params::ContainerLogs<'a>>,
+        params: Option<crate::v4::params::ContainerLogs<'a>>,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
@@ -386,7 +386,7 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
     fn container_rename<'a>(
         &'a self,
         name: &'a str,
-        params: Option<super::super::params::ContainerRename<'a>>,
+        params: Option<crate::v4::params::ContainerRename<'a>>,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
@@ -416,7 +416,7 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
     fn container_resize<'a>(
         &'a self,
         name: &'a str,
-        params: Option<super::super::params::ContainerResize>,
+        params: Option<crate::v4::params::ContainerResize>,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
@@ -453,7 +453,7 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
     fn container_restart<'a>(
         &'a self,
         name: &'a str,
-        params: Option<super::super::params::ContainerRestart>,
+        params: Option<crate::v4::params::ContainerRestart>,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
@@ -484,7 +484,7 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
     fn container_start<'a>(
         &'a self,
         name: &'a str,
-        params: Option<super::super::params::ContainerStart<'a>>,
+        params: Option<crate::v4::params::ContainerStart<'a>>,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
@@ -516,7 +516,7 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
     fn container_stats<'a>(
         &'a self,
         name: &'a str,
-        params: Option<super::super::params::ContainerStats>,
+        params: Option<crate::v4::params::ContainerStats>,
     ) -> Pin<Box<dyn Future<Output = Result<serde_json::Value, Error>> + Send + 'a>> {
         Box::pin(request::execute_request_json(
             self.get_config(),
@@ -551,7 +551,7 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
     fn container_stop<'a>(
         &'a self,
         name: &'a str,
-        params: Option<super::super::params::ContainerStop>,
+        params: Option<crate::v4::params::ContainerStop>,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
@@ -582,7 +582,7 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
     fn container_top<'a>(
         &'a self,
         name: &'a str,
-        params: Option<super::super::params::ContainerTop<'a>>,
+        params: Option<crate::v4::params::ContainerTop<'a>>,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
@@ -639,7 +639,7 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
     fn container_wait<'a>(
         &'a self,
         name: &'a str,
-        params: Option<super::super::params::ContainerWait<'a>>,
+        params: Option<crate::v4::params::ContainerWait<'a>>,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
@@ -672,7 +672,7 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
     /// Create a container
     fn container_create<'a>(
         &'a self,
-        params: Option<super::super::params::ContainerCreate<'a>>,
+        params: Option<crate::v4::params::ContainerCreate<'a>>,
         body: (),
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
@@ -706,7 +706,7 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
     /// Returns a list of containers
     fn container_list<'a>(
         &'a self,
-        params: Option<super::super::params::ContainerList<'a>>,
+        params: Option<crate::v4::params::ContainerList<'a>>,
     ) -> Pin<Box<dyn Future<Output = Result<Vec<()>, Error>> + Send + 'a>> {
         Box::pin(request::execute_request_json(
             self.get_config(),
@@ -748,7 +748,7 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
     /// Remove containers not in use
     fn container_prune<'a>(
         &'a self,
-        params: Option<super::super::params::ContainerPrune<'a>>,
+        params: Option<crate::v4::params::ContainerPrune<'a>>,
     ) -> Pin<Box<dyn Future<Output = Result<Vec<()>, Error>> + Send + 'a>> {
         Box::pin(request::execute_request_json(
             self.get_config(),
@@ -779,7 +779,7 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
     fn container_archive_libpod<'a>(
         &'a self,
         name: &'a str,
-        params: Option<super::super::params::ContainerArchiveLibpod<'a>>,
+        params: Option<crate::v4::params::ContainerArchiveLibpod<'a>>,
     ) -> Pin<Box<dyn Future<Output = Result<String, Error>> + Send + 'a>> {
         Box::pin(request::execute_request_json(
             self.get_config(),

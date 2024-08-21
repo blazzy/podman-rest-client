@@ -5,7 +5,7 @@ pub struct AccessMode {
     #[serde(rename = "BlockVolume")]
     pub block_volume: Option<serde_json::Value>,
     #[serde(rename = "MountVolume")]
-    pub mount_volume: Option<super::super::models::TypeMount>,
+    pub mount_volume: Option<crate::v5::models::TypeMount>,
     #[serde(rename = "Scope")]
     pub scope: Option<String>,
     #[serde(rename = "Sharing")]

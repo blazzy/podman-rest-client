@@ -5,7 +5,7 @@ pub struct SecretCreate {
     #[serde(rename = "Data")]
     pub data: Option<String>,
     #[serde(rename = "Driver")]
-    pub driver: Option<super::super::models::SecretDriverSpec>,
+    pub driver: Option<crate::v5::models::SecretDriverSpec>,
     /// Labels are labels on the secret
     #[serde(rename = "Labels")]
     pub labels: Option<std::collections::HashMap<String, String>>,

@@ -32,7 +32,7 @@ pub struct PodBasicConfig {
     /// Conflicts with NoInfra=true.
     /// Optional.
     pub infra_name: Option<String>,
-    pub ipcns: Option<super::super::models::Namespace>,
+    pub ipcns: Option<crate::v5::models::Namespace>,
     /// Labels are key-value pairs that are used to add metadata to pods.
     /// Optional.
     pub labels: Option<std::collections::HashMap<String, String>>,
@@ -46,7 +46,7 @@ pub struct PodBasicConfig {
     /// InfraCommand and InfraImages in this struct.
     /// Optional.
     pub no_infra: Option<bool>,
-    pub pidns: Option<super::super::models::Namespace>,
+    pub pidns: Option<crate::v5::models::Namespace>,
     pub pod_create_command: Option<Vec<String>>,
     /// Devices contains user specified Devices to be added to the Pod
     pub pod_devices: Option<Vec<String>>,
@@ -78,6 +78,6 @@ pub struct PodBasicConfig {
     pub shared_namespaces: Option<Vec<String>>,
     /// Sysctl sets kernel parameters for the pod
     pub sysctl: Option<std::collections::HashMap<String, String>>,
-    pub userns: Option<super::super::models::Namespace>,
-    pub utsns: Option<super::super::models::Namespace>,
+    pub userns: Option<crate::v5::models::Namespace>,
+    pub utsns: Option<crate::v5::models::Namespace>,
 }

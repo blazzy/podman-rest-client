@@ -8,9 +8,9 @@ pub struct SecretInfoReportCompat {
     #[serde(rename = "SecretData")]
     pub secret_data: Option<String>,
     #[serde(rename = "Spec")]
-    pub spec: Option<super::super::models::SecretSpec>,
+    pub spec: Option<crate::v5::models::SecretSpec>,
     #[serde(rename = "UpdatedAt")]
     pub updated_at: Option<String>,
     #[serde(rename = "Version")]
-    pub version: Option<super::super::models::SecretVersion>,
+    pub version: Option<crate::v5::models::SecretVersion>,
 }

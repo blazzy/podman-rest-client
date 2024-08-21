@@ -9,7 +9,7 @@ pub struct SystemComponentVersion {
     #[serde(rename = "BuildTime")]
     pub build_time: Option<String>,
     #[serde(rename = "Components")]
-    pub components: Option<Vec<super::super::models::ComponentVersion>>,
+    pub components: Option<Vec<crate::v5::models::ComponentVersion>>,
     #[serde(rename = "Experimental")]
     pub experimental: Option<bool>,
     #[serde(rename = "GitCommit")]
@@ -23,7 +23,7 @@ pub struct SystemComponentVersion {
     #[serde(rename = "Os")]
     pub os: Option<String>,
     #[serde(rename = "Platform")]
-    pub platform: Option<super::super::models::SystemComponentVersionPlatform>,
+    pub platform: Option<crate::v5::models::SystemComponentVersionPlatform>,
     #[serde(rename = "Version")]
     pub version: Option<String>,
 }

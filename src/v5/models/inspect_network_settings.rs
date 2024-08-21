@@ -47,11 +47,10 @@ pub struct InspectNetworkSettings {
     /// It is a map of network name to network information.
     #[serde(rename = "Networks")]
     pub networks:
-        Option<std::collections::HashMap<String, super::super::models::InspectAdditionalNetwork>>,
+        Option<std::collections::HashMap<String, crate::v5::models::InspectAdditionalNetwork>>,
     #[serde(rename = "Ports")]
-    pub ports: Option<
-        std::collections::HashMap<String, Option<Vec<super::super::models::InspectHostPort>>>,
-    >,
+    pub ports:
+        Option<std::collections::HashMap<String, Option<Vec<crate::v5::models::InspectHostPort>>>>,
     #[serde(rename = "SandboxID")]
     pub sandbox_id: Option<String>,
     #[serde(rename = "SandboxKey")]
@@ -59,9 +58,9 @@ pub struct InspectNetworkSettings {
     /// SecondaryIPAddresses is a list of extra IP Addresses that the
     /// container has been assigned in this network.
     #[serde(rename = "SecondaryIPAddresses")]
-    pub secondary_ip_addresses: Option<Vec<super::super::models::Address>>,
+    pub secondary_ip_addresses: Option<Vec<crate::v5::models::Address>>,
     /// SecondaryIPv6Addresses is a list of extra IPv6 Addresses that the
     /// container has been assigned in this network.
     #[serde(rename = "SecondaryIPv6Addresses")]
-    pub secondary_i_pv6_addresses: Option<Vec<super::super::models::Address>>,
+    pub secondary_i_pv6_addresses: Option<Vec<crate::v5::models::Address>>,
 }

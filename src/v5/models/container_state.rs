@@ -12,7 +12,7 @@ pub struct ContainerState {
     #[serde(rename = "FinishedAt")]
     pub finished_at: Option<String>,
     #[serde(rename = "Health")]
-    pub health: Option<super::super::models::Health>,
+    pub health: Option<crate::v5::models::Health>,
     #[serde(rename = "OOMKilled")]
     pub oom_killed: Option<bool>,
     #[serde(rename = "Paused")]

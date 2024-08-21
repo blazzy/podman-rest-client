@@ -9,9 +9,9 @@ pub trait ImagesCompat: HasConfig + Send + Sync {
     /// Build an image from the given Dockerfile(s)
     fn image_build<'a>(
         &'a self,
-        params: Option<super::super::params::ImageBuild<'a>>,
+        params: Option<crate::v5::params::ImageBuild<'a>>,
         input_stream: String,
-    ) -> Pin<Box<dyn Future<Output = Result<super::super::models::ImageBuild200, Error>> + Send + 'a>>
+    ) -> Pin<Box<dyn Future<Output = Result<crate::v5::models::ImageBuild200, Error>> + Send + 'a>>
     {
         Box::pin(request::execute_request_json(
             self.get_config(),
@@ -120,10 +120,10 @@ pub trait ImagesCompat: HasConfig + Send + Sync {
     fn image_delete<'a>(
         &'a self,
         name: &'a str,
-        params: Option<super::super::params::ImageDelete>,
+        params: Option<crate::v5::params::ImageDelete>,
     ) -> Pin<
         Box<
-            dyn Future<Output = Result<Vec<super::super::models::ImageDeleteResponseItems>, Error>>
+            dyn Future<Output = Result<Vec<crate::v5::models::ImageDeleteResponseItems>, Error>>
                 + Send
                 + 'a,
         >,
@@ -161,8 +161,8 @@ pub trait ImagesCompat: HasConfig + Send + Sync {
     fn image_get<'a>(
         &'a self,
         name: &'a str,
-    ) -> Pin<Box<dyn Future<Output = Result<String, Error>> + Send + 'a>> {
-        Box::pin(request::execute_request_json(
+    ) -> Pin<Box<dyn futures::stream::Stream<Item = Result<bytes::Bytes, Error>> + 'a>> {
+        request::execute_request_stream(
             self.get_config(),
             (|| {
                 let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
@@ -178,7 +178,7 @@ pub trait ImagesCompat: HasConfig + Send + Sync {
                 req_builder = req_builder.uri(hyper_uri);
                 Ok(req_builder.body(String::new())?)
             })(),
-        ))
+        )
     }
     /// GET /images/{name}/history
     /// History of an image
@@ -186,9 +186,8 @@ pub trait ImagesCompat: HasConfig + Send + Sync {
     fn image_history<'a>(
         &'a self,
         name: &'a str,
-    ) -> Pin<
-        Box<dyn Future<Output = Result<super::super::models::HistoryResponse, Error>> + Send + 'a>,
-    > {
+    ) -> Pin<Box<dyn Future<Output = Result<crate::v5::models::HistoryResponse, Error>> + Send + 'a>>
+    {
         Box::pin(request::execute_request_json(
             self.get_config(),
             (|| {
@@ -213,7 +212,7 @@ pub trait ImagesCompat: HasConfig + Send + Sync {
     fn image_inspect<'a>(
         &'a self,
         name: &'a str,
-    ) -> Pin<Box<dyn Future<Output = Result<super::super::models::ImageInspect, Error>> + Send + 'a>>
+    ) -> Pin<Box<dyn Future<Output = Result<crate::v5::models::ImageInspect, Error>> + Send + 'a>>
     {
         Box::pin(request::execute_request_json(
             self.get_config(),
@@ -239,7 +238,7 @@ pub trait ImagesCompat: HasConfig + Send + Sync {
     fn image_push<'a>(
         &'a self,
         name: &'a str,
-        params: Option<super::super::params::ImagePush<'a>>,
+        params: Option<crate::v5::params::ImagePush<'a>>,
     ) -> Pin<Box<dyn Future<Output = Result<String, Error>> + Send + 'a>> {
         Box::pin(request::execute_request_json(
             self.get_config(),
@@ -283,7 +282,7 @@ pub trait ImagesCompat: HasConfig + Send + Sync {
     fn image_tag<'a>(
         &'a self,
         name: &'a str,
-        params: Option<super::super::params::ImageTag<'a>>,
+        params: Option<crate::v5::params::ImageTag<'a>>,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
@@ -317,7 +316,7 @@ pub trait ImagesCompat: HasConfig + Send + Sync {
     /// Create an image by either pulling it from a registry or importing it.
     fn image_create<'a>(
         &'a self,
-        params: Option<super::super::params::ImageCreate<'a>>,
+        params: Option<crate::v5::params::ImageCreate<'a>>,
         input_image: String,
     ) -> Pin<Box<dyn Future<Output = Result<String, Error>> + Send + 'a>> {
         Box::pin(request::execute_request_json(
@@ -369,7 +368,7 @@ pub trait ImagesCompat: HasConfig + Send + Sync {
     /// Get a tarball containing all images and metadata for several image repositories
     fn image_get_all<'a>(
         &'a self,
-        params: Option<super::super::params::ImageGetAll<'a>>,
+        params: Option<crate::v5::params::ImageGetAll<'a>>,
     ) -> Pin<Box<dyn Future<Output = Result<String, Error>> + Send + 'a>> {
         Box::pin(request::execute_request_json(
             self.get_config(),
@@ -397,8 +396,8 @@ pub trait ImagesCompat: HasConfig + Send + Sync {
     /// Returns a list of images on the server. Note that it uses a different, smaller representation of an image than inspecting a single image.
     fn image_list<'a>(
         &'a self,
-        params: Option<super::super::params::ImageList<'a>>,
-    ) -> Pin<Box<dyn Future<Output = Result<Vec<super::super::models::Summary>, Error>> + Send + 'a>>
+        params: Option<crate::v5::params::ImageList<'a>>,
+    ) -> Pin<Box<dyn Future<Output = Result<Vec<crate::v5::models::Summary>, Error>> + Send + 'a>>
     {
         Box::pin(request::execute_request_json(
             self.get_config(),
@@ -434,7 +433,7 @@ pub trait ImagesCompat: HasConfig + Send + Sync {
     /// Load a set of images and tags into a repository.
     fn image_load<'a>(
         &'a self,
-        params: Option<super::super::params::ImageLoad>,
+        params: Option<crate::v5::params::ImageLoad>,
         request: String,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
@@ -468,10 +467,10 @@ pub trait ImagesCompat: HasConfig + Send + Sync {
     /// Remove images from local storage that are not being used by a container
     fn image_prune<'a>(
         &'a self,
-        params: Option<super::super::params::ImagePrune<'a>>,
+        params: Option<crate::v5::params::ImagePrune<'a>>,
     ) -> Pin<
         Box<
-            dyn Future<Output = Result<Vec<super::super::models::ImageDeleteResponseItems>, Error>>
+            dyn Future<Output = Result<Vec<crate::v5::models::ImageDeleteResponseItems>, Error>>
                 + Send
                 + 'a,
         >,
@@ -504,10 +503,10 @@ pub trait ImagesCompat: HasConfig + Send + Sync {
     /// Search registries for an image
     fn image_search<'a>(
         &'a self,
-        params: Option<super::super::params::ImageSearch<'a>>,
+        params: Option<crate::v5::params::ImageSearch<'a>>,
     ) -> Pin<
         Box<
-            dyn Future<Output = Result<super::super::models::RegistrySearchResponse, Error>>
+            dyn Future<Output = Result<crate::v5::models::RegistrySearchResponse, Error>>
                 + Send
                 + 'a,
         >,

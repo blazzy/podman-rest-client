@@ -11,20 +11,20 @@ pub struct HostInfo {
     pub cgroup_manager: Option<String>,
     #[serde(rename = "cgroupVersion")]
     pub cgroup_version: Option<String>,
-    pub conmon: Option<super::super::models::ConmonInfo>,
+    pub conmon: Option<crate::v5::models::ConmonInfo>,
     #[serde(rename = "cpuUtilization")]
-    pub cpu_utilization: Option<super::super::models::CpuUsage>,
+    pub cpu_utilization: Option<crate::v5::models::CpuUsage>,
     pub cpus: Option<i64>,
     #[serde(rename = "databaseBackend")]
     pub database_backend: Option<String>,
-    pub distribution: Option<super::super::models::DistributionInfo>,
+    pub distribution: Option<crate::v5::models::DistributionInfo>,
     #[serde(rename = "eventLogger")]
     pub event_logger: Option<String>,
     #[serde(rename = "freeLocks")]
     pub free_locks: Option<u32>,
     pub hostname: Option<String>,
     #[serde(rename = "idMappings")]
-    pub id_mappings: Option<super::super::models::IdMappings>,
+    pub id_mappings: Option<crate::v5::models::IdMappings>,
     pub kernel: Option<String>,
     pub linkmode: Option<String>,
     #[serde(rename = "logDriver")]
@@ -36,24 +36,24 @@ pub struct HostInfo {
     #[serde(rename = "networkBackend")]
     pub network_backend: Option<String>,
     #[serde(rename = "networkBackendInfo")]
-    pub network_backend_info: Option<super::super::models::NetworkInfo>,
+    pub network_backend_info: Option<crate::v5::models::NetworkInfo>,
     #[serde(rename = "ociRuntime")]
-    pub oci_runtime: Option<super::super::models::OciRuntimeInfo>,
+    pub oci_runtime: Option<crate::v5::models::OciRuntimeInfo>,
     pub os: Option<String>,
-    pub pasta: Option<super::super::models::PastaInfo>,
+    pub pasta: Option<crate::v5::models::PastaInfo>,
     #[serde(rename = "remoteSocket")]
-    pub remote_socket: Option<super::super::models::RemoteSocket>,
+    pub remote_socket: Option<crate::v5::models::RemoteSocket>,
     /// RootlessNetworkCmd returns the default rootless network command (slirp4netns or pasta)
     #[serde(rename = "rootlessNetworkCmd")]
     pub rootless_network_cmd: Option<String>,
     #[serde(rename = "runtimeInfo")]
     pub runtime_info: Option<std::collections::HashMap<String, ()>>,
-    pub security: Option<super::super::models::SecurityInfo>,
+    pub security: Option<crate::v5::models::SecurityInfo>,
     /// ServiceIsRemote is true when the podman/libpod service is remote to the client
     #[serde(rename = "serviceIsRemote")]
     pub service_is_remote: Option<bool>,
     #[serde(rename = "slirp4netns")]
-    pub slirp4_netns: Option<super::super::models::SlirpInfo>,
+    pub slirp4_netns: Option<crate::v5::models::SlirpInfo>,
     #[serde(rename = "swapFree")]
     pub swap_free: Option<i64>,
     #[serde(rename = "swapTotal")]

@@ -9,7 +9,7 @@ pub trait Pods: HasConfig + Send + Sync {
     fn pod_delete_libpod<'a>(
         &'a self,
         name: &'a str,
-        params: Option<super::super::params::PodDeleteLibpod>,
+        params: Option<crate::v4::params::PodDeleteLibpod>,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
@@ -89,7 +89,7 @@ pub trait Pods: HasConfig + Send + Sync {
     fn pod_kill_libpod<'a>(
         &'a self,
         name: &'a str,
-        params: Option<super::super::params::PodKillLibpod<'a>>,
+        params: Option<crate::v4::params::PodKillLibpod<'a>>,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
@@ -193,7 +193,7 @@ pub trait Pods: HasConfig + Send + Sync {
     fn pod_stop_libpod<'a>(
         &'a self,
         name: &'a str,
-        params: Option<super::super::params::PodStopLibpod>,
+        params: Option<crate::v4::params::PodStopLibpod>,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
@@ -225,7 +225,7 @@ pub trait Pods: HasConfig + Send + Sync {
     fn pod_top_libpod<'a>(
         &'a self,
         name: &'a str,
-        params: Option<super::super::params::PodTopLibpod<'a>>,
+        params: Option<crate::v4::params::PodTopLibpod<'a>>,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
@@ -311,7 +311,7 @@ pub trait Pods: HasConfig + Send + Sync {
     /// List pods
     fn pod_list_libpod<'a>(
         &'a self,
-        params: Option<super::super::params::PodListLibpod<'a>>,
+        params: Option<crate::v4::params::PodListLibpod<'a>>,
     ) -> Pin<Box<dyn Future<Output = Result<Vec<()>, Error>> + Send + 'a>> {
         Box::pin(request::execute_request_json(
             self.get_config(),
@@ -363,7 +363,7 @@ pub trait Pods: HasConfig + Send + Sync {
     /// Display a live stream of resource usage statistics for the containers in one or more pods
     fn pod_stats_all_libpod<'a>(
         &'a self,
-        params: Option<super::super::params::PodStatsAllLibpod<'a>>,
+        params: Option<crate::v4::params::PodStatsAllLibpod<'a>>,
     ) -> Pin<Box<dyn Future<Output = Result<Vec<()>, Error>> + Send + 'a>> {
         Box::pin(request::execute_request_json(
             self.get_config(),

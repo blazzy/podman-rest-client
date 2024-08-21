@@ -33,7 +33,7 @@ pub struct NetworkCreateLibpod {
     /// the Network.
     pub options: Option<std::collections::HashMap<String, String>>,
     /// Routes to use for this network.
-    pub routes: Option<Vec<super::super::models::Route>>,
+    pub routes: Option<Vec<crate::v5::models::Route>>,
     /// Subnets to use for this network.
-    pub subnets: Option<Vec<super::super::models::Subnet>>,
+    pub subnets: Option<Vec<crate::v5::models::Subnet>>,
 }

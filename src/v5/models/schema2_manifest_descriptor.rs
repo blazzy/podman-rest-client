@@ -6,7 +6,7 @@ pub struct Schema2ManifestDescriptor {
     pub digest: Option<String>,
     #[serde(rename = "mediaType")]
     pub media_type: Option<String>,
-    pub platform: Option<super::super::models::Schema2PlatformSpec>,
+    pub platform: Option<crate::v5::models::Schema2PlatformSpec>,
     pub size: Option<i64>,
     pub urls: Option<Vec<String>>,
 }

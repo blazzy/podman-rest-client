@@ -11,15 +11,15 @@ pub struct ClusterVolume {
     #[serde(rename = "ID")]
     pub id: Option<String>,
     #[serde(rename = "Info")]
-    pub info: Option<super::super::models::Info>,
+    pub info: Option<crate::v5::models::Info>,
     /// PublishStatus contains the status of the volume as it pertains to its
     /// publishing on Nodes.
     #[serde(rename = "PublishStatus")]
-    pub publish_status: Option<Vec<super::super::models::PublishStatus>>,
+    pub publish_status: Option<Vec<crate::v5::models::PublishStatus>>,
     #[serde(rename = "Spec")]
-    pub spec: Option<super::super::models::ClusterVolumeSpec>,
+    pub spec: Option<crate::v5::models::ClusterVolumeSpec>,
     #[serde(rename = "UpdatedAt")]
     pub updated_at: Option<String>,
     #[serde(rename = "Version")]
-    pub version: Option<super::super::models::Version>,
+    pub version: Option<crate::v5::models::Version>,
 }

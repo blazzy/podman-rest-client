@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 /// VolumeOptions represents the options for a mount of type volume.
 pub struct VolumeOptions {
     #[serde(rename = "DriverConfig")]
-    pub driver_config: Option<super::super::models::Driver>,
+    pub driver_config: Option<crate::v5::models::Driver>,
     #[serde(rename = "Labels")]
     pub labels: Option<std::collections::HashMap<String, String>>,
     #[serde(rename = "NoCopy")]

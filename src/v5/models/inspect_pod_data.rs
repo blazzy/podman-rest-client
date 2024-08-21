@@ -12,7 +12,7 @@ pub struct InspectPodData {
     /// Containers gives a brief summary of all containers in the pod and
     /// their current status.
     #[serde(rename = "Containers")]
-    pub containers: Option<Vec<super::super::models::InspectPodContainerInfo>>,
+    pub containers: Option<Vec<crate::v5::models::InspectPodContainerInfo>>,
     /// CreateCgroup is whether this pod will create its own Cgroup to group
     /// containers under.
     #[serde(rename = "CreateCgroup")]
@@ -38,7 +38,7 @@ pub struct InspectPodData {
     #[serde(rename = "Id")]
     pub id: Option<String>,
     #[serde(rename = "InfraConfig")]
-    pub infra_config: Option<super::super::models::InspectPodInfraConfig>,
+    pub infra_config: Option<crate::v5::models::InspectPodInfraConfig>,
     /// InfraContainerID is the ID of the pod's infra container, if one is
     /// present.
     #[serde(rename = "InfraContainerID")]
@@ -73,7 +73,7 @@ pub struct InspectPodData {
     /// BlkioWeight contains the blkio weight limit for the pod
     pub blkio_weight: Option<u64>,
     /// BlkioWeightDevice contains the blkio weight device limits for the pod
-    pub blkio_weight_device: Option<Vec<super::super::models::InspectBlkioWeightDevice>>,
+    pub blkio_weight_device: Option<Vec<crate::v5::models::InspectBlkioWeightDevice>>,
     /// CPUPeriod contains the CPU period of the pod
     pub cpu_period: Option<u64>,
     /// CPUQuota contains the CPU quota of the pod
@@ -85,17 +85,17 @@ pub struct InspectPodData {
     /// CPUSetMems contains linux specific CPU data for the pod
     pub cpuset_mems: Option<String>,
     /// BlkioDeviceReadBps contains the Read/Access limit for the pod's devices
-    pub device_read_bps: Option<Vec<super::super::models::InspectBlkioThrottleDevice>>,
+    pub device_read_bps: Option<Vec<crate::v5::models::InspectBlkioThrottleDevice>>,
     /// BlkioDeviceReadBps contains the Read/Access limit for the pod's devices
-    pub device_write_bps: Option<Vec<super::super::models::InspectBlkioThrottleDevice>>,
+    pub device_write_bps: Option<Vec<crate::v5::models::InspectBlkioThrottleDevice>>,
     /// Devices contains the specified host devices
-    pub devices: Option<Vec<super::super::models::InspectDevice>>,
+    pub devices: Option<Vec<crate::v5::models::InspectDevice>>,
     /// MemoryLimit contains the specified cgroup memory limit for the pod
     pub memory_limit: Option<u64>,
     /// MemorySwap contains the specified memory swap limit for the pod
     pub memory_swap: Option<u64>,
     /// Mounts contains volume related information for the pod
-    pub mounts: Option<Vec<super::super::models::InspectMount>>,
+    pub mounts: Option<Vec<crate::v5::models::InspectMount>>,
     /// SecurityOpt contains the specified security labels and related SELinux information
     pub security_opt: Option<Vec<String>>,
     /// VolumesFrom contains the containers that the pod inherits mounts from

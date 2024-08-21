@@ -9,12 +9,10 @@ pub trait NetworksCompat: HasConfig + Send + Sync {
     /// Display summary of network configurations
     fn network_list<'a>(
         &'a self,
-        params: Option<super::super::params::NetworkList<'a>>,
+        params: Option<crate::v5::params::NetworkList<'a>>,
     ) -> Pin<
         Box<
-            dyn Future<Output = Result<Vec<super::super::models::NetworkResource>, Error>>
-                + Send
-                + 'a,
+            dyn Future<Output = Result<Vec<crate::v5::models::NetworkResource>, Error>> + Send + 'a,
         >,
     > {
         Box::pin(request::execute_request_json(
@@ -71,10 +69,9 @@ pub trait NetworksCompat: HasConfig + Send + Sync {
     fn network_inspect<'a>(
         &'a self,
         name: &'a str,
-        params: Option<super::super::params::NetworkInspect<'a>>,
-    ) -> Pin<
-        Box<dyn Future<Output = Result<super::super::models::NetworkResource, Error>> + Send + 'a>,
-    > {
+        params: Option<crate::v5::params::NetworkInspect<'a>>,
+    ) -> Pin<Box<dyn Future<Output = Result<crate::v5::models::NetworkResource, Error>> + Send + 'a>>
+    {
         Box::pin(request::execute_request_json(
             self.get_config(),
             (|| {
@@ -108,7 +105,7 @@ pub trait NetworksCompat: HasConfig + Send + Sync {
     fn network_connect<'a>(
         &'a self,
         name: &'a str,
-        create: super::super::models::NetworkConnect,
+        create: crate::v5::models::NetworkConnect,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
@@ -137,7 +134,7 @@ pub trait NetworksCompat: HasConfig + Send + Sync {
     fn network_disconnect<'a>(
         &'a self,
         name: &'a str,
-        create: super::super::models::NetworkDisconnect,
+        create: crate::v5::models::NetworkDisconnect,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
@@ -165,10 +162,9 @@ pub trait NetworksCompat: HasConfig + Send + Sync {
     /// Create a network configuration
     fn network_create<'a>(
         &'a self,
-        create: super::super::models::NetworkCreateRequest,
-    ) -> Pin<
-        Box<dyn Future<Output = Result<super::super::models::NetworkCreate201, Error>> + Send + 'a>,
-    > {
+        create: crate::v5::models::NetworkCreateRequest,
+    ) -> Pin<Box<dyn Future<Output = Result<crate::v5::models::NetworkCreate201, Error>> + Send + 'a>>
+    {
         Box::pin(request::execute_request_json(
             self.get_config(),
             (|| {
@@ -194,10 +190,9 @@ pub trait NetworksCompat: HasConfig + Send + Sync {
     /// Remove networks that do not have containers
     fn network_prune<'a>(
         &'a self,
-        params: Option<super::super::params::NetworkPrune<'a>>,
-    ) -> Pin<
-        Box<dyn Future<Output = Result<super::super::models::NetworkPrune200, Error>> + Send + 'a>,
-    > {
+        params: Option<crate::v5::params::NetworkPrune<'a>>,
+    ) -> Pin<Box<dyn Future<Output = Result<crate::v5::models::NetworkPrune200, Error>> + Send + 'a>>
+    {
         Box::pin(request::execute_request_json(
             self.get_config(),
             (|| {

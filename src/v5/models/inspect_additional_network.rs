@@ -55,9 +55,9 @@ pub struct InspectAdditionalNetwork {
     /// SecondaryIPAddresses is a list of extra IP Addresses that the
     /// container has been assigned in this network.
     #[serde(rename = "SecondaryIPAddresses")]
-    pub secondary_ip_addresses: Option<Vec<super::super::models::Address>>,
+    pub secondary_ip_addresses: Option<Vec<crate::v5::models::Address>>,
     /// SecondaryIPv6Addresses is a list of extra IPv6 Addresses that the
     /// container has been assigned in this network.
     #[serde(rename = "SecondaryIPv6Addresses")]
-    pub secondary_i_pv6_addresses: Option<Vec<super::super::models::Address>>,
+    pub secondary_i_pv6_addresses: Option<Vec<crate::v5::models::Address>>,
 }

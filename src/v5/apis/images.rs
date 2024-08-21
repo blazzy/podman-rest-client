@@ -9,13 +9,9 @@ pub trait Images: HasConfig + Send + Sync {
     /// Build an image from the given Dockerfile(s)
     fn image_build_libpod<'a>(
         &'a self,
-        params: Option<super::super::params::ImageBuildLibpod<'a>>,
+        params: Option<crate::v5::params::ImageBuildLibpod<'a>>,
     ) -> Pin<
-        Box<
-            dyn Future<Output = Result<super::super::models::ImageBuildLibpod200, Error>>
-                + Send
-                + 'a,
-        >,
+        Box<dyn Future<Output = Result<crate::v5::models::ImageBuildLibpod200, Error>> + Send + 'a>,
     > {
         Box::pin(request::execute_request_json(
             self.get_config(),
@@ -144,10 +140,10 @@ pub trait Images: HasConfig + Send + Sync {
     fn image_delete_libpod<'a>(
         &'a self,
         name: &'a str,
-        params: Option<super::super::params::ImageDeleteLibpod>,
+        params: Option<crate::v5::params::ImageDeleteLibpod>,
     ) -> Pin<
         Box<
-            dyn Future<Output = Result<super::super::models::LibpodImagesRemoveReport, Error>>
+            dyn Future<Output = Result<crate::v5::models::LibpodImagesRemoveReport, Error>>
                 + Send
                 + 'a,
         >,
@@ -186,7 +182,7 @@ pub trait Images: HasConfig + Send + Sync {
     fn image_changes_libpod<'a>(
         &'a self,
         name: &'a str,
-        params: Option<super::super::params::ImageChangesLibpod<'a>>,
+        params: Option<crate::v5::params::ImageChangesLibpod<'a>>,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
@@ -246,9 +242,9 @@ pub trait Images: HasConfig + Send + Sync {
     fn image_get_libpod<'a>(
         &'a self,
         name: &'a str,
-        params: Option<super::super::params::ImageGetLibpod<'a>>,
-    ) -> Pin<Box<dyn Future<Output = Result<String, Error>> + Send + 'a>> {
-        Box::pin(request::execute_request_json(
+        params: Option<crate::v5::params::ImageGetLibpod<'a>>,
+    ) -> Pin<Box<dyn futures::stream::Stream<Item = Result<bytes::Bytes, Error>> + 'a>> {
+        request::execute_request_stream(
             self.get_config(),
             (|| {
                 let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
@@ -273,7 +269,7 @@ pub trait Images: HasConfig + Send + Sync {
                 req_builder = req_builder.uri(hyper_uri);
                 Ok(req_builder.body(String::new())?)
             })(),
-        ))
+        )
     }
     /// GET /libpod/images/{name}/history
     /// History of an image
@@ -281,9 +277,8 @@ pub trait Images: HasConfig + Send + Sync {
     fn image_history_libpod<'a>(
         &'a self,
         name: &'a str,
-    ) -> Pin<
-        Box<dyn Future<Output = Result<super::super::models::HistoryResponse, Error>> + Send + 'a>,
-    > {
+    ) -> Pin<Box<dyn Future<Output = Result<crate::v5::models::HistoryResponse, Error>> + Send + 'a>>
+    {
         Box::pin(request::execute_request_json(
             self.get_config(),
             (|| {
@@ -308,7 +303,7 @@ pub trait Images: HasConfig + Send + Sync {
     fn image_inspect_libpod<'a>(
         &'a self,
         name: &'a str,
-    ) -> Pin<Box<dyn Future<Output = Result<super::super::models::ImageData, Error>> + Send + 'a>>
+    ) -> Pin<Box<dyn Future<Output = Result<crate::v5::models::ImageData, Error>> + Send + 'a>>
     {
         Box::pin(request::execute_request_json(
             self.get_config(),
@@ -334,7 +329,7 @@ pub trait Images: HasConfig + Send + Sync {
     fn image_push_libpod<'a>(
         &'a self,
         name: &'a str,
-        params: Option<super::super::params::ImagePushLibpod<'a>>,
+        params: Option<crate::v5::params::ImagePushLibpod<'a>>,
     ) -> Pin<Box<dyn Future<Output = Result<String, Error>> + Send + 'a>> {
         Box::pin(request::execute_request_json(
             self.get_config(),
@@ -406,7 +401,7 @@ pub trait Images: HasConfig + Send + Sync {
     fn image_tag_libpod<'a>(
         &'a self,
         name: &'a str,
-        params: Option<super::super::params::ImageTagLibpod<'a>>,
+        params: Option<crate::v5::params::ImageTagLibpod<'a>>,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
@@ -441,10 +436,9 @@ pub trait Images: HasConfig + Send + Sync {
     fn image_tree_libpod<'a>(
         &'a self,
         name: &'a str,
-        params: Option<super::super::params::ImageTreeLibpod>,
-    ) -> Pin<
-        Box<dyn Future<Output = Result<super::super::models::ImageTreeReport, Error>> + Send + 'a>,
-    > {
+        params: Option<crate::v5::params::ImageTreeLibpod>,
+    ) -> Pin<Box<dyn Future<Output = Result<crate::v5::models::ImageTreeReport, Error>> + Send + 'a>>
+    {
         Box::pin(request::execute_request_json(
             self.get_config(),
             (|| {
@@ -475,7 +469,7 @@ pub trait Images: HasConfig + Send + Sync {
     fn image_untag_libpod<'a>(
         &'a self,
         name: &'a str,
-        params: Option<super::super::params::ImageUntagLibpod<'a>>,
+        params: Option<crate::v5::params::ImageUntagLibpod<'a>>,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
@@ -509,7 +503,7 @@ pub trait Images: HasConfig + Send + Sync {
     /// Export multiple images into a single object. Only `docker-archive` is currently supported.
     fn image_export_libpod<'a>(
         &'a self,
-        params: Option<super::super::params::ImageExportLibpod<'a>>,
+        params: Option<crate::v5::params::ImageExportLibpod<'a>>,
     ) -> Pin<Box<dyn futures::stream::Stream<Item = Result<bytes::Bytes, Error>> + 'a>> {
         request::execute_request_stream(
             self.get_config(),
@@ -555,12 +549,10 @@ pub trait Images: HasConfig + Send + Sync {
     /// Import a previously exported tarball as an image.
     fn image_import_libpod<'a>(
         &'a self,
-        params: Option<super::super::params::ImageImportLibpod<'a>>,
+        params: Option<crate::v5::params::ImageImportLibpod<'a>>,
         upload: String,
     ) -> Pin<
-        Box<
-            dyn Future<Output = Result<super::super::models::ImageImportReport, Error>> + Send + 'a,
-        >,
+        Box<dyn Future<Output = Result<crate::v5::models::ImageImportReport, Error>> + Send + 'a>,
     > {
         Box::pin(request::execute_request_json(
             self.get_config(),
@@ -607,10 +599,10 @@ pub trait Images: HasConfig + Send + Sync {
     /// Returns a list of images on the server
     fn image_list_libpod<'a>(
         &'a self,
-        params: Option<super::super::params::ImageListLibpod<'a>>,
+        params: Option<crate::v5::params::ImageListLibpod<'a>>,
     ) -> Pin<
         Box<
-            dyn Future<Output = Result<Vec<super::super::models::LibpodImageSummary>, Error>>
+            dyn Future<Output = Result<Vec<crate::v5::models::LibpodImageSummary>, Error>>
                 + Send
                 + 'a,
         >,
@@ -647,9 +639,8 @@ pub trait Images: HasConfig + Send + Sync {
     fn image_load_libpod<'a>(
         &'a self,
         upload: String,
-    ) -> Pin<
-        Box<dyn Future<Output = Result<super::super::models::ImageLoadReport, Error>> + Send + 'a>,
-    > {
+    ) -> Pin<Box<dyn Future<Output = Result<crate::v5::models::ImageLoadReport, Error>> + Send + 'a>>
+    {
         Box::pin(request::execute_request_json(
             self.get_config(),
             (|| {
@@ -675,10 +666,9 @@ pub trait Images: HasConfig + Send + Sync {
     /// Remove images that are not being used by a container
     fn image_prune_libpod<'a>(
         &'a self,
-        params: Option<super::super::params::ImagePruneLibpod<'a>>,
-    ) -> Pin<
-        Box<dyn Future<Output = Result<Vec<super::super::models::PruneReport>, Error>> + Send + 'a>,
-    > {
+        params: Option<crate::v5::params::ImagePruneLibpod<'a>>,
+    ) -> Pin<Box<dyn Future<Output = Result<Vec<crate::v5::models::PruneReport>, Error>> + Send + 'a>>
+    {
         Box::pin(request::execute_request_json(
             self.get_config(),
             (|| {
@@ -713,10 +703,10 @@ pub trait Images: HasConfig + Send + Sync {
     /// Pull one or more images from a container registry.
     fn image_pull_libpod<'a>(
         &'a self,
-        params: Option<super::super::params::ImagePullLibpod<'a>>,
+        params: Option<crate::v5::params::ImagePullLibpod<'a>>,
     ) -> Pin<
         Box<
-            dyn Future<Output = Result<super::super::models::LibpodImagesPullReport, Error>>
+            dyn Future<Output = Result<crate::v5::models::LibpodImagesPullReport, Error>>
                 + Send
                 + 'a,
         >,
@@ -776,10 +766,10 @@ pub trait Images: HasConfig + Send + Sync {
     /// Remove one or more images from the storage.
     fn image_delete_all_libpod<'a>(
         &'a self,
-        params: Option<super::super::params::ImageDeleteAllLibpod<'a>>,
+        params: Option<crate::v5::params::ImageDeleteAllLibpod<'a>>,
     ) -> Pin<
         Box<
-            dyn Future<Output = Result<super::super::models::LibpodImagesRemoveReport, Error>>
+            dyn Future<Output = Result<crate::v5::models::LibpodImagesRemoveReport, Error>>
                 + Send
                 + 'a,
         >,
@@ -827,8 +817,8 @@ pub trait Images: HasConfig + Send + Sync {
     fn image_scp_libpod<'a>(
         &'a self,
         name: &'a str,
-        params: Option<super::super::params::ImageScpLibpod<'a>>,
-    ) -> Pin<Box<dyn Future<Output = Result<super::super::models::ScpReport, Error>> + Send + 'a>>
+        params: Option<crate::v5::params::ImageScpLibpod<'a>>,
+    ) -> Pin<Box<dyn Future<Output = Result<crate::v5::models::ScpReport, Error>> + Send + 'a>>
     {
         Box::pin(request::execute_request_json(
             self.get_config(),
@@ -862,10 +852,10 @@ pub trait Images: HasConfig + Send + Sync {
     /// Search registries for images
     fn image_search_libpod<'a>(
         &'a self,
-        params: Option<super::super::params::ImageSearchLibpod<'a>>,
+        params: Option<crate::v5::params::ImageSearchLibpod<'a>>,
     ) -> Pin<
         Box<
-            dyn Future<Output = Result<super::super::models::RegistrySearchResponse, Error>>
+            dyn Future<Output = Result<crate::v5::models::RegistrySearchResponse, Error>>
                 + Send
                 + 'a,
         >,

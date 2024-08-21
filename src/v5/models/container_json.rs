@@ -7,7 +7,7 @@ pub struct ContainerJson {
     #[serde(rename = "Args")]
     pub args: Option<Vec<String>>,
     #[serde(rename = "Config")]
-    pub config: Option<super::super::models::Config>,
+    pub config: Option<crate::v5::models::Config>,
     #[serde(rename = "Created")]
     pub created: Option<String>,
     #[serde(rename = "Driver")]
@@ -15,9 +15,9 @@ pub struct ContainerJson {
     #[serde(rename = "ExecIDs")]
     pub exec_i_ds: Option<Vec<String>>,
     #[serde(rename = "GraphDriver")]
-    pub graph_driver: Option<super::super::models::GraphDriverData>,
+    pub graph_driver: Option<crate::v5::models::GraphDriverData>,
     #[serde(rename = "HostConfig")]
-    pub host_config: Option<super::super::models::HostConfig>,
+    pub host_config: Option<crate::v5::models::HostConfig>,
     #[serde(rename = "HostnamePath")]
     pub hostname_path: Option<String>,
     #[serde(rename = "HostsPath")]
@@ -31,13 +31,13 @@ pub struct ContainerJson {
     #[serde(rename = "MountLabel")]
     pub mount_label: Option<String>,
     #[serde(rename = "Mounts")]
-    pub mounts: Option<Vec<super::super::models::MountPoint>>,
+    pub mounts: Option<Vec<crate::v5::models::MountPoint>>,
     #[serde(rename = "Name")]
     pub name: Option<String>,
     #[serde(rename = "NetworkSettings")]
-    pub network_settings: Option<super::super::models::NetworkSettings>,
+    pub network_settings: Option<crate::v5::models::NetworkSettings>,
     #[serde(rename = "Node")]
-    pub node: Option<super::super::models::ContainerNode>,
+    pub node: Option<crate::v5::models::ContainerNode>,
     #[serde(rename = "Path")]
     pub path: Option<String>,
     #[serde(rename = "Platform")]
@@ -53,5 +53,5 @@ pub struct ContainerJson {
     #[serde(rename = "SizeRw")]
     pub size_rw: Option<i64>,
     #[serde(rename = "State")]
-    pub state: Option<super::super::models::ContainerState>,
+    pub state: Option<crate::v5::models::ContainerState>,
 }

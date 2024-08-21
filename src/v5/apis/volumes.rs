@@ -9,7 +9,7 @@ pub trait Volumes: HasConfig + Send + Sync {
     fn volume_delete_libpod<'a>(
         &'a self,
         name: &'a str,
-        params: Option<super::super::params::VolumeDeleteLibpod>,
+        params: Option<crate::v5::params::VolumeDeleteLibpod>,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
@@ -67,9 +67,7 @@ pub trait Volumes: HasConfig + Send + Sync {
         name: &'a str,
     ) -> Pin<
         Box<
-            dyn Future<Output = Result<super::super::models::VolumeConfigResponse, Error>>
-                + Send
-                + 'a,
+            dyn Future<Output = Result<crate::v5::models::VolumeConfigResponse, Error>> + Send + 'a,
         >,
     > {
         Box::pin(request::execute_request_json(
@@ -94,12 +92,10 @@ pub trait Volumes: HasConfig + Send + Sync {
     /// Create a volume
     fn volume_create_libpod<'a>(
         &'a self,
-        create: super::super::models::VolumeCreateOptions,
+        create: crate::v5::models::VolumeCreateOptions,
     ) -> Pin<
         Box<
-            dyn Future<Output = Result<super::super::models::VolumeConfigResponse, Error>>
-                + Send
-                + 'a,
+            dyn Future<Output = Result<crate::v5::models::VolumeConfigResponse, Error>> + Send + 'a,
         >,
     > {
         Box::pin(request::execute_request_json(
@@ -127,10 +123,10 @@ pub trait Volumes: HasConfig + Send + Sync {
     /// Returns a list of volumes
     fn volume_list_libpod<'a>(
         &'a self,
-        params: Option<super::super::params::VolumeListLibpod<'a>>,
+        params: Option<crate::v5::params::VolumeListLibpod<'a>>,
     ) -> Pin<
         Box<
-            dyn Future<Output = Result<Vec<super::super::models::VolumeConfigResponse>, Error>>
+            dyn Future<Output = Result<Vec<crate::v5::models::VolumeConfigResponse>, Error>>
                 + Send
                 + 'a,
         >,
@@ -162,10 +158,9 @@ pub trait Volumes: HasConfig + Send + Sync {
     /// Prune volumes
     fn volume_prune_libpod<'a>(
         &'a self,
-        params: Option<super::super::params::VolumePruneLibpod<'a>>,
-    ) -> Pin<
-        Box<dyn Future<Output = Result<Vec<super::super::models::PruneReport>, Error>> + Send + 'a>,
-    > {
+        params: Option<crate::v5::params::VolumePruneLibpod<'a>>,
+    ) -> Pin<Box<dyn Future<Output = Result<Vec<crate::v5::models::PruneReport>, Error>> + Send + 'a>>
+    {
         Box::pin(request::execute_request_json(
             self.get_config(),
             (|| {

@@ -10,12 +10,10 @@ pub trait Networks: HasConfig + Send + Sync {
     fn network_delete_libpod<'a>(
         &'a self,
         name: &'a str,
-        params: Option<super::super::params::NetworkDeleteLibpod>,
+        params: Option<crate::v5::params::NetworkDeleteLibpod>,
     ) -> Pin<
         Box<
-            dyn Future<Output = Result<Vec<super::super::models::NetworkRmReport>, Error>>
-                + Send
-                + 'a,
+            dyn Future<Output = Result<Vec<crate::v5::models::NetworkRmReport>, Error>> + Send + 'a,
         >,
     > {
         Box::pin(request::execute_request_json(
@@ -48,7 +46,7 @@ pub trait Networks: HasConfig + Send + Sync {
     fn network_connect_libpod<'a>(
         &'a self,
         name: &'a str,
-        create: super::super::models::NetworkConnectOptions,
+        create: crate::v5::models::NetworkConnectOptions,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
@@ -77,7 +75,7 @@ pub trait Networks: HasConfig + Send + Sync {
     fn network_disconnect_libpod<'a>(
         &'a self,
         name: &'a str,
-        create: super::super::models::NetworkDisconnect,
+        create: crate::v5::models::NetworkDisconnect,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
@@ -133,9 +131,7 @@ pub trait Networks: HasConfig + Send + Sync {
         name: &'a str,
     ) -> Pin<
         Box<
-            dyn Future<Output = Result<super::super::models::NetworkInspectReport, Error>>
-                + Send
-                + 'a,
+            dyn Future<Output = Result<crate::v5::models::NetworkInspectReport, Error>> + Send + 'a,
         >,
     > {
         Box::pin(request::execute_request_json(
@@ -162,7 +158,7 @@ pub trait Networks: HasConfig + Send + Sync {
     fn network_update_libpod<'a>(
         &'a self,
         name: &'a str,
-        update: super::super::models::NetworkUpdateOptions,
+        update: crate::v5::models::NetworkUpdateOptions,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
@@ -190,9 +186,8 @@ pub trait Networks: HasConfig + Send + Sync {
     /// Create a new network configuration
     fn network_create_libpod<'a>(
         &'a self,
-        create: super::super::models::NetworkCreateLibpod,
-    ) -> Pin<Box<dyn Future<Output = Result<super::super::models::Network, Error>> + Send + 'a>>
-    {
+        create: crate::v5::models::NetworkCreateLibpod,
+    ) -> Pin<Box<dyn Future<Output = Result<crate::v5::models::Network, Error>> + Send + 'a>> {
         Box::pin(request::execute_request_json(
             self.get_config(),
             (|| {
@@ -219,8 +214,8 @@ pub trait Networks: HasConfig + Send + Sync {
     ///   - In a 200 response, all of the fields named Bytes are returned as a Base64 encoded string.
     fn network_list_libpod<'a>(
         &'a self,
-        params: Option<super::super::params::NetworkListLibpod<'a>>,
-    ) -> Pin<Box<dyn Future<Output = Result<Vec<super::super::models::Network>, Error>> + Send + 'a>>
+        params: Option<crate::v5::params::NetworkListLibpod<'a>>,
+    ) -> Pin<Box<dyn Future<Output = Result<Vec<crate::v5::models::Network>, Error>> + Send + 'a>>
     {
         Box::pin(request::execute_request_json(
             self.get_config(),
@@ -250,10 +245,10 @@ pub trait Networks: HasConfig + Send + Sync {
     /// Remove networks that do not have containers
     fn network_prune_libpod<'a>(
         &'a self,
-        params: Option<super::super::params::NetworkPruneLibpod<'a>>,
+        params: Option<crate::v5::params::NetworkPruneLibpod<'a>>,
     ) -> Pin<
         Box<
-            dyn Future<Output = Result<Vec<super::super::models::NetworkPruneReport>, Error>>
+            dyn Future<Output = Result<Vec<crate::v5::models::NetworkPruneReport>, Error>>
                 + Send
                 + 'a,
         >,

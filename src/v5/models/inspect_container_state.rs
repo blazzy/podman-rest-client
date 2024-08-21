@@ -27,7 +27,7 @@ pub struct InspectContainerState {
     #[serde(rename = "FinishedAt")]
     pub finished_at: Option<String>,
     #[serde(rename = "Health")]
-    pub health: Option<super::super::models::HealthCheckResults>,
+    pub health: Option<crate::v5::models::HealthCheckResults>,
     #[serde(rename = "OOMKilled")]
     pub oom_killed: Option<bool>,
     #[serde(rename = "OciVersion")]

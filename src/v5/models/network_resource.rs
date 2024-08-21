@@ -5,12 +5,11 @@ pub struct NetworkResource {
     #[serde(rename = "Attachable")]
     pub attachable: Option<bool>,
     #[serde(rename = "ConfigFrom")]
-    pub config_from: Option<super::super::models::ConfigReference>,
+    pub config_from: Option<crate::v5::models::ConfigReference>,
     #[serde(rename = "ConfigOnly")]
     pub config_only: Option<bool>,
     #[serde(rename = "Containers")]
-    pub containers:
-        Option<std::collections::HashMap<String, super::super::models::EndpointResource>>,
+    pub containers: Option<std::collections::HashMap<String, crate::v5::models::EndpointResource>>,
     #[serde(rename = "Created")]
     pub created: Option<String>,
     #[serde(rename = "Driver")]
@@ -18,7 +17,7 @@ pub struct NetworkResource {
     #[serde(rename = "EnableIPv6")]
     pub enable_i_pv6: Option<bool>,
     #[serde(rename = "IPAM")]
-    pub ipam: Option<super::super::models::Ipam>,
+    pub ipam: Option<crate::v5::models::Ipam>,
     #[serde(rename = "Id")]
     pub id: Option<String>,
     #[serde(rename = "Ingress")]
@@ -32,9 +31,9 @@ pub struct NetworkResource {
     #[serde(rename = "Options")]
     pub options: Option<std::collections::HashMap<String, String>>,
     #[serde(rename = "Peers")]
-    pub peers: Option<Vec<super::super::models::PeerInfo>>,
+    pub peers: Option<Vec<crate::v5::models::PeerInfo>>,
     #[serde(rename = "Scope")]
     pub scope: Option<String>,
     #[serde(rename = "Services")]
-    pub services: Option<std::collections::HashMap<String, super::super::models::ServiceInfo>>,
+    pub services: Option<std::collections::HashMap<String, crate::v5::models::ServiceInfo>>,
 }

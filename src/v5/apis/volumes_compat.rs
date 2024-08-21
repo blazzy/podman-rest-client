@@ -9,8 +9,8 @@ pub trait VolumesCompat: HasConfig + Send + Sync {
     /// Returns a list of volume
     fn volume_list<'a>(
         &'a self,
-        params: Option<super::super::params::VolumeList<'a>>,
-    ) -> Pin<Box<dyn Future<Output = Result<super::super::models::ListResponse, Error>> + Send + 'a>>
+        params: Option<crate::v5::params::VolumeList<'a>>,
+    ) -> Pin<Box<dyn Future<Output = Result<crate::v5::models::ListResponse, Error>> + Send + 'a>>
     {
         Box::pin(request::execute_request_json(
             self.get_config(),
@@ -40,7 +40,7 @@ pub trait VolumesCompat: HasConfig + Send + Sync {
     fn volume_delete<'a>(
         &'a self,
         name: &'a str,
-        params: Option<super::super::params::VolumeDelete>,
+        params: Option<crate::v5::params::VolumeDelete>,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
@@ -71,8 +71,7 @@ pub trait VolumesCompat: HasConfig + Send + Sync {
     fn volume_inspect<'a>(
         &'a self,
         name: &'a str,
-    ) -> Pin<Box<dyn Future<Output = Result<super::super::models::Volume, Error>> + Send + 'a>>
-    {
+    ) -> Pin<Box<dyn Future<Output = Result<crate::v5::models::Volume, Error>> + Send + 'a>> {
         Box::pin(request::execute_request_json(
             self.get_config(),
             (|| {
@@ -95,9 +94,8 @@ pub trait VolumesCompat: HasConfig + Send + Sync {
     /// Create a volume
     fn volume_create<'a>(
         &'a self,
-        create: super::super::models::VolumeCreate,
-    ) -> Pin<Box<dyn Future<Output = Result<super::super::models::Volume, Error>> + Send + 'a>>
-    {
+        create: crate::v5::models::VolumeCreate,
+    ) -> Pin<Box<dyn Future<Output = Result<crate::v5::models::Volume, Error>> + Send + 'a>> {
         Box::pin(request::execute_request_json(
             self.get_config(),
             (|| {
@@ -122,13 +120,9 @@ pub trait VolumesCompat: HasConfig + Send + Sync {
     /// Prune volumes
     fn volume_prune<'a>(
         &'a self,
-        params: Option<super::super::params::VolumePrune<'a>>,
+        params: Option<crate::v5::params::VolumePrune<'a>>,
     ) -> Pin<
-        Box<
-            dyn Future<Output = Result<super::super::models::VolumesPruneReport, Error>>
-                + Send
-                + 'a,
-        >,
+        Box<dyn Future<Output = Result<crate::v5::models::VolumesPruneReport, Error>> + Send + 'a>,
     > {
         Box::pin(request::execute_request_json(
             self.get_config(),

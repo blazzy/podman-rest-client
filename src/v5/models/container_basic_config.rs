@@ -70,7 +70,7 @@ pub struct ContainerBasicConfig {
     /// containers.
     /// Optional.
     pub labels: Option<std::collections::HashMap<String, String>>,
-    pub log_configuration: Option<super::super::models::LogConfigLibpod>,
+    pub log_configuration: Option<crate::v5::models::LogConfigLibpod>,
     /// Passwd is a container run option that determines if we are validating users/groups before running the container
     pub manage_password: Option<bool>,
     /// Name is the name the container will be given.
@@ -85,8 +85,8 @@ pub struct ContainerBasicConfig {
     /// PasswdEntry specifies an arbitrary string to append to the container's /etc/passwd file.
     /// Optional.
     pub passwd_entry: Option<String>,
-    pub personality: Option<super::super::models::LinuxPersonality>,
-    pub pidns: Option<super::super::models::Namespace>,
+    pub personality: Option<crate::v5::models::LinuxPersonality>,
+    pub pidns: Option<crate::v5::models::Namespace>,
     /// Pod is the ID of the pod the container will join.
     /// Optional.
     pub pod: Option<String>,
@@ -158,5 +158,5 @@ pub struct ContainerBasicConfig {
     /// UnsetEnvAll unsets all default environment variables from the image or from buildin
     /// Optional.
     pub unsetenvall: Option<bool>,
-    pub utsns: Option<super::super::models::Namespace>,
+    pub utsns: Option<crate::v5::models::Namespace>,
 }

@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 /// Volume configuration
 pub struct CreateOptions {
     #[serde(rename = "ClusterVolumeSpec")]
-    pub cluster_volume_spec: Option<super::super::models::ClusterVolumeSpec>,
+    pub cluster_volume_spec: Option<crate::v5::models::ClusterVolumeSpec>,
     /// Name of the volume driver to use.
     #[serde(rename = "Driver")]
     pub driver: Option<String>,

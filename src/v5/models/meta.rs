@@ -7,5 +7,5 @@ pub struct Meta {
     #[serde(rename = "UpdatedAt")]
     pub updated_at: Option<String>,
     #[serde(rename = "Version")]
-    pub version: Option<super::super::models::Version>,
+    pub version: Option<crate::v5::models::Version>,
 }

@@ -10,5 +10,5 @@ pub struct PluginConfigInterface {
     pub socket: String,
     /// types
     #[serde(rename = "Types")]
-    pub types: Vec<super::super::models::PluginInterfaceType>,
+    pub types: Vec<crate::v5::models::PluginInterfaceType>,
 }

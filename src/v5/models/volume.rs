@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 /// Volume volume
 pub struct Volume {
     #[serde(rename = "ClusterVolume")]
-    pub cluster_volume: Option<super::super::models::ClusterVolume>,
+    pub cluster_volume: Option<crate::v5::models::ClusterVolume>,
     /// Date/Time the volume was created.
     #[serde(rename = "CreatedAt")]
     pub created_at: Option<String>,
@@ -35,5 +35,5 @@ pub struct Volume {
     #[serde(rename = "Status")]
     pub status: Option<std::collections::HashMap<String, ()>>,
     #[serde(rename = "UsageData")]
-    pub usage_data: Option<super::super::models::UsageData>,
+    pub usage_data: Option<crate::v5::models::UsageData>,
 }

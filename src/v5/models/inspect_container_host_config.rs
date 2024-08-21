@@ -36,7 +36,7 @@ pub struct InspectContainerHostConfig {
     /// don't guarantee the path will be identical to the original (though
     /// the node will be).
     #[serde(rename = "BlkioDeviceReadBps")]
-    pub blkio_device_read_bps: Option<Vec<super::super::models::InspectBlkioThrottleDevice>>,
+    pub blkio_device_read_bps: Option<Vec<crate::v5::models::InspectBlkioThrottleDevice>>,
     /// BlkioDeviceReadIOps is an array of I/O throttle parameters for
     /// individual device nodes.
     /// This specifically sets the read rate cap in iops per second for
@@ -45,7 +45,7 @@ pub struct InspectContainerHostConfig {
     /// don't guarantee the path will be identical to the original (though
     /// the node will be).
     #[serde(rename = "BlkioDeviceReadIOps")]
-    pub blkio_device_read_i_ops: Option<Vec<super::super::models::InspectBlkioThrottleDevice>>,
+    pub blkio_device_read_i_ops: Option<Vec<crate::v5::models::InspectBlkioThrottleDevice>>,
     /// BlkioDeviceWriteBps is an array of I/O throttle parameters for
     /// individual device nodes.
     /// this specifically sets write rate cap in bytes per second for device
@@ -54,7 +54,7 @@ pub struct InspectContainerHostConfig {
     /// don't guarantee the path will be identical to the original (though
     /// the node will be).
     #[serde(rename = "BlkioDeviceWriteBps")]
-    pub blkio_device_write_bps: Option<Vec<super::super::models::InspectBlkioThrottleDevice>>,
+    pub blkio_device_write_bps: Option<Vec<crate::v5::models::InspectBlkioThrottleDevice>>,
     /// BlkioDeviceWriteIOps is an array of I/O throttle parameters for
     /// individual device nodes.
     /// This specifically sets the write rate cap in iops per second for
@@ -63,7 +63,7 @@ pub struct InspectContainerHostConfig {
     /// don't guarantee the path will be identical to the original (though
     /// the node will be).
     #[serde(rename = "BlkioDeviceWriteIOps")]
-    pub blkio_device_write_i_ops: Option<Vec<super::super::models::InspectBlkioThrottleDevice>>,
+    pub blkio_device_write_i_ops: Option<Vec<crate::v5::models::InspectBlkioThrottleDevice>>,
     /// BlkioWeight indicates the I/O resources allocated to the container.
     /// It is a relative weight in the scheduler for assigning I/O time
     /// versus other Cgroups.
@@ -79,7 +79,7 @@ pub struct InspectContainerHostConfig {
     /// though it is guaranteed that the device node will be the same, and
     /// using the given path will be functionally identical.
     #[serde(rename = "BlkioWeightDevice")]
-    pub blkio_weight_device: Option<Vec<super::super::models::InspectBlkioWeightDevice>>,
+    pub blkio_weight_device: Option<Vec<crate::v5::models::InspectBlkioWeightDevice>>,
     /// CapAdd is a list of capabilities added to the container.
     /// It is not directly stored by Libpod, and instead computed from the
     /// capabilities listed in the container's spec, compared against a set
@@ -176,7 +176,7 @@ pub struct InspectContainerHostConfig {
     /// guarantee that the host path will be identical - only that the actual
     /// device will be.
     #[serde(rename = "Devices")]
-    pub devices: Option<Vec<super::super::models::InspectDevice>>,
+    pub devices: Option<Vec<crate::v5::models::InspectDevice>>,
     /// DiskQuota is the maximum amount of disk space the container may use
     /// (in bytes).
     /// Presently not populated.
@@ -204,7 +204,7 @@ pub struct InspectContainerHostConfig {
     #[serde(rename = "GroupAdd")]
     pub group_add: Option<Vec<String>>,
     #[serde(rename = "IDMappings")]
-    pub id_mappings: Option<super::super::models::InspectIdMappings>,
+    pub id_mappings: Option<crate::v5::models::InspectIdMappings>,
     /// IOMaximumBandwidth is Windows-only and not presently implemented.
     #[serde(rename = "IOMaximumBandwidth")]
     pub io_maximum_bandwidth: Option<u64>,
@@ -239,7 +239,7 @@ pub struct InspectContainerHostConfig {
     #[serde(rename = "Links")]
     pub links: Option<Vec<String>>,
     #[serde(rename = "LogConfig")]
-    pub log_config: Option<super::super::models::InspectLogConfig>,
+    pub log_config: Option<crate::v5::models::InspectLogConfig>,
     /// Memory indicates the memory resources allocated to the container.
     /// This is the limit (in bytes) of RAM the container may use.
     #[serde(rename = "Memory")]
@@ -310,7 +310,7 @@ pub struct InspectContainerHostConfig {
     /// bound to multiple host ports (on different IPs).
     #[serde(rename = "PortBindings")]
     pub port_bindings:
-        Option<std::collections::HashMap<String, Vec<super::super::models::InspectHostPort>>>,
+        Option<std::collections::HashMap<String, Vec<crate::v5::models::InspectHostPort>>>,
     /// Privileged indicates whether the container is running with elevated
     /// privileges.
     /// This has a very specific meaning in the Docker sense, so it's very
@@ -326,7 +326,7 @@ pub struct InspectContainerHostConfig {
     #[serde(rename = "ReadonlyRootfs")]
     pub readonly_rootfs: Option<bool>,
     #[serde(rename = "RestartPolicy")]
-    pub restart_policy: Option<super::super::models::InspectRestartPolicy>,
+    pub restart_policy: Option<crate::v5::models::InspectRestartPolicy>,
     /// Runtime is provided purely for Docker compatibility.
     /// It is set unconditionally to "oci" as Podman does not presently
     /// support non-OCI runtimes.
@@ -354,7 +354,7 @@ pub struct InspectContainerHostConfig {
     pub uts_mode: Option<String>,
     /// Ulimits is a set of ulimits that will be set within the container.
     #[serde(rename = "Ulimits")]
-    pub ulimits: Option<Vec<super::super::models::InspectUlimit>>,
+    pub ulimits: Option<Vec<crate::v5::models::InspectUlimit>>,
     /// UsernsMode represents the configuration of the container's user
     /// namespace.
     /// When running rootless, a user namespace is created outside of libpod

@@ -9,8 +9,7 @@ pub struct PodSpecGenerator {
     /// If the map is empty and the bridge network mode is set the container
     /// will be joined to the default network.
     #[serde(rename = "Networks")]
-    pub networks:
-        Option<std::collections::HashMap<String, super::super::models::PerNetworkOptions>>,
+    pub networks: Option<std::collections::HashMap<String, crate::v5::models::PerNetworkOptions>>,
     /// CgroupParent is the parent for the Cgroup that the pod will create.
     /// This pod cgroup will, in turn, be the default cgroup parent for all
     /// containers in the pod.
@@ -65,10 +64,10 @@ pub struct PodSpecGenerator {
     /// all containers in the pod as long as the UTS namespace is shared.
     /// Optional.
     pub hostname: Option<String>,
-    pub idmappings: Option<super::super::models::IdMappingOptions>,
+    pub idmappings: Option<crate::v5::models::IdMappingOptions>,
     /// Image volumes bind-mount a container-image mount into the pod's infra container.
     /// Optional.
-    pub image_volumes: Option<Vec<super::super::models::ImageVolume>>,
+    pub image_volumes: Option<Vec<crate::v5::models::ImageVolume>>,
     /// InfraCommand sets the command that will be used to start the infra
     /// container.
     /// If not set, the default set in the Libpod configuration file will be
@@ -91,7 +90,7 @@ pub struct PodSpecGenerator {
     /// Conflicts with NoInfra=true.
     /// Optional.
     pub infra_name: Option<String>,
-    pub ipcns: Option<super::super::models::Namespace>,
+    pub ipcns: Option<crate::v5::models::Namespace>,
     /// Labels are key-value pairs that are used to add metadata to pods.
     /// Optional.
     pub labels: Option<std::collections::HashMap<String, String>>,
@@ -99,12 +98,12 @@ pub struct PodSpecGenerator {
     /// These will supersede Image Volumes and VolumesFrom volumes where
     /// there are conflicts.
     /// Optional.
-    pub mounts: Option<Vec<super::super::models::Mount>>,
+    pub mounts: Option<Vec<crate::v5::models::Mount>>,
     /// Name is the name of the pod.
     /// If not provided, a name will be generated when the pod is created.
     /// Optional.
     pub name: Option<String>,
-    pub netns: Option<super::super::models::Namespace>,
+    pub netns: Option<crate::v5::models::Namespace>,
     /// NetworkOptions are additional options for each network
     /// Optional.
     pub network_options: Option<std::collections::HashMap<String, Vec<String>>>,
@@ -127,8 +126,8 @@ pub struct PodSpecGenerator {
     pub no_manage_resolv_conf: Option<bool>,
     /// Overlay volumes are named volumes that will be added to the pod.
     /// Optional.
-    pub overlay_volumes: Option<Vec<super::super::models::OverlayVolume>>,
-    pub pidns: Option<super::super::models::Namespace>,
+    pub overlay_volumes: Option<Vec<crate::v5::models::OverlayVolume>>,
+    pub pidns: Option<crate::v5::models::Namespace>,
     pub pod_create_command: Option<Vec<String>>,
     /// Devices contains user specified Devices to be added to the Pod
     pub pod_devices: Option<Vec<String>>,
@@ -137,8 +136,8 @@ pub struct PodSpecGenerator {
     /// container, this will forward the ports to the entire pod.
     /// Only available if NetNS is set to Bridge, Slirp, or Pasta.
     /// Optional.
-    pub portmappings: Option<Vec<super::super::models::PortMapping>>,
-    pub resource_limits: Option<super::super::models::LinuxResources>,
+    pub portmappings: Option<Vec<crate::v5::models::PortMapping>>,
+    pub resource_limits: Option<crate::v5::models::LinuxResources>,
     /// RestartPolicy is the pod's restart policy - an action which
     /// will be taken when one or all the containers in the pod exits.
     /// If not given, the default policy will be set to Always, which
@@ -182,14 +181,14 @@ pub struct PodSpecGenerator {
     /// ThrottleReadBpsDevice contains the rate at which the devices in the pod can be read from/accessed
     #[serde(rename = "throttleReadBpsDevice")]
     pub throttle_read_bps_device:
-        Option<std::collections::HashMap<String, super::super::models::LinuxThrottleDevice>>,
-    pub userns: Option<super::super::models::Namespace>,
-    pub utsns: Option<super::super::models::Namespace>,
+        Option<std::collections::HashMap<String, crate::v5::models::LinuxThrottleDevice>>,
+    pub userns: Option<crate::v5::models::Namespace>,
+    pub utsns: Option<crate::v5::models::Namespace>,
     /// Volumes are named volumes that will be added to the pod.
     /// These will supersede Image Volumes and VolumesFrom  volumes where
     /// there are conflicts.
     /// Optional.
-    pub volumes: Option<Vec<super::super::models::NamedVolume>>,
+    pub volumes: Option<Vec<crate::v5::models::NamedVolume>>,
     /// VolumesFrom is a set of containers whose volumes will be added to
     /// this pod. The name or ID of the container must be provided, and
     /// may optionally be followed by a : and then one or more

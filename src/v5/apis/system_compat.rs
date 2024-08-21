@@ -8,8 +8,8 @@ pub trait SystemCompat: HasConfig + Send + Sync {
     /// Check auth configuration
     fn system_auth<'a>(
         &'a self,
-        auth_config: super::super::models::AuthConfig,
-    ) -> Pin<Box<dyn Future<Output = Result<super::super::models::AuthReport, Error>> + Send + 'a>>
+        auth_config: crate::v5::models::AuthConfig,
+    ) -> Pin<Box<dyn Future<Output = Result<crate::v5::models::AuthReport, Error>> + Send + 'a>>
     {
         Box::pin(request::execute_request_json(
             self.get_config(),
@@ -36,7 +36,7 @@ pub trait SystemCompat: HasConfig + Send + Sync {
     /// Returns events filtered on query parameters
     fn system_events<'a>(
         &'a self,
-        params: Option<super::super::params::SystemEvents<'a>>,
+        params: Option<crate::v5::params::SystemEvents<'a>>,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
@@ -119,9 +119,8 @@ pub trait SystemCompat: HasConfig + Send + Sync {
     /// Return information about disk usage for containers, images, and volumes
     fn system_data_usage<'a>(
         &'a self,
-    ) -> Pin<
-        Box<dyn Future<Output = Result<super::super::models::SystemDfReport, Error>> + Send + 'a>,
-    > {
+    ) -> Pin<Box<dyn Future<Output = Result<crate::v5::models::SystemDfReport, Error>> + Send + 'a>>
+    {
         Box::pin(request::execute_request_json(
             self.get_config(),
             (|| {
@@ -145,7 +144,7 @@ pub trait SystemCompat: HasConfig + Send + Sync {
         &'a self,
     ) -> Pin<
         Box<
-            dyn Future<Output = Result<super::super::models::SystemComponentVersion, Error>>
+            dyn Future<Output = Result<crate::v5::models::SystemComponentVersion, Error>>
                 + Send
                 + 'a,
         >,

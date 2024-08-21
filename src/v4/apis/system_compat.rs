@@ -35,7 +35,7 @@ pub trait SystemCompat: HasConfig + Send + Sync {
     /// Returns events filtered on query parameters
     fn system_events<'a>(
         &'a self,
-        params: Option<super::super::params::SystemEvents<'a>>,
+        params: Option<crate::v4::params::SystemEvents<'a>>,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),

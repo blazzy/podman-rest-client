@@ -11,17 +11,17 @@ pub struct ImageData {
     #[serde(rename = "Comment")]
     pub comment: Option<String>,
     #[serde(rename = "Config")]
-    pub config: Option<super::super::models::ImageConfig>,
+    pub config: Option<crate::v5::models::ImageConfig>,
     #[serde(rename = "Created")]
     pub created: Option<String>,
     #[serde(rename = "Digest")]
     pub digest: Option<String>,
     #[serde(rename = "GraphDriver")]
-    pub graph_driver: Option<super::super::models::DriverData>,
+    pub graph_driver: Option<crate::v5::models::DriverData>,
     #[serde(rename = "Healthcheck")]
-    pub healthcheck: Option<super::super::models::Schema2HealthConfig>,
+    pub healthcheck: Option<crate::v5::models::Schema2HealthConfig>,
     #[serde(rename = "History")]
-    pub history: Option<Vec<super::super::models::History>>,
+    pub history: Option<Vec<crate::v5::models::History>>,
     #[serde(rename = "Id")]
     pub id: Option<String>,
     #[serde(rename = "Labels")]
@@ -39,7 +39,7 @@ pub struct ImageData {
     #[serde(rename = "RepoTags")]
     pub repo_tags: Option<Vec<String>>,
     #[serde(rename = "RootFS")]
-    pub root_fs: Option<super::super::models::RootFs>,
+    pub root_fs: Option<crate::v5::models::RootFs>,
     #[serde(rename = "Size")]
     pub size: Option<i64>,
     #[serde(rename = "User")]

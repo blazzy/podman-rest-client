@@ -10,7 +10,7 @@ pub trait ExecCompat: HasConfig + Send + Sync {
     fn container_exec<'a>(
         &'a self,
         name: &'a str,
-        control: super::super::models::ContainerExecBody,
+        control: crate::v5::models::ContainerExecBody,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
@@ -40,11 +40,7 @@ pub trait ExecCompat: HasConfig + Send + Sync {
         &'a self,
         id: &'a str,
     ) -> Pin<
-        Box<
-            dyn Future<Output = Result<super::super::models::InspectExecSession, Error>>
-                + Send
-                + 'a,
-        >,
+        Box<dyn Future<Output = Result<crate::v5::models::InspectExecSession, Error>> + Send + 'a>,
     > {
         Box::pin(request::execute_request_json(
             self.get_config(),
@@ -70,7 +66,7 @@ pub trait ExecCompat: HasConfig + Send + Sync {
     fn exec_resize<'a>(
         &'a self,
         id: &'a str,
-        params: Option<super::super::params::ExecResize>,
+        params: Option<crate::v5::params::ExecResize>,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
@@ -108,7 +104,7 @@ pub trait ExecCompat: HasConfig + Send + Sync {
     fn exec_start<'a>(
         &'a self,
         id: &'a str,
-        control: super::super::models::ExecStartBody,
+        control: crate::v5::models::ExecStartBody,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),

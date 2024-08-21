@@ -7,7 +7,7 @@ pub struct HealthCheckResults {
     pub failing_streak: Option<i64>,
     /// Log describes healthcheck attempts and results
     #[serde(rename = "Log")]
-    pub log: Option<Vec<super::super::models::HealthCheckLog>>,
+    pub log: Option<Vec<crate::v5::models::HealthCheckLog>>,
     /// Status starting, healthy or unhealthy
     #[serde(rename = "Status")]
     pub status: Option<String>,

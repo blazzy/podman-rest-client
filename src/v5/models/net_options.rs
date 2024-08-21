@@ -7,13 +7,12 @@ pub struct NetOptions {
     pub dns_search: Option<Vec<String>>,
     pub dns_server: Option<Vec<String>>,
     pub hostadd: Option<Vec<String>>,
-    pub netns: Option<super::super::models::Namespace>,
+    pub netns: Option<crate::v5::models::Namespace>,
     pub network_alias: Option<Vec<String>>,
     /// NetworkOptions are additional options for each network
     pub network_options: Option<std::collections::HashMap<String, Vec<String>>>,
-    pub networks:
-        Option<std::collections::HashMap<String, super::super::models::PerNetworkOptions>>,
+    pub networks: Option<std::collections::HashMap<String, crate::v5::models::PerNetworkOptions>>,
     pub no_manage_hosts: Option<bool>,
     pub no_manage_resolv_conf: Option<bool>,
-    pub portmappings: Option<Vec<super::super::models::PortMapping>>,
+    pub portmappings: Option<Vec<crate::v5::models::PortMapping>>,
 }

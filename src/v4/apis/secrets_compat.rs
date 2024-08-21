@@ -9,7 +9,7 @@ pub trait SecretsCompat: HasConfig + Send + Sync {
     /// Returns a list of secrets
     fn secret_list<'a>(
         &'a self,
-        params: Option<super::super::params::SecretList<'a>>,
+        params: Option<crate::v4::params::SecretList<'a>>,
     ) -> Pin<Box<dyn Future<Output = Result<Vec<()>, Error>> + Send + 'a>> {
         Box::pin(request::execute_request_json(
             self.get_config(),

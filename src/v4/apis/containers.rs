@@ -9,7 +9,7 @@ pub trait Containers: HasConfig + Send + Sync {
     /// Create a new image from a container
     fn image_commit_libpod<'a>(
         &'a self,
-        params: Option<super::super::params::ImageCommitLibpod<'a>>,
+        params: Option<crate::v4::params::ImageCommitLibpod<'a>>,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
@@ -67,7 +67,7 @@ pub trait Containers: HasConfig + Send + Sync {
     fn container_delete_libpod<'a>(
         &'a self,
         name: &'a str,
-        params: Option<super::super::params::ContainerDeleteLibpod>,
+        params: Option<crate::v4::params::ContainerDeleteLibpod>,
     ) -> Pin<Box<dyn Future<Output = Result<Vec<()>, Error>> + Send + 'a>> {
         Box::pin(request::execute_request_json(
             self.get_config(),
@@ -111,7 +111,7 @@ pub trait Containers: HasConfig + Send + Sync {
     fn put_container_archive_libpod<'a>(
         &'a self,
         name: &'a str,
-        params: Option<super::super::params::PutContainerArchiveLibpod<'a>>,
+        params: Option<crate::v4::params::PutContainerArchiveLibpod<'a>>,
         request: String,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
@@ -234,7 +234,7 @@ pub trait Containers: HasConfig + Send + Sync {
     fn container_attach_libpod<'a>(
         &'a self,
         name: &'a str,
-        params: Option<super::super::params::ContainerAttachLibpod<'a>>,
+        params: Option<crate::v4::params::ContainerAttachLibpod<'a>>,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
@@ -285,7 +285,7 @@ pub trait Containers: HasConfig + Send + Sync {
     fn container_changes_libpod<'a>(
         &'a self,
         name: &'a str,
-        params: Option<super::super::params::ContainerChangesLibpod<'a>>,
+        params: Option<crate::v4::params::ContainerChangesLibpod<'a>>,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
@@ -319,7 +319,7 @@ pub trait Containers: HasConfig + Send + Sync {
     fn container_checkpoint_libpod<'a>(
         &'a self,
         name: &'a str,
-        params: Option<super::super::params::ContainerCheckpointLibpod>,
+        params: Option<crate::v4::params::ContainerCheckpointLibpod>,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
@@ -478,7 +478,7 @@ pub trait Containers: HasConfig + Send + Sync {
     fn container_inspect_libpod<'a>(
         &'a self,
         name: &'a str,
-        params: Option<super::super::params::ContainerInspectLibpod>,
+        params: Option<crate::v4::params::ContainerInspectLibpod>,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
@@ -510,7 +510,7 @@ pub trait Containers: HasConfig + Send + Sync {
     fn container_kill_libpod<'a>(
         &'a self,
         name: &'a str,
-        params: Option<super::super::params::ContainerKillLibpod<'a>>,
+        params: Option<crate::v4::params::ContainerKillLibpod<'a>>,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
@@ -544,7 +544,7 @@ pub trait Containers: HasConfig + Send + Sync {
     fn container_logs_libpod<'a>(
         &'a self,
         name: &'a str,
-        params: Option<super::super::params::ContainerLogsLibpod<'a>>,
+        params: Option<crate::v4::params::ContainerLogsLibpod<'a>>,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
@@ -644,7 +644,7 @@ pub trait Containers: HasConfig + Send + Sync {
     fn container_rename_libpod<'a>(
         &'a self,
         name: &'a str,
-        params: Option<super::super::params::ContainerRenameLibpod<'a>>,
+        params: Option<crate::v4::params::ContainerRenameLibpod<'a>>,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
@@ -674,7 +674,7 @@ pub trait Containers: HasConfig + Send + Sync {
     fn container_resize_libpod<'a>(
         &'a self,
         name: &'a str,
-        params: Option<super::super::params::ContainerResizeLibpod>,
+        params: Option<crate::v4::params::ContainerResizeLibpod>,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
@@ -708,7 +708,7 @@ pub trait Containers: HasConfig + Send + Sync {
     fn container_restart_libpod<'a>(
         &'a self,
         name: &'a str,
-        params: Option<super::super::params::ContainerRestartLibpod>,
+        params: Option<crate::v4::params::ContainerRestartLibpod>,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
@@ -740,7 +740,7 @@ pub trait Containers: HasConfig + Send + Sync {
     fn container_restore_libpod<'a>(
         &'a self,
         name: &'a str,
-        params: Option<super::super::params::ContainerRestoreLibpod<'a>>,
+        params: Option<crate::v4::params::ContainerRestoreLibpod<'a>>,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
@@ -801,7 +801,7 @@ pub trait Containers: HasConfig + Send + Sync {
     fn container_start_libpod<'a>(
         &'a self,
         name: &'a str,
-        params: Option<super::super::params::ContainerStartLibpod<'a>>,
+        params: Option<crate::v4::params::ContainerStartLibpod<'a>>,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
@@ -833,7 +833,7 @@ pub trait Containers: HasConfig + Send + Sync {
     fn container_stats_libpod<'a>(
         &'a self,
         name: &'a str,
-        params: Option<super::super::params::ContainerStatsLibpod>,
+        params: Option<crate::v4::params::ContainerStatsLibpod>,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
@@ -864,7 +864,7 @@ pub trait Containers: HasConfig + Send + Sync {
     fn container_stop_libpod<'a>(
         &'a self,
         name: &'a str,
-        params: Option<super::super::params::ContainerStopLibpod>,
+        params: Option<crate::v4::params::ContainerStopLibpod>,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
@@ -899,7 +899,7 @@ pub trait Containers: HasConfig + Send + Sync {
     fn container_top_libpod<'a>(
         &'a self,
         name: &'a str,
-        params: Option<super::super::params::ContainerTopLibpod<'a>>,
+        params: Option<crate::v4::params::ContainerTopLibpod<'a>>,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
@@ -1017,7 +1017,7 @@ pub trait Containers: HasConfig + Send + Sync {
     fn container_wait_libpod<'a>(
         &'a self,
         name: &'a str,
-        params: Option<super::super::params::ContainerWaitLibpod<'a>>,
+        params: Option<crate::v4::params::ContainerWaitLibpod<'a>>,
     ) -> Pin<Box<dyn Future<Output = Result<i32, Error>> + Send + 'a>> {
         Box::pin(request::execute_request_json(
             self.get_config(),
@@ -1079,7 +1079,7 @@ pub trait Containers: HasConfig + Send + Sync {
     /// Returns a list of containers
     fn container_list_libpod<'a>(
         &'a self,
-        params: Option<super::super::params::ContainerListLibpod<'a>>,
+        params: Option<crate::v4::params::ContainerListLibpod<'a>>,
     ) -> Pin<Box<dyn Future<Output = Result<Vec<()>, Error>> + Send + 'a>> {
         Box::pin(request::execute_request_json(
             self.get_config(),
@@ -1127,7 +1127,7 @@ pub trait Containers: HasConfig + Send + Sync {
     /// Remove containers not in use
     fn container_prune_libpod<'a>(
         &'a self,
-        params: Option<super::super::params::ContainerPruneLibpod<'a>>,
+        params: Option<crate::v4::params::ContainerPruneLibpod<'a>>,
     ) -> Pin<Box<dyn Future<Output = Result<Vec<()>, Error>> + Send + 'a>> {
         Box::pin(request::execute_request_json(
             self.get_config(),
@@ -1186,7 +1186,7 @@ pub trait Containers: HasConfig + Send + Sync {
     /// Return a live stream of resource usage statistics of one or more container. If no container is specified, the statistics of all containers are returned.
     fn containers_stats_all_libpod<'a>(
         &'a self,
-        params: Option<super::super::params::ContainersStatsAllLibpod<'a>>,
+        params: Option<crate::v4::params::ContainersStatsAllLibpod<'a>>,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
@@ -1225,7 +1225,7 @@ pub trait Containers: HasConfig + Send + Sync {
     fn generate_systemd_libpod<'a>(
         &'a self,
         name: &'a str,
-        params: Option<super::super::params::GenerateSystemdLibpod<'a>>,
+        params: Option<crate::v4::params::GenerateSystemdLibpod<'a>>,
     ) -> Pin<
         Box<
             dyn Future<Output = Result<std::collections::HashMap<String, String>, Error>>
@@ -1309,7 +1309,7 @@ pub trait Containers: HasConfig + Send + Sync {
     /// Generate Kubernetes YAML based on a pod or container.
     fn generate_kube_libpod<'a>(
         &'a self,
-        params: Option<super::super::params::GenerateKubeLibpod<'a>>,
+        params: Option<crate::v4::params::GenerateKubeLibpod<'a>>,
     ) -> Pin<Box<dyn Future<Output = Result<String, Error>> + Send + 'a>> {
         Box::pin(request::execute_request_json(
             self.get_config(),
@@ -1354,7 +1354,7 @@ pub trait Containers: HasConfig + Send + Sync {
     /// Deploy a podman container, pod, volume, or Kubernetes yaml to a Kubernetes cluster.
     fn kube_apply_libpod<'a>(
         &'a self,
-        params: Option<super::super::params::KubeApplyLibpod<'a>>,
+        params: Option<crate::v4::params::KubeApplyLibpod<'a>>,
         request: String,
     ) -> Pin<Box<dyn Future<Output = Result<String, Error>> + Send + 'a>> {
         Box::pin(request::execute_request_json(
@@ -1400,7 +1400,7 @@ pub trait Containers: HasConfig + Send + Sync {
     /// Tears down pods, secrets, and volumes defined in a YAML file
     fn play_kube_down_libpod<'a>(
         &'a self,
-        params: Option<super::super::params::PlayKubeDownLibpod>,
+        params: Option<crate::v4::params::PlayKubeDownLibpod>,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
@@ -1430,7 +1430,7 @@ pub trait Containers: HasConfig + Send + Sync {
     /// Create and run pods based on a Kubernetes YAML file (pod or service kind).
     fn play_kube_libpod<'a>(
         &'a self,
-        params: Option<super::super::params::PlayKubeLibpod<'a>>,
+        params: Option<crate::v4::params::PlayKubeLibpod<'a>>,
         request: String,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(

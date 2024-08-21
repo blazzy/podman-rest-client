@@ -7,7 +7,7 @@ pub struct ServiceInfo {
     #[serde(rename = "Ports")]
     pub ports: Option<Vec<String>>,
     #[serde(rename = "Tasks")]
-    pub tasks: Option<Vec<super::super::models::Task>>,
+    pub tasks: Option<Vec<crate::v5::models::Task>>,
     #[serde(rename = "VIP")]
     pub vip: Option<String>,
 }
