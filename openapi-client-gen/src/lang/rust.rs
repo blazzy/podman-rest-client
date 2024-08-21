@@ -200,6 +200,9 @@ pub fn model_type(model: &Model, models: &BTreeMap<String, Model>) -> Result<Tok
                 Err(Error::MissingModelRef(ref_str.into()))?
             }
         }
+        ModelData::Tarball => {
+            quote! { bytes::Bytes }
+        }
     })
 }
 

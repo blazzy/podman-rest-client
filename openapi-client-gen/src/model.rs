@@ -24,12 +24,16 @@ pub enum ModelData {
     HashMap(Box<Model>, bool),
     ArbitraryValue,
     NoValue,
+    Tarball,
     Ref(String),
 }
 
 impl ModelData {
     pub fn is_no_value(&self) -> bool {
         matches!(&self, ModelData::NoValue)
+    }
+    pub fn is_stream(&self) -> bool {
+        matches!(&self, ModelData::Tarball)
     }
 }
 

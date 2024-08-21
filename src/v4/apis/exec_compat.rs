@@ -12,24 +12,26 @@ pub trait ExecCompat: HasConfig + Send + Sync {
         name: &'a str,
         control: super::super::models::ContainerExecBody,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
-        Box::pin(async move {
-            let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
-            let mut request_path = request_url.path().to_owned();
-            if request_path.ends_with('/') {
-                request_path.pop();
-            }
-            request_path.push_str("/containers/{name}/exec");
-            request_path = request_path.replace("{name}", name);
-            request_url.set_path(&request_path);
-            let mut req_builder = self.get_config().req_builder("POST")?;
-            let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
-            req_builder = req_builder.uri(hyper_uri);
-            let body = serde_json::to_string(&control)?;
-            req_builder = req_builder.header(hyper::header::CONTENT_TYPE, "application/json");
-            req_builder = req_builder.header(hyper::header::CONTENT_LENGTH, body.len());
-            let request = req_builder.body(body)?;
-            request::execute_request_unit(self.get_config(), request).await
-        })
+        Box::pin(request::execute_request_unit(
+            self.get_config(),
+            (|| {
+                let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
+                let mut request_path = request_url.path().to_owned();
+                if request_path.ends_with('/') {
+                    request_path.pop();
+                }
+                request_path.push_str("/containers/{name}/exec");
+                request_path = request_path.replace("{name}", name);
+                request_url.set_path(&request_path);
+                let mut req_builder = self.get_config().req_builder("POST")?;
+                let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
+                req_builder = req_builder.uri(hyper_uri);
+                let body = serde_json::to_string(&control)?;
+                req_builder = req_builder.header(hyper::header::CONTENT_TYPE, "application/json");
+                req_builder = req_builder.header(hyper::header::CONTENT_LENGTH, body.len());
+                Ok(req_builder.body(body)?)
+            })(),
+        ))
     }
     /// GET /exec/{id}/json
     /// Inspect an exec instance
@@ -38,21 +40,23 @@ pub trait ExecCompat: HasConfig + Send + Sync {
         &'a self,
         id: &'a str,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
-        Box::pin(async move {
-            let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
-            let mut request_path = request_url.path().to_owned();
-            if request_path.ends_with('/') {
-                request_path.pop();
-            }
-            request_path.push_str("/exec/{id}/json");
-            request_path = request_path.replace("{id}", id);
-            request_url.set_path(&request_path);
-            let mut req_builder = self.get_config().req_builder("GET")?;
-            let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
-            req_builder = req_builder.uri(hyper_uri);
-            let request = req_builder.body(String::new())?;
-            request::execute_request_unit(self.get_config(), request).await
-        })
+        Box::pin(request::execute_request_unit(
+            self.get_config(),
+            (|| {
+                let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
+                let mut request_path = request_url.path().to_owned();
+                if request_path.ends_with('/') {
+                    request_path.pop();
+                }
+                request_path.push_str("/exec/{id}/json");
+                request_path = request_path.replace("{id}", id);
+                request_url.set_path(&request_path);
+                let mut req_builder = self.get_config().req_builder("GET")?;
+                let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
+                req_builder = req_builder.uri(hyper_uri);
+                Ok(req_builder.body(String::new())?)
+            })(),
+        ))
     }
     /// POST /exec/{id}/resize
     /// Resize an exec instance
@@ -62,33 +66,35 @@ pub trait ExecCompat: HasConfig + Send + Sync {
         id: &'a str,
         params: Option<super::super::params::ExecResize>,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
-        Box::pin(async move {
-            let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
-            let mut request_path = request_url.path().to_owned();
-            if request_path.ends_with('/') {
-                request_path.pop();
-            }
-            request_path.push_str("/exec/{id}/resize");
-            request_path = request_path.replace("{id}", id);
-            request_url.set_path(&request_path);
-            let mut req_builder = self.get_config().req_builder("POST")?;
-            if let Some(params) = params {
-                let mut query_pairs = request_url.query_pairs_mut();
-                if let Some(h) = params.h {
-                    query_pairs.append_pair("h", &h.to_string());
+        Box::pin(request::execute_request_unit(
+            self.get_config(),
+            (|| {
+                let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
+                let mut request_path = request_url.path().to_owned();
+                if request_path.ends_with('/') {
+                    request_path.pop();
                 }
-                if let Some(w) = params.w {
-                    query_pairs.append_pair("w", &w.to_string());
+                request_path.push_str("/exec/{id}/resize");
+                request_path = request_path.replace("{id}", id);
+                request_url.set_path(&request_path);
+                let mut req_builder = self.get_config().req_builder("POST")?;
+                if let Some(params) = params {
+                    let mut query_pairs = request_url.query_pairs_mut();
+                    if let Some(h) = params.h {
+                        query_pairs.append_pair("h", &h.to_string());
+                    }
+                    if let Some(w) = params.w {
+                        query_pairs.append_pair("w", &w.to_string());
+                    }
+                    if let Some(running) = params.running {
+                        query_pairs.append_pair("running", &running.to_string());
+                    }
                 }
-                if let Some(running) = params.running {
-                    query_pairs.append_pair("running", &running.to_string());
-                }
-            }
-            let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
-            req_builder = req_builder.uri(hyper_uri);
-            let request = req_builder.body(String::new())?;
-            request::execute_request_unit(self.get_config(), request).await
-        })
+                let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
+                req_builder = req_builder.uri(hyper_uri);
+                Ok(req_builder.body(String::new())?)
+            })(),
+        ))
     }
     /// POST /exec/{id}/start
     /// Start an exec instance
@@ -98,23 +104,25 @@ pub trait ExecCompat: HasConfig + Send + Sync {
         id: &'a str,
         control: super::super::models::ExecStartBody,
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
-        Box::pin(async move {
-            let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
-            let mut request_path = request_url.path().to_owned();
-            if request_path.ends_with('/') {
-                request_path.pop();
-            }
-            request_path.push_str("/exec/{id}/start");
-            request_path = request_path.replace("{id}", id);
-            request_url.set_path(&request_path);
-            let mut req_builder = self.get_config().req_builder("POST")?;
-            let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
-            req_builder = req_builder.uri(hyper_uri);
-            let body = serde_json::to_string(&control)?;
-            req_builder = req_builder.header(hyper::header::CONTENT_TYPE, "application/json");
-            req_builder = req_builder.header(hyper::header::CONTENT_LENGTH, body.len());
-            let request = req_builder.body(body)?;
-            request::execute_request_unit(self.get_config(), request).await
-        })
+        Box::pin(request::execute_request_unit(
+            self.get_config(),
+            (|| {
+                let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
+                let mut request_path = request_url.path().to_owned();
+                if request_path.ends_with('/') {
+                    request_path.pop();
+                }
+                request_path.push_str("/exec/{id}/start");
+                request_path = request_path.replace("{id}", id);
+                request_url.set_path(&request_path);
+                let mut req_builder = self.get_config().req_builder("POST")?;
+                let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
+                req_builder = req_builder.uri(hyper_uri);
+                let body = serde_json::to_string(&control)?;
+                req_builder = req_builder.header(hyper::header::CONTENT_TYPE, "application/json");
+                req_builder = req_builder.header(hyper::header::CONTENT_LENGTH, body.len());
+                Ok(req_builder.body(body)?)
+            })(),
+        ))
     }
 }

@@ -5,7 +5,7 @@ use yaml_rust2::Yaml;
 use yaml_rust2::YamlLoader;
 
 use crate::error::Error;
-use crate::model::Model;
+use crate::model::{Model, ModelData};
 use crate::operation::{Method, Operation};
 use crate::parameter::BodyParameter;
 use crate::parse;
@@ -136,6 +136,23 @@ impl Spec {
                         }
                     }
 
+                    let mut produces = &Vec::<Yaml>::new();
+                    produces = spec["produces"].as_vec().unwrap_or(produces);
+                    if produces.is_empty() {
+                        log::warn!("No response format for operation {}", operation_id);
+                    }
+                    if produces.len() > 1 {
+                        log::warn!(
+                            "Multiple response formats for operation {}. Choosing the first one",
+                            operation_id
+                        );
+                    }
+
+                    let produces = produces
+                        .first()
+                        .map(|y| y.as_str().unwrap())
+                        .unwrap_or("text/plain");
+
                     if let Some(responses) = spec["responses"].as_hash() {
                         for (code, response) in responses {
                             let code: String = parse::string(code, "response code")?;
@@ -144,15 +161,22 @@ impl Spec {
                             } else {
                                 response
                             };
-                            operation.responses.insert(
-                                code.clone(),
-                                Model::new(
-                                    format!("{}_{}", operation_id, code),
+                            let name = format!("{}_{}", operation_id, code);
+                            let model = match produces {
+                                "application/x-tar" => Model {
+                                    name,
+                                    title: None,
+                                    description: None,
+                                    data: ModelData::Tarball,
+                                },
+                                "application/json" | _ => Model::new(
+                                    name,
                                     yaml,
                                     &format!("#paths/{}/responses/{}", operation_id, code),
                                     &mut self.models,
                                 )?,
-                            );
+                            };
+                            operation.responses.insert(code.clone(), model);
                         }
                     }
 

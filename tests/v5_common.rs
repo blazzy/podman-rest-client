@@ -55,6 +55,17 @@ pub async fn test_init() {
         .await;
 }
 
+pub async fn pull_alpine_image(client: &PodmanRestClient) {
+    client
+        .images()
+        .image_pull_libpod(Some(params::ImagePullLibpod {
+            reference: Some("docker.io/library/alpine:latest"),
+            ..Default::default()
+        }))
+        .await
+        .expect("Failed to pull image");
+}
+
 pub async fn pull_nginx_image(client: &PodmanRestClient) {
     client
         .images()
