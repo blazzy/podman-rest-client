@@ -5,7 +5,9 @@ use std::future::Future;
 use std::pin::Pin;
 pub trait ImagesCompat: HasConfig + Send + Sync {
     /// POST /build
+    ///
     /// Create image
+    ///
     /// Build an image from the given Dockerfile(s)
     fn image_build<'a>(
         &'a self,
@@ -115,7 +117,9 @@ pub trait ImagesCompat: HasConfig + Send + Sync {
         ))
     }
     /// DELETE /images/{name}
+    ///
     /// Remove Image
+    ///
     /// Delete an image from local storage
     fn image_delete<'a>(
         &'a self,
@@ -150,7 +154,9 @@ pub trait ImagesCompat: HasConfig + Send + Sync {
         ))
     }
     /// GET /images/{name}/get
+    ///
     /// Export an image
+    ///
     /// Export an image in tarball format
     fn image_get<'a>(
         &'a self,
@@ -175,7 +181,9 @@ pub trait ImagesCompat: HasConfig + Send + Sync {
         )
     }
     /// GET /images/{name}/history
+    ///
     /// History of an image
+    ///
     /// Return parent layers of an image.
     fn image_history<'a>(
         &'a self,
@@ -200,7 +208,9 @@ pub trait ImagesCompat: HasConfig + Send + Sync {
         ))
     }
     /// GET /images/{name}/json
+    ///
     /// Inspect an image
+    ///
     /// Return low-level information about an image.
     fn image_inspect<'a>(
         &'a self,
@@ -225,7 +235,9 @@ pub trait ImagesCompat: HasConfig + Send + Sync {
         ))
     }
     /// POST /images/{name}/push
+    ///
     /// Push Image
+    ///
     /// Push an image to a container registry
     fn image_push<'a>(
         &'a self,
@@ -269,7 +281,9 @@ pub trait ImagesCompat: HasConfig + Send + Sync {
         ))
     }
     /// POST /images/{name}/tag
+    ///
     /// Tag an image
+    ///
     /// Tag an image so that it becomes part of a repository.
     fn image_tag<'a>(
         &'a self,
@@ -304,7 +318,9 @@ pub trait ImagesCompat: HasConfig + Send + Sync {
         ))
     }
     /// POST /images/create
+    ///
     /// Create an image
+    ///
     /// Create an image by either pulling it from a registry or importing it.
     fn image_create<'a>(
         &'a self,
@@ -356,7 +372,9 @@ pub trait ImagesCompat: HasConfig + Send + Sync {
         ))
     }
     /// GET /images/get
+    ///
     /// Export several images
+    ///
     /// Get a tarball containing all images and metadata for several image repositories
     fn image_get_all<'a>(
         &'a self,
@@ -384,7 +402,9 @@ pub trait ImagesCompat: HasConfig + Send + Sync {
         ))
     }
     /// GET /images/json
+    ///
     /// List Images
+    ///
     /// Returns a list of images on the server. Note that it uses a different, smaller representation of an image than inspecting a single image.
     fn image_list<'a>(
         &'a self,
@@ -420,7 +440,9 @@ pub trait ImagesCompat: HasConfig + Send + Sync {
         ))
     }
     /// POST /images/load
+    ///
     /// Import image
+    ///
     /// Load a set of images and tags into a repository.
     fn image_load<'a>(
         &'a self,
@@ -454,7 +476,9 @@ pub trait ImagesCompat: HasConfig + Send + Sync {
         ))
     }
     /// POST /images/prune
+    ///
     /// Prune unused images
+    ///
     /// Remove images from local storage that are not being used by a container
     fn image_prune<'a>(
         &'a self,
@@ -484,7 +508,9 @@ pub trait ImagesCompat: HasConfig + Send + Sync {
         ))
     }
     /// GET /images/search
+    ///
     /// Search images
+    ///
     /// Search registries for an image
     fn image_search<'a>(
         &'a self,

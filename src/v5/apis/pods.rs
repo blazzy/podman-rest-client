@@ -5,6 +5,7 @@ use std::future::Future;
 use std::pin::Pin;
 pub trait Pods: HasConfig + Send + Sync {
     /// DELETE /libpod/pods/{name}
+    ///
     /// Remove pod
     fn pod_delete_libpod<'a>(
         &'a self,
@@ -37,7 +38,9 @@ pub trait Pods: HasConfig + Send + Sync {
         ))
     }
     /// GET /libpod/pods/{name}/exists
+    ///
     /// Pod exists
+    ///
     /// Check if a pod exists by name or ID
     fn pod_exists_libpod<'a>(
         &'a self,
@@ -62,6 +65,7 @@ pub trait Pods: HasConfig + Send + Sync {
         ))
     }
     /// GET /libpod/pods/{name}/json
+    ///
     /// Inspect pod
     fn pod_inspect_libpod<'a>(
         &'a self,
@@ -87,6 +91,7 @@ pub trait Pods: HasConfig + Send + Sync {
         ))
     }
     /// POST /libpod/pods/{name}/kill
+    ///
     /// Kill a pod
     fn pod_kill_libpod<'a>(
         &'a self,
@@ -119,7 +124,7 @@ pub trait Pods: HasConfig + Send + Sync {
         ))
     }
     /// POST /libpod/pods/{name}/pause
-    /// Pause a pod
+    ///
     /// Pause a pod
     fn pod_pause_libpod<'a>(
         &'a self,
@@ -145,6 +150,7 @@ pub trait Pods: HasConfig + Send + Sync {
         ))
     }
     /// POST /libpod/pods/{name}/restart
+    ///
     /// Restart a pod
     fn pod_restart_libpod<'a>(
         &'a self,
@@ -170,6 +176,7 @@ pub trait Pods: HasConfig + Send + Sync {
         ))
     }
     /// POST /libpod/pods/{name}/start
+    ///
     /// Start a pod
     fn pod_start_libpod<'a>(
         &'a self,
@@ -195,6 +202,7 @@ pub trait Pods: HasConfig + Send + Sync {
         ))
     }
     /// POST /libpod/pods/{name}/stop
+    ///
     /// Stop a pod
     fn pod_stop_libpod<'a>(
         &'a self,
@@ -227,7 +235,9 @@ pub trait Pods: HasConfig + Send + Sync {
         ))
     }
     /// GET /libpod/pods/{name}/top
+    ///
     /// List processes
+    ///
     /// List processes running inside a pod
     fn pod_top_libpod<'a>(
         &'a self,
@@ -266,6 +276,7 @@ pub trait Pods: HasConfig + Send + Sync {
         ))
     }
     /// POST /libpod/pods/{name}/unpause
+    ///
     /// Unpause a pod
     fn pod_unpause_libpod<'a>(
         &'a self,
@@ -291,6 +302,7 @@ pub trait Pods: HasConfig + Send + Sync {
         ))
     }
     /// POST /libpod/pods/create
+    ///
     /// Create a pod
     fn pod_create_libpod<'a>(
         &'a self,
@@ -318,6 +330,7 @@ pub trait Pods: HasConfig + Send + Sync {
         ))
     }
     /// GET /libpod/pods/json
+    ///
     /// List pods
     fn pod_list_libpod<'a>(
         &'a self,
@@ -349,6 +362,7 @@ pub trait Pods: HasConfig + Send + Sync {
         ))
     }
     /// POST /libpod/pods/prune
+    ///
     /// Prune unused pods
     fn pod_prune_libpod<'a>(
         &'a self,
@@ -372,7 +386,9 @@ pub trait Pods: HasConfig + Send + Sync {
         ))
     }
     /// GET /libpod/pods/stats
+    ///
     /// Statistics for one or more pods
+    ///
     /// Display a live stream of resource usage statistics for the containers in one or more pods
     fn pod_stats_all_libpod<'a>(
         &'a self,

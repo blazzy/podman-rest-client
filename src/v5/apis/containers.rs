@@ -5,7 +5,9 @@ use std::future::Future;
 use std::pin::Pin;
 pub trait Containers: HasConfig + Send + Sync {
     /// POST /libpod/commit
+    ///
     /// Commit
+    ///
     /// Create a new image from a container
     fn image_commit_libpod<'a>(
         &'a self,
@@ -62,7 +64,7 @@ pub trait Containers: HasConfig + Send + Sync {
         ))
     }
     /// DELETE /libpod/containers/{name}
-    /// Delete container
+    ///
     /// Delete container
     fn container_delete_libpod<'a>(
         &'a self,
@@ -112,7 +114,9 @@ pub trait Containers: HasConfig + Send + Sync {
         ))
     }
     /// GET /libpod/containers/{name}/archive
+    ///
     /// Copy files into a container
+    ///
     /// Copy a tar archive of files into a container
     fn put_container_archive_libpod<'a>(
         &'a self,
@@ -149,7 +153,9 @@ pub trait Containers: HasConfig + Send + Sync {
         ))
     }
     /// POST /libpod/containers/{name}/attach
+    ///
     /// Attach to a container
+    ///
     /// Attach to a container to read its output or send it input. You can attach
     /// to the same container multiple times and you can reattach to containers
     /// that have been detached.
@@ -282,7 +288,9 @@ pub trait Containers: HasConfig + Send + Sync {
         ))
     }
     /// GET /libpod/containers/{name}/changes
+    ///
     /// Report on changes to container's filesystem; adds, deletes or modifications.
+    ///
     /// Returns which files in a container's filesystem have been added, deleted, or modified. The Kind of modification can be one of:
     ///
     /// 0: Modified
@@ -321,6 +329,7 @@ pub trait Containers: HasConfig + Send + Sync {
         ))
     }
     /// POST /libpod/containers/{name}/checkpoint
+    ///
     /// Checkpoint a container
     fn container_checkpoint_libpod<'a>(
         &'a self,
@@ -379,7 +388,9 @@ pub trait Containers: HasConfig + Send + Sync {
         ))
     }
     /// GET /libpod/containers/{name}/exists
+    ///
     /// Check if container exists
+    ///
     /// Quick way to determine if a container exists by name or ID
     fn container_exists_libpod<'a>(
         &'a self,
@@ -404,7 +415,9 @@ pub trait Containers: HasConfig + Send + Sync {
         ))
     }
     /// GET /libpod/containers/{name}/export
+    ///
     /// Export a container
+    ///
     /// Export the contents of a container as a tarball.
     fn container_export_libpod<'a>(
         &'a self,
@@ -429,7 +442,9 @@ pub trait Containers: HasConfig + Send + Sync {
         )
     }
     /// GET /libpod/containers/{name}/healthcheck
+    ///
     /// Run a container's healthcheck
+    ///
     /// Execute the defined healthcheck and return information about the results
     fn container_healthcheck_libpod<'a>(
         &'a self,
@@ -456,7 +471,9 @@ pub trait Containers: HasConfig + Send + Sync {
         ))
     }
     /// POST /libpod/containers/{name}/init
+    ///
     /// Initialize a container
+    ///
     /// Performs all tasks necessary for initializing the container but does not start the container.
     fn container_init_libpod<'a>(
         &'a self,
@@ -481,7 +498,9 @@ pub trait Containers: HasConfig + Send + Sync {
         ))
     }
     /// GET /libpod/containers/{name}/json
+    ///
     /// Inspect container
+    ///
     /// Return low-level information about a container.
     fn container_inspect_libpod<'a>(
         &'a self,
@@ -517,7 +536,9 @@ pub trait Containers: HasConfig + Send + Sync {
         ))
     }
     /// POST /libpod/containers/{name}/kill
+    ///
     /// Kill container
+    ///
     /// send a signal to a container, defaults to killing the container
     fn container_kill_libpod<'a>(
         &'a self,
@@ -549,7 +570,9 @@ pub trait Containers: HasConfig + Send + Sync {
         ))
     }
     /// GET /libpod/containers/{name}/logs
+    ///
     /// Get container logs
+    ///
     /// Get stdout and stderr logs from a container.
     ///
     /// The stream format is the same as described in the attach endpoint.
@@ -601,7 +624,9 @@ pub trait Containers: HasConfig + Send + Sync {
         ))
     }
     /// POST /libpod/containers/{name}/mount
+    ///
     /// Mount a container
+    ///
     /// Mount a container to the filesystem
     fn container_mount_libpod<'a>(
         &'a self,
@@ -626,7 +651,9 @@ pub trait Containers: HasConfig + Send + Sync {
         ))
     }
     /// POST /libpod/containers/{name}/pause
+    ///
     /// Pause a container
+    ///
     /// Use the cgroups freezer to suspend all processes in a container.
     fn container_pause_libpod<'a>(
         &'a self,
@@ -651,7 +678,9 @@ pub trait Containers: HasConfig + Send + Sync {
         ))
     }
     /// POST /libpod/containers/{name}/rename
+    ///
     /// Rename an existing container
+    ///
     /// Change the name of an existing container.
     fn container_rename_libpod<'a>(
         &'a self,
@@ -681,7 +710,9 @@ pub trait Containers: HasConfig + Send + Sync {
         ))
     }
     /// POST /libpod/containers/{name}/resize
+    ///
     /// Resize a container's TTY
+    ///
     /// Resize the terminal attached to a container (for use with Attach).
     fn container_resize_libpod<'a>(
         &'a self,
@@ -716,6 +747,7 @@ pub trait Containers: HasConfig + Send + Sync {
         ))
     }
     /// POST /libpod/containers/{name}/restart
+    ///
     /// Restart a container
     fn container_restart_libpod<'a>(
         &'a self,
@@ -747,7 +779,9 @@ pub trait Containers: HasConfig + Send + Sync {
         ))
     }
     /// POST /libpod/containers/{name}/restore
+    ///
     /// Restore a container
+    ///
     /// Restore a container from a checkpoint.
     fn container_restore_libpod<'a>(
         &'a self,
@@ -809,6 +843,7 @@ pub trait Containers: HasConfig + Send + Sync {
         ))
     }
     /// POST /libpod/containers/{name}/start
+    ///
     /// Start a container
     fn container_start_libpod<'a>(
         &'a self,
@@ -840,7 +875,9 @@ pub trait Containers: HasConfig + Send + Sync {
         ))
     }
     /// GET /libpod/containers/{name}/stats
+    ///
     /// Get stats for a container
+    ///
     /// DEPRECATED. This endpoint will be removed with the next major release. Please use /libpod/containers/stats instead.
     fn container_stats_libpod<'a>(
         &'a self,
@@ -872,6 +909,7 @@ pub trait Containers: HasConfig + Send + Sync {
         ))
     }
     /// POST /libpod/containers/{name}/stop
+    ///
     /// Stop a container
     fn container_stop_libpod<'a>(
         &'a self,
@@ -906,7 +944,9 @@ pub trait Containers: HasConfig + Send + Sync {
         ))
     }
     /// GET /libpod/containers/{name}/top
+    ///
     /// List processes
+    ///
     /// List processes running inside a container
     fn container_top_libpod<'a>(
         &'a self,
@@ -948,7 +988,9 @@ pub trait Containers: HasConfig + Send + Sync {
         ))
     }
     /// POST /libpod/containers/{name}/unmount
+    ///
     /// Unmount a container
+    ///
     /// Unmount a container from the filesystem
     fn container_unmount_libpod<'a>(
         &'a self,
@@ -973,6 +1015,7 @@ pub trait Containers: HasConfig + Send + Sync {
         ))
     }
     /// POST /libpod/containers/{name}/unpause
+    ///
     /// Unpause Container
     fn container_unpause_libpod<'a>(
         &'a self,
@@ -997,7 +1040,9 @@ pub trait Containers: HasConfig + Send + Sync {
         ))
     }
     /// POST /libpod/containers/{name}/update
+    ///
     /// Update an existing containers cgroup configuration
+    ///
     /// Update an existing containers cgroup configuration.
     fn container_update_libpod<'a>(
         &'a self,
@@ -1036,7 +1081,9 @@ pub trait Containers: HasConfig + Send + Sync {
         ))
     }
     /// POST /libpod/containers/{name}/wait
+    ///
     /// Wait on a container
+    ///
     /// Wait on a container to meet a given condition
     fn container_wait_libpod<'a>(
         &'a self,
@@ -1073,6 +1120,7 @@ pub trait Containers: HasConfig + Send + Sync {
         ))
     }
     /// POST /libpod/containers/create
+    ///
     /// Create a container
     fn container_create_libpod<'a>(
         &'a self,
@@ -1105,7 +1153,9 @@ pub trait Containers: HasConfig + Send + Sync {
         ))
     }
     /// GET /libpod/containers/json
+    ///
     /// List containers
+    ///
     /// Returns a list of containers
     fn container_list_libpod<'a>(
         &'a self,
@@ -1155,7 +1205,9 @@ pub trait Containers: HasConfig + Send + Sync {
         ))
     }
     /// POST /libpod/containers/prune
+    ///
     /// Delete stopped containers
+    ///
     /// Remove containers not in use
     fn container_prune_libpod<'a>(
         &'a self,
@@ -1191,7 +1243,9 @@ pub trait Containers: HasConfig + Send + Sync {
         ))
     }
     /// GET /libpod/containers/showmounted
+    ///
     /// Show mounted containers
+    ///
     /// Lists all mounted containers mount points
     fn container_show_mounted_libpod<'a>(
         &'a self,
@@ -1220,7 +1274,9 @@ pub trait Containers: HasConfig + Send + Sync {
         ))
     }
     /// GET /libpod/containers/stats
+    ///
     /// Get stats for one or more containers
+    ///
     /// Return a live stream of resource usage statistics of one or more container. If no container is specified, the statistics of all containers are returned.
     fn containers_stats_all_libpod<'a>(
         &'a self,
@@ -1259,7 +1315,9 @@ pub trait Containers: HasConfig + Send + Sync {
         ))
     }
     /// GET /libpod/generate/{name}/systemd
+    ///
     /// Generate Systemd Units
+    ///
     /// Generate Systemd Units based on a pod or container.
     fn generate_systemd_libpod<'a>(
         &'a self,
@@ -1344,7 +1402,9 @@ pub trait Containers: HasConfig + Send + Sync {
         ))
     }
     /// GET /libpod/generate/kube
+    ///
     /// Generate a Kubernetes YAML file.
+    ///
     /// Generate Kubernetes YAML based on a pod or container.
     fn generate_kube_libpod<'a>(
         &'a self,
@@ -1389,7 +1449,9 @@ pub trait Containers: HasConfig + Send + Sync {
         ))
     }
     /// POST /libpod/kube/apply
+    ///
     /// Apply a podman workload or Kubernetes YAML file.
+    ///
     /// Deploy a podman container, pod, volume, or Kubernetes yaml to a Kubernetes cluster.
     fn kube_apply_libpod<'a>(
         &'a self,
@@ -1435,7 +1497,9 @@ pub trait Containers: HasConfig + Send + Sync {
         ))
     }
     /// DELETE /libpod/play/kube
+    ///
     /// Remove resources created from kube play
+    ///
     /// Tears down pods, secrets, and volumes defined in a YAML file
     fn play_kube_down_libpod<'a>(
         &'a self,
@@ -1466,7 +1530,9 @@ pub trait Containers: HasConfig + Send + Sync {
         ))
     }
     /// POST /libpod/play/kube
+    ///
     /// Play a Kubernetes YAML file.
+    ///
     /// Create and run pods based on a Kubernetes YAML file (pod or service kind).
     fn play_kube_libpod<'a>(
         &'a self,

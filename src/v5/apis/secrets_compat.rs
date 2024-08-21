@@ -5,7 +5,9 @@ use std::future::Future;
 use std::pin::Pin;
 pub trait SecretsCompat: HasConfig + Send + Sync {
     /// GET /secrets
+    ///
     /// List secrets
+    ///
     /// Returns a list of secrets
     fn secret_list<'a>(
         &'a self,
@@ -41,6 +43,7 @@ pub trait SecretsCompat: HasConfig + Send + Sync {
         ))
     }
     /// DELETE /secrets/{name}
+    ///
     /// Remove secret
     fn secret_delete<'a>(
         &'a self,
@@ -65,6 +68,7 @@ pub trait SecretsCompat: HasConfig + Send + Sync {
         ))
     }
     /// GET /secrets/{name}
+    ///
     /// Inspect secret
     fn secret_inspect<'a>(
         &'a self,
@@ -95,6 +99,7 @@ pub trait SecretsCompat: HasConfig + Send + Sync {
         ))
     }
     /// POST /secrets/create
+    ///
     /// Create a secret
     fn secret_create<'a>(
         &'a self,

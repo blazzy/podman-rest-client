@@ -5,7 +5,9 @@ use std::future::Future;
 use std::pin::Pin;
 pub trait Images: HasConfig + Send + Sync {
     /// POST /libpod/build
+    ///
     /// Create image
+    ///
     /// Build an image from the given Dockerfile(s)
     fn image_build_libpod<'a>(
         &'a self,
@@ -135,7 +137,7 @@ pub trait Images: HasConfig + Send + Sync {
         ))
     }
     /// DELETE /libpod/images/{name}
-    /// Remove an image from the local storage.
+    ///
     /// Remove an image from the local storage.
     fn image_delete_libpod<'a>(
         &'a self,
@@ -173,7 +175,9 @@ pub trait Images: HasConfig + Send + Sync {
         ))
     }
     /// GET /libpod/images/{name}/changes
+    ///
     /// Report on changes to images's filesystem; adds, deletes or modifications.
+    ///
     /// Returns which files in an image's filesystem have been added, deleted, or modified. The Kind of modification can be one of:
     ///
     /// 0: Modified
@@ -212,7 +216,9 @@ pub trait Images: HasConfig + Send + Sync {
         ))
     }
     /// GET /libpod/images/{name}/exists
+    ///
     /// Image exists
+    ///
     /// Check if image exists in local store
     fn image_exists_libpod<'a>(
         &'a self,
@@ -237,7 +243,7 @@ pub trait Images: HasConfig + Send + Sync {
         ))
     }
     /// GET /libpod/images/{name}/get
-    /// Export an image
+    ///
     /// Export an image
     fn image_get_libpod<'a>(
         &'a self,
@@ -272,7 +278,9 @@ pub trait Images: HasConfig + Send + Sync {
         )
     }
     /// GET /libpod/images/{name}/history
+    ///
     /// History of an image
+    ///
     /// Return parent layers of an image.
     fn image_history_libpod<'a>(
         &'a self,
@@ -298,7 +306,9 @@ pub trait Images: HasConfig + Send + Sync {
         ))
     }
     /// GET /libpod/images/{name}/json
+    ///
     /// Inspect an image
+    ///
     /// Obtain low-level information about an image
     fn image_inspect_libpod<'a>(
         &'a self,
@@ -324,7 +334,9 @@ pub trait Images: HasConfig + Send + Sync {
         ))
     }
     /// POST /libpod/images/{name}/push
+    ///
     /// Push Image
+    ///
     /// Push an image to a container registry
     fn image_push_libpod<'a>(
         &'a self,
@@ -371,7 +383,9 @@ pub trait Images: HasConfig + Send + Sync {
         ))
     }
     /// GET /libpod/images/{name}/resolve
+    ///
     /// Resolve an image (short) name
+    ///
     /// Resolve the passed image name to a list of fully-qualified images referring to container registries.
     fn image_resolve_libpod<'a>(
         &'a self,
@@ -396,7 +410,9 @@ pub trait Images: HasConfig + Send + Sync {
         ))
     }
     /// POST /libpod/images/{name}/tag
+    ///
     /// Tag an image
+    ///
     /// Tag an image so that it becomes part of a repository.
     fn image_tag_libpod<'a>(
         &'a self,
@@ -431,7 +447,9 @@ pub trait Images: HasConfig + Send + Sync {
         ))
     }
     /// GET /libpod/images/{name}/tree
+    ///
     /// Image tree
+    ///
     /// Retrieve the image tree for the provided image name or ID
     fn image_tree_libpod<'a>(
         &'a self,
@@ -464,7 +482,9 @@ pub trait Images: HasConfig + Send + Sync {
         ))
     }
     /// POST /libpod/images/{name}/untag
+    ///
     /// Untag an image
+    ///
     /// Untag an image. If not repo and tag are specified, all tags are removed from the image.
     fn image_untag_libpod<'a>(
         &'a self,
@@ -499,7 +519,9 @@ pub trait Images: HasConfig + Send + Sync {
         ))
     }
     /// GET /libpod/images/export
+    ///
     /// Export multiple images
+    ///
     /// Export multiple images into a single object. Only `docker-archive` is currently supported.
     fn image_export_libpod<'a>(
         &'a self,
@@ -545,7 +567,9 @@ pub trait Images: HasConfig + Send + Sync {
         )
     }
     /// POST /libpod/images/import
+    ///
     /// Import image
+    ///
     /// Import a previously exported tarball as an image.
     fn image_import_libpod<'a>(
         &'a self,
@@ -595,7 +619,9 @@ pub trait Images: HasConfig + Send + Sync {
         ))
     }
     /// GET /libpod/images/json
+    ///
     /// List Images
+    ///
     /// Returns a list of images on the server
     fn image_list_libpod<'a>(
         &'a self,
@@ -634,7 +660,9 @@ pub trait Images: HasConfig + Send + Sync {
         ))
     }
     /// POST /libpod/images/load
+    ///
     /// Load image
+    ///
     /// Load an image (oci-archive or docker-archive) stream.
     fn image_load_libpod<'a>(
         &'a self,
@@ -662,7 +690,9 @@ pub trait Images: HasConfig + Send + Sync {
         ))
     }
     /// POST /libpod/images/prune
+    ///
     /// Prune unused images
+    ///
     /// Remove images that are not being used by a container
     fn image_prune_libpod<'a>(
         &'a self,
@@ -699,7 +729,9 @@ pub trait Images: HasConfig + Send + Sync {
         ))
     }
     /// POST /libpod/images/pull
+    ///
     /// Pull images
+    ///
     /// Pull one or more images from a container registry.
     fn image_pull_libpod<'a>(
         &'a self,
@@ -762,7 +794,7 @@ pub trait Images: HasConfig + Send + Sync {
         ))
     }
     /// DELETE /libpod/images/remove
-    /// Remove one or more images from the storage.
+    ///
     /// Remove one or more images from the storage.
     fn image_delete_all_libpod<'a>(
         &'a self,
@@ -812,7 +844,7 @@ pub trait Images: HasConfig + Send + Sync {
         ))
     }
     /// POST /libpod/images/scp/{name}
-    /// Copy an image from one host to another
+    ///
     /// Copy an image from one host to another
     fn image_scp_libpod<'a>(
         &'a self,
@@ -848,7 +880,9 @@ pub trait Images: HasConfig + Send + Sync {
         ))
     }
     /// GET /libpod/images/search
+    ///
     /// Search images
+    ///
     /// Search registries for images
     fn image_search_libpod<'a>(
         &'a self,

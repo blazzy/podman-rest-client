@@ -5,7 +5,9 @@ use std::future::Future;
 use std::pin::Pin;
 pub trait ExecCompat: HasConfig + Send + Sync {
     /// POST /containers/{name}/exec
+    ///
     /// Create an exec instance
+    ///
     /// Create an exec session to run a command inside a running container. Exec sessions will be automatically removed 5 minutes after they exit.
     fn container_exec<'a>(
         &'a self,
@@ -34,7 +36,9 @@ pub trait ExecCompat: HasConfig + Send + Sync {
         ))
     }
     /// GET /exec/{id}/json
+    ///
     /// Inspect an exec instance
+    ///
     /// Return low-level information about an exec instance.
     fn exec_inspect<'a>(
         &'a self,
@@ -59,7 +63,9 @@ pub trait ExecCompat: HasConfig + Send + Sync {
         ))
     }
     /// POST /exec/{id}/resize
+    ///
     /// Resize an exec instance
+    ///
     /// Resize the TTY session used by an exec instance. This endpoint only works if tty was specified as part of creating and starting the exec instance.
     fn exec_resize<'a>(
         &'a self,
@@ -97,7 +103,9 @@ pub trait ExecCompat: HasConfig + Send + Sync {
         ))
     }
     /// POST /exec/{id}/start
+    ///
     /// Start an exec instance
+    ///
     /// Starts a previously set up exec instance. If detach is true, this endpoint returns immediately after starting the command. Otherwise, it sets up an interactive session with the command.
     fn exec_start<'a>(
         &'a self,

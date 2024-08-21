@@ -5,6 +5,7 @@ use std::future::Future;
 use std::pin::Pin;
 pub trait Volumes: HasConfig + Send + Sync {
     /// DELETE /libpod/volumes/{name}
+    ///
     /// Remove volume
     fn volume_delete_libpod<'a>(
         &'a self,
@@ -36,7 +37,9 @@ pub trait Volumes: HasConfig + Send + Sync {
         ))
     }
     /// GET /libpod/volumes/{name}/exists
+    ///
     /// Volume exists
+    ///
     /// Check if a volume exists
     fn volume_exists_libpod<'a>(
         &'a self,
@@ -61,6 +64,7 @@ pub trait Volumes: HasConfig + Send + Sync {
         ))
     }
     /// GET /libpod/volumes/{name}/json
+    ///
     /// Inspect volume
     fn volume_inspect_libpod<'a>(
         &'a self,
@@ -85,6 +89,7 @@ pub trait Volumes: HasConfig + Send + Sync {
         ))
     }
     /// POST /libpod/volumes/create
+    ///
     /// Create a volume
     fn volume_create_libpod<'a>(
         &'a self,
@@ -111,7 +116,9 @@ pub trait Volumes: HasConfig + Send + Sync {
         ))
     }
     /// GET /libpod/volumes/json
+    ///
     /// List volumes
+    ///
     /// Returns a list of volumes
     fn volume_list_libpod<'a>(
         &'a self,
@@ -141,6 +148,7 @@ pub trait Volumes: HasConfig + Send + Sync {
         ))
     }
     /// POST /libpod/volumes/prune
+    ///
     /// Prune volumes
     fn volume_prune_libpod<'a>(
         &'a self,

@@ -5,7 +5,9 @@ use std::future::Future;
 use std::pin::Pin;
 pub trait Manifests: HasConfig + Send + Sync {
     /// DELETE /libpod/manifests/{name}
+    ///
     /// Delete manifest list
+    ///
     /// Delete named manifest list
     ///
     /// As of v4.0.0
@@ -38,7 +40,9 @@ pub trait Manifests: HasConfig + Send + Sync {
         ))
     }
     /// POST /libpod/manifests/{name}
+    ///
     /// Create
+    ///
     /// Create a manifest list
     fn manifest_create_libpod<'a>(
         &'a self,
@@ -79,7 +83,9 @@ pub trait Manifests: HasConfig + Send + Sync {
         ))
     }
     /// GET /libpod/manifests/{name}
+    ///
     /// Modify manifest list
+    ///
     /// Add/Remove an image(s) to a manifest list
     ///
     /// Note: operations are not atomic when multiple Images are provided.
@@ -123,7 +129,9 @@ pub trait Manifests: HasConfig + Send + Sync {
         ))
     }
     /// POST /libpod/manifests/{name}/add
+    ///
     /// Add image
+    ///
     /// Add an image to a manifest list
     ///
     /// Deprecated: As of 4.0.0 use ManifestModifyLibpod instead
@@ -155,7 +163,9 @@ pub trait Manifests: HasConfig + Send + Sync {
         ))
     }
     /// GET /libpod/manifests/{name}/exists
+    ///
     /// Exists
+    ///
     /// Check if manifest list exists
     ///
     /// Note: There is no contract that the manifest list will exist for a follow-on operation
@@ -182,7 +192,9 @@ pub trait Manifests: HasConfig + Send + Sync {
         ))
     }
     /// GET /libpod/manifests/{name}/json
+    ///
     /// Inspect
+    ///
     /// Display attributes of given manifest list
     fn manifest_inspect_libpod<'a>(
         &'a self,
@@ -216,7 +228,9 @@ pub trait Manifests: HasConfig + Send + Sync {
         ))
     }
     /// POST /libpod/manifests/{name}/push
+    ///
     /// Push manifest to registry
+    ///
     /// Push a manifest list or image index to a registry
     ///
     /// Deprecated: As of 4.0.0 use ManifestPushLibpod instead
@@ -252,7 +266,9 @@ pub trait Manifests: HasConfig + Send + Sync {
         ))
     }
     /// POST /libpod/manifests/{name}/registry/{destination}
+    ///
     /// Push manifest list to registry
+    ///
     /// Push a manifest list or image index to the named registry
     ///
     /// As of v4.0.0

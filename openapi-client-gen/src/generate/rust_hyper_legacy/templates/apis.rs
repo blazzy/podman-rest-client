@@ -54,16 +54,29 @@ pub fn operations(
                 quote! { Pin<Box<dyn Future<Output=Result<#response, Error>> + Send + 'a>> }
             };
 
+            // Add some leading white space so the generated docs look nicer
+            let insert_empty_line = |mut doc: Vec<_>| {
+                doc.insert(0, quote! { #[doc = ""] });
+                doc
+            };
+
             let summary = operation
                 .summary
                 .as_ref()
-                .map(|s| to_doc_comment(s))
+                .map(|s| insert_empty_line(to_doc_comment(s)))
                 .unwrap_or_default();
-            let description = operation
+
+            // Sometimes the description is identical to the summary. No point in having both
+            let description = if operation.description != operation.summary {
+                operation
                 .description
                 .as_ref()
-                .map(|s| to_doc_comment(s))
-                .unwrap_or_default();
+                .map(|s| insert_empty_line(to_doc_comment(s)))
+                .unwrap_or_default()
+            } else {
+                Vec::new()
+            };
+
             let title = format!(" {} {}", operation.method, operation.path);
             let path_params = operation
                 .path_params

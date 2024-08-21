@@ -5,6 +5,7 @@ use std::future::Future;
 use std::pin::Pin;
 pub trait SystemCompat: HasConfig + Send + Sync {
     /// POST /auth
+    ///
     /// Check auth configuration
     fn system_auth<'a>(
         &'a self,
@@ -31,7 +32,9 @@ pub trait SystemCompat: HasConfig + Send + Sync {
         ))
     }
     /// GET /events
+    ///
     /// Get events
+    ///
     /// Returns events filtered on query parameters
     fn system_events<'a>(
         &'a self,
@@ -67,7 +70,9 @@ pub trait SystemCompat: HasConfig + Send + Sync {
         ))
     }
     /// GET /info
+    ///
     /// Get info
+    ///
     /// Returns information on the system and libpod configuration
     fn system_info<'a>(&'a self) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
@@ -88,7 +93,9 @@ pub trait SystemCompat: HasConfig + Send + Sync {
         ))
     }
     /// GET /libpod/_ping
+    ///
     /// Ping service
+    ///
     /// Return protocol information in response headers.
     /// `HEAD /libpod/_ping` is also supported.
     /// `/_ping` is available for compatibility with other engines.
@@ -114,7 +121,9 @@ pub trait SystemCompat: HasConfig + Send + Sync {
         ))
     }
     /// GET /system/df
+    ///
     /// Show disk usage
+    ///
     /// Return information about disk usage for containers, images, and volumes
     fn system_data_usage<'a>(
         &'a self,
@@ -137,6 +146,7 @@ pub trait SystemCompat: HasConfig + Send + Sync {
         ))
     }
     /// GET /version
+    ///
     /// Component Version information
     fn system_version<'a>(
         &'a self,

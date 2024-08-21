@@ -5,7 +5,9 @@ use std::future::Future;
 use std::pin::Pin;
 pub trait VolumesCompat: HasConfig + Send + Sync {
     /// GET /volumes
+    ///
     /// List volumes
+    ///
     /// Returns a list of volume
     fn volume_list<'a>(
         &'a self,
@@ -36,6 +38,7 @@ pub trait VolumesCompat: HasConfig + Send + Sync {
         ))
     }
     /// DELETE /volumes/{name}
+    ///
     /// Remove volume
     fn volume_delete<'a>(
         &'a self,
@@ -67,6 +70,7 @@ pub trait VolumesCompat: HasConfig + Send + Sync {
         ))
     }
     /// GET /volumes/{name}
+    ///
     /// Inspect volume
     fn volume_inspect<'a>(
         &'a self,
@@ -91,6 +95,7 @@ pub trait VolumesCompat: HasConfig + Send + Sync {
         ))
     }
     /// POST /volumes/create
+    ///
     /// Create a volume
     fn volume_create<'a>(
         &'a self,
@@ -117,6 +122,7 @@ pub trait VolumesCompat: HasConfig + Send + Sync {
         ))
     }
     /// POST /volumes/prune
+    ///
     /// Prune volumes
     fn volume_prune<'a>(
         &'a self,

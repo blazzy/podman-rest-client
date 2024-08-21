@@ -5,6 +5,7 @@ use std::future::Future;
 use std::pin::Pin;
 pub trait Secrets: HasConfig + Send + Sync {
     /// DELETE /libpod/secrets/{name}
+    ///
     /// Remove secret
     fn secret_delete_libpod<'a>(
         &'a self,
@@ -36,6 +37,7 @@ pub trait Secrets: HasConfig + Send + Sync {
         ))
     }
     /// GET /libpod/secrets/{name}/exists
+    ///
     /// Secret exists
     fn secret_exists_libpod<'a>(
         &'a self,
@@ -60,6 +62,7 @@ pub trait Secrets: HasConfig + Send + Sync {
         ))
     }
     /// GET /libpod/secrets/{name}/json
+    ///
     /// Inspect secret
     fn secret_inspect_libpod<'a>(
         &'a self,
@@ -92,6 +95,7 @@ pub trait Secrets: HasConfig + Send + Sync {
         ))
     }
     /// POST /libpod/secrets/create
+    ///
     /// Create a secret
     fn secret_create_libpod<'a>(
         &'a self,
@@ -136,7 +140,9 @@ pub trait Secrets: HasConfig + Send + Sync {
         ))
     }
     /// GET /libpod/secrets/json
+    ///
     /// List secrets
+    ///
     /// Returns a list of secrets
     fn secret_list_libpod<'a>(
         &'a self,

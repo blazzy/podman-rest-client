@@ -5,7 +5,9 @@ use std::future::Future;
 use std::pin::Pin;
 pub trait Networks: HasConfig + Send + Sync {
     /// DELETE /libpod/networks/{name}
+    ///
     /// Remove a network
+    ///
     /// Remove a configured network
     fn network_delete_libpod<'a>(
         &'a self,
@@ -37,7 +39,9 @@ pub trait Networks: HasConfig + Send + Sync {
         ))
     }
     /// POST /libpod/networks/{name}/connect
+    ///
     /// Connect container to network
+    ///
     /// Connect a container to a network.
     fn network_connect_libpod<'a>(
         &'a self,
@@ -66,7 +70,9 @@ pub trait Networks: HasConfig + Send + Sync {
         ))
     }
     /// POST /libpod/networks/{name}/disconnect
+    ///
     /// Disconnect container from network
+    ///
     /// Disconnect a container from a network.
     fn network_disconnect_libpod<'a>(
         &'a self,
@@ -95,7 +101,9 @@ pub trait Networks: HasConfig + Send + Sync {
         ))
     }
     /// GET /libpod/networks/{name}/exists
+    ///
     /// Network exists
+    ///
     /// Check if network exists
     fn network_exists_libpod<'a>(
         &'a self,
@@ -120,7 +128,9 @@ pub trait Networks: HasConfig + Send + Sync {
         ))
     }
     /// GET /libpod/networks/{name}/json
+    ///
     /// Inspect a network
+    ///
     /// Display configuration for a network.
     fn network_inspect_libpod<'a>(
         &'a self,
@@ -145,7 +155,7 @@ pub trait Networks: HasConfig + Send + Sync {
         ))
     }
     /// POST /libpod/networks/{name}/update
-    /// Update existing podman network
+    ///
     /// Update existing podman network
     fn network_update_libpod<'a>(
         &'a self,
@@ -174,7 +184,9 @@ pub trait Networks: HasConfig + Send + Sync {
         ))
     }
     /// POST /libpod/networks/create
+    ///
     /// Create network
+    ///
     /// Create a new network configuration
     fn network_create_libpod<'a>(
         &'a self,
@@ -201,7 +213,9 @@ pub trait Networks: HasConfig + Send + Sync {
         ))
     }
     /// GET /libpod/networks/json
+    ///
     /// List networks
+    ///
     /// Display summary of network configurations.
     ///   - In a 200 response, all of the fields named Bytes are returned as a Base64 encoded string.
     fn network_list_libpod<'a>(
@@ -232,7 +246,9 @@ pub trait Networks: HasConfig + Send + Sync {
         ))
     }
     /// POST /libpod/networks/prune
+    ///
     /// Delete unused networks
+    ///
     /// Remove networks that do not have containers
     fn network_prune_libpod<'a>(
         &'a self,

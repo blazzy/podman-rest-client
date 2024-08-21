@@ -5,7 +5,9 @@ use std::future::Future;
 use std::pin::Pin;
 pub trait ContainersCompat: HasConfig + Send + Sync {
     /// POST /commit
+    ///
     /// New Image
+    ///
     /// Create a new image from a container
     fn image_commit<'a>(
         &'a self,
@@ -56,6 +58,7 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
         ))
     }
     /// DELETE /containers/{name}
+    ///
     /// Remove a container
     fn container_delete<'a>(
         &'a self,
@@ -93,7 +96,9 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
         ))
     }
     /// GET /containers/{name}/archive
+    ///
     /// Get files from a container
+    ///
     /// Get a tar archive of files from a container
     fn container_archive<'a>(
         &'a self,
@@ -123,7 +128,9 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
         ))
     }
     /// GET /containers/{name}/archive
+    ///
     /// Put files into a container
+    ///
     /// Put a tar archive of files into a container
     fn put_container_archive<'a>(
         &'a self,
@@ -163,7 +170,9 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
         ))
     }
     /// POST /containers/{name}/attach
+    ///
     /// Attach to a container
+    ///
     /// Attach to a container to read its output or send it input. You can attach
     /// to the same container multiple times and you can reattach to containers
     /// that have been detached.
@@ -214,7 +223,9 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
         ))
     }
     /// GET /containers/{name}/export
+    ///
     /// Export a container
+    ///
     /// Export the contents of a container as a tarball.
     fn container_export<'a>(
         &'a self,
@@ -239,7 +250,9 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
         ))
     }
     /// GET /containers/{name}/json
+    ///
     /// Inspect container
+    ///
     /// Return low-level information about a container.
     fn container_inspect<'a>(
         &'a self,
@@ -272,7 +285,9 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
         ))
     }
     /// POST /containers/{name}/kill
+    ///
     /// Kill container
+    ///
     /// Signal to send to the container as an integer or string (e.g. SIGINT)
     fn container_kill<'a>(
         &'a self,
@@ -307,7 +322,9 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
         ))
     }
     /// GET /containers/{name}/logs
+    ///
     /// Get container logs
+    ///
     /// Get stdout and stderr logs from a container.
     fn container_logs<'a>(
         &'a self,
@@ -357,7 +374,9 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
         ))
     }
     /// POST /containers/{name}/pause
+    ///
     /// Pause container
+    ///
     /// Use the cgroups freezer to suspend all processes in a container.
     fn container_pause<'a>(
         &'a self,
@@ -382,7 +401,9 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
         ))
     }
     /// POST /containers/{name}/rename
+    ///
     /// Rename an existing container
+    ///
     /// Change the name of an existing container.
     fn container_rename<'a>(
         &'a self,
@@ -412,7 +433,9 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
         ))
     }
     /// POST /containers/{name}/resize
+    ///
     /// Resize a container's TTY
+    ///
     /// Resize the terminal attached to a container (for use with Attach).
     fn container_resize<'a>(
         &'a self,
@@ -450,6 +473,7 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
         ))
     }
     /// POST /containers/{name}/restart
+    ///
     /// Restart container
     fn container_restart<'a>(
         &'a self,
@@ -481,6 +505,7 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
         ))
     }
     /// POST /containers/{name}/start
+    ///
     /// Start a container
     fn container_start<'a>(
         &'a self,
@@ -512,7 +537,9 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
         ))
     }
     /// GET /containers/{name}/stats
+    ///
     /// Get stats for a container
+    ///
     /// This returns a live stream of a container’s resource usage statistics.
     fn container_stats<'a>(
         &'a self,
@@ -547,7 +574,7 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
         ))
     }
     /// POST /containers/{name}/stop
-    /// Stop a container
+    ///
     /// Stop a container
     fn container_stop<'a>(
         &'a self,
@@ -579,6 +606,7 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
         ))
     }
     /// GET /containers/{name}/top
+    ///
     /// List processes running inside a container
     fn container_top<'a>(
         &'a self,
@@ -612,7 +640,9 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
         ))
     }
     /// POST /containers/{name}/unpause
+    ///
     /// Unpause container
+    ///
     /// Resume a paused container
     fn container_unpause<'a>(
         &'a self,
@@ -637,7 +667,9 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
         ))
     }
     /// POST /containers/{name}/update
+    ///
     /// Update configuration of an existing container
+    ///
     /// Change configuration settings for an existing container without requiring recreation.
     fn container_update<'a>(
         &'a self,
@@ -666,7 +698,9 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
         ))
     }
     /// POST /containers/{name}/wait
+    ///
     /// Wait on a container
+    ///
     /// Block until a container stops or given condition is met.
     fn container_wait<'a>(
         &'a self,
@@ -707,6 +741,7 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
         ))
     }
     /// POST /containers/create
+    ///
     /// Create a container
     fn container_create<'a>(
         &'a self,
@@ -746,7 +781,9 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
         ))
     }
     /// GET /containers/json
+    ///
     /// List containers
+    ///
     /// Returns a list of containers
     fn container_list<'a>(
         &'a self,
@@ -789,7 +826,9 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
         ))
     }
     /// POST /containers/prune
+    ///
     /// Delete stopped containers
+    ///
     /// Remove containers not in use
     fn container_prune<'a>(
         &'a self,
@@ -825,7 +864,9 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
         ))
     }
     /// GET /libpod/containers/{name}/archive
+    ///
     /// Copy files from a container
+    ///
     /// Copy a tar archive of files from a container
     fn container_archive_libpod<'a>(
         &'a self,

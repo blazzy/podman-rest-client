@@ -140,7 +140,7 @@ pub fn ident(str: &str) -> Ident {
 }
 
 pub fn to_doc_comment(text: &str) -> Vec<TokenStream> {
-    // We find code blocks and add text annotations if they have no annotations lest the be parsed
+    // We find code blocks and add text annotations if they have no annotations lest they be parsed
     // as rust doc strings
     //
     // m - multiline match

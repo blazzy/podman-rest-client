@@ -5,7 +5,9 @@ use std::future::Future;
 use std::pin::Pin;
 pub trait NetworksCompat: HasConfig + Send + Sync {
     /// GET /networks
+    ///
     /// List networks
+    ///
     /// Display summary of network configurations
     fn network_list<'a>(
         &'a self,
@@ -39,7 +41,7 @@ pub trait NetworksCompat: HasConfig + Send + Sync {
         ))
     }
     /// DELETE /networks/{name}
-    /// Remove a network
+    ///
     /// Remove a network
     fn network_delete<'a>(
         &'a self,
@@ -64,7 +66,9 @@ pub trait NetworksCompat: HasConfig + Send + Sync {
         ))
     }
     /// GET /networks/{name}
+    ///
     /// Inspect a network
+    ///
     /// Display low level configuration network
     fn network_inspect<'a>(
         &'a self,
@@ -100,7 +104,9 @@ pub trait NetworksCompat: HasConfig + Send + Sync {
         ))
     }
     /// POST /networks/{name}/connect
+    ///
     /// Connect container to network
+    ///
     /// Connect a container to a network
     fn network_connect<'a>(
         &'a self,
@@ -129,7 +135,9 @@ pub trait NetworksCompat: HasConfig + Send + Sync {
         ))
     }
     /// POST /networks/{name}/disconnect
+    ///
     /// Disconnect container from network
+    ///
     /// Disconnect a container from a network
     fn network_disconnect<'a>(
         &'a self,
@@ -158,7 +166,9 @@ pub trait NetworksCompat: HasConfig + Send + Sync {
         ))
     }
     /// POST /networks/create
+    ///
     /// Create network
+    ///
     /// Create a network configuration
     fn network_create<'a>(
         &'a self,
@@ -186,7 +196,9 @@ pub trait NetworksCompat: HasConfig + Send + Sync {
         ))
     }
     /// POST /networks/prune
+    ///
     /// Delete unused networks
+    ///
     /// Remove networks that do not have containers
     fn network_prune<'a>(
         &'a self,

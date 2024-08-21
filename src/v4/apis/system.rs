@@ -5,7 +5,9 @@ use std::future::Future;
 use std::pin::Pin;
 pub trait System: HasConfig + Send + Sync {
     /// GET /libpod/events
+    ///
     /// Get events
+    ///
     /// Returns events filtered on query parameters
     fn system_events_libpod<'a>(
         &'a self,
@@ -44,7 +46,9 @@ pub trait System: HasConfig + Send + Sync {
         ))
     }
     /// GET /libpod/info
+    ///
     /// Get info
+    ///
     /// Returns information on the system and libpod configuration
     fn system_info_libpod<'a>(
         &'a self,
@@ -67,7 +71,9 @@ pub trait System: HasConfig + Send + Sync {
         ))
     }
     /// GET /libpod/system/df
+    ///
     /// Show disk usage
+    ///
     /// Return information about disk usage for containers, images, and volumes
     fn system_data_usage_libpod<'a>(
         &'a self,
@@ -90,6 +96,7 @@ pub trait System: HasConfig + Send + Sync {
         ))
     }
     /// POST /libpod/system/prune
+    ///
     /// Prune unused data
     fn system_prune_libpod<'a>(
         &'a self,
@@ -112,6 +119,7 @@ pub trait System: HasConfig + Send + Sync {
         ))
     }
     /// GET /libpod/version
+    ///
     /// Component Version information
     fn system_version_libpod<'a>(
         &'a self,
