@@ -276,7 +276,7 @@ async fn it_exports_images() {
         compress: None,
         format: Some("docker-archive"),
         oci_accept_uncompressed_layers: None,
-        references: Some(["nginx"].to_vec()),
+        references: Some(["nginx", "alpine"].to_vec()),
     };
     let stream = client.images().image_export_libpod(Some(params));
 
