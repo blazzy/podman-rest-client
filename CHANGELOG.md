@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+* `Send` constraint added to byte stream responses ([#24](https://github.com/blazzy/podman-rest-client/pull/24))
+
 ## v0.12.2 - 2024-08-21
 
 * Improve formatting in generated docs with extra whitespace and removal redundant lines

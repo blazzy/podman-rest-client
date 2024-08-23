@@ -49,7 +49,7 @@ pub fn operations(
                 .unwrap_or_else(|| Ok(quote! { () }))?;
 
             let return_type = if Some(true) == success.map(|m| m.data.is_stream()) {
-                quote! { Pin<Box<dyn futures::stream::Stream<Item = Result<bytes::Bytes, Error>> + 'a>> }
+                quote! { Pin<Box<dyn futures::stream::Stream<Item = Result<bytes::Bytes, Error>> + Send + 'a>> }
             } else {
                 quote! { Pin<Box<dyn Future<Output=Result<#response, Error>> + Send + 'a>> }
             };

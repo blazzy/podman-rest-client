@@ -49,7 +49,7 @@ pub async fn execute_request_bytes(
 pub fn execute_request_stream<'a>(
     config: &'a dyn ClientConfig,
     request: Result<http::request::Request<String>, Error>,
-) -> Pin<Box<dyn Stream<Item = Result<bytes::Bytes, Error>> + 'a>> {
+) -> Pin<Box<dyn Stream<Item = Result<bytes::Bytes, Error>> + 'a + Send>> {
     let result = async move {
         let response = config.request(request?).await?;
         let status = response.status();
@@ -73,6 +73,6 @@ pub fn execute_request_stream<'a>(
     Box::pin(stream::once(result).flat_map(|result| match result {
         Ok(stream) => stream,
         Err(err) => Box::pin(stream::once(async { Err(err) }))
-            as Pin<Box<dyn Stream<Item = Result<_, Error>>>>,
+            as Pin<Box<dyn Stream<Item = Result<_, Error>> + Send>>,
     }))
 }

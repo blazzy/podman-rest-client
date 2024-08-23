@@ -51,7 +51,7 @@ async fn it_can_create_a_volume() {
 }
 
 #[tokio::test]
-async fn it_can_run_in_a_thread() {
+async fn it_can_run_call_async_methods_in_threads() {
     common::test_init().await;
 
     let config = Config::guess().await.unwrap();
@@ -60,6 +60,34 @@ async fn it_can_run_in_a_thread() {
     let handle = tokio::spawn(async move {
         let result = client.images().image_list_libpod(None).await;
         assert!(result.is_ok());
+    });
+
+    assert!(handle.await.is_ok());
+}
+
+#[tokio::test]
+async fn it_can_call_stream_functions_in_a_thread() {
+    common::test_init().await;
+
+    let config = Config::guess().await.unwrap();
+    let client = PodmanRestClient::new(config).await.unwrap();
+
+    common::pull_nginx_image(&client).await;
+    common::create_nginx_container(&client, "podman_rest_client_stream_thread_test").await;
+
+    let config = Config::guess().await.unwrap();
+    let client = PodmanRestClient::new(config).await.unwrap();
+
+    let handle = tokio::spawn(async move {
+        let stream = client
+            .containers()
+            .container_export_libpod("podman_rest_client_stream_thread_test");
+        let bytes: Vec<u8> = stream.map_ok(|b| b.to_vec()).try_concat().await.unwrap();
+        let c = std::io::Cursor::new(bytes);
+
+        assert!(tar::Archive::new(c).entries().unwrap().count() > 0);
+
+        common::delete_container(&client, "podman_rest_client_stream_thread_test").await;
     });
 
     assert!(handle.await.is_ok());
