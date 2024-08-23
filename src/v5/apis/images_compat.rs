@@ -167,7 +167,7 @@ pub trait ImagesCompat: HasConfig + Send + Sync {
     fn image_get<'a>(
         &'a self,
         name: &'a str,
-    ) -> Pin<Box<dyn futures::stream::Stream<Item = Result<bytes::Bytes, Error>> + 'a>> {
+    ) -> Pin<Box<dyn futures::stream::Stream<Item = Result<bytes::Bytes, Error>> + Send + 'a>> {
         request::execute_request_stream(
             self.get_config(),
             (|| {

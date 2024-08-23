@@ -249,7 +249,7 @@ pub trait Images: HasConfig + Send + Sync {
         &'a self,
         name: &'a str,
         params: Option<crate::v5::params::ImageGetLibpod<'a>>,
-    ) -> Pin<Box<dyn futures::stream::Stream<Item = Result<bytes::Bytes, Error>> + 'a>> {
+    ) -> Pin<Box<dyn futures::stream::Stream<Item = Result<bytes::Bytes, Error>> + Send + 'a>> {
         request::execute_request_stream(
             self.get_config(),
             (|| {
@@ -526,7 +526,7 @@ pub trait Images: HasConfig + Send + Sync {
     fn image_export_libpod<'a>(
         &'a self,
         params: Option<crate::v5::params::ImageExportLibpod<'a>>,
-    ) -> Pin<Box<dyn futures::stream::Stream<Item = Result<bytes::Bytes, Error>> + 'a>> {
+    ) -> Pin<Box<dyn futures::stream::Stream<Item = Result<bytes::Bytes, Error>> + Send + 'a>> {
         request::execute_request_stream(
             self.get_config(),
             (|| {
