@@ -156,12 +156,13 @@ pub mod v4;
 
 mod api_common;
 
+pub mod attach_frame_stream;
 #[cfg_attr(docsrs, doc(cfg(feature = "v5")))]
 #[cfg(feature = "v5")]
 pub mod v5;
-pub use api_common::request::AttachFrame;
-pub use api_common::request::AttachFrameStream;
 pub use api_common::Error;
+pub use attach_frame_stream::AttachFrame;
+pub use attach_frame_stream::AttachFrameStream;
 pub use config::Config;
 pub use error::ClientError;
 pub use podman_rest_client::PodmanRestClient;

@@ -52,7 +52,7 @@ async fn it_can_create_a_volume() {
         name: Some("podman_rest_client_volume_test".into()),
         ..models::VolumeCreateOptions::default()
     };
-    let result = client.v5().volumes().volume_create_libpod(create).await;
+    let result = client.volume_create_libpod(create).await;
     result.expect("Failed to create a volume");
 
     common::delete_volume(&client, "podman_rest_client_volume_test").await;
@@ -351,28 +351,21 @@ async fn it_attaches_to_containers() {
     common::pull_busybox_image(&client).await;
     let name = "podman_rest_client_attach_test";
 
-    let create = models::SpecGenerator {
-        name: Some(name.into()),
-        image: Some("docker.io/library/busybox:latest".into()),
-        command: Some(vec![
-            "sh".to_string(),
-            "-c".to_string(),
-            "while true; do echo 'Hello, World'; sleep 1; done".to_string(),
-        ]),
-        ..models::SpecGenerator::default()
-    };
-
     client
-        .containers()
-        .container_create_libpod(create)
+        .container_create_libpod(models::SpecGenerator {
+            name: Some(name.into()),
+            image: Some("docker.io/library/busybox:latest".into()),
+            command: Some(vec![
+                "sh".to_string(),
+                "-c".to_string(),
+                "while true; do echo 'Hello, World'; sleep 1; done".to_string(),
+            ]),
+            ..models::SpecGenerator::default()
+        })
         .await
         .expect("Failed to create container");
 
-    client
-        .containers()
-        .container_start_libpod(name, None)
-        .await
-        .unwrap();
+    client.container_start_libpod(name, None).await.unwrap();
 
     let params = params::ContainerAttachLibpod {
         detach_keys: None,
@@ -415,14 +408,18 @@ async fn it_execs_containers() {
 
     client.container_start_libpod(name, None).await.unwrap();
 
-    let body = models::ContainerExecLibpodBody {
-        attach_stdout: Some(true),
-        attach_stderr: Some(true),
-        cmd: Some(vec!["echo".to_string(), "\"hello world\"".to_string()]),
-        ..Default::default()
-    };
-
-    let exec = client.container_exec_libpod(name, body).await.unwrap();
+    let exec = client
+        .container_exec_libpod(
+            name,
+            models::ContainerExecLibpodBody {
+                attach_stdout: Some(true),
+                attach_stderr: Some(true),
+                cmd: Some(vec!["echo".to_string(), "\"hello world\"".to_string()]),
+                ..Default::default()
+            },
+        )
+        .await
+        .unwrap();
 
     let conn = client
         .exec_start_libpod(&exec.id, models::ExecStartLibpodBody::default())
@@ -469,12 +466,7 @@ async fn it_execs_a_shell_with_a_tty() {
         .unwrap();
 
     let mut conn = client
-        .exec_start_libpod(
-            &exec.id,
-            models::ExecStartLibpodBody {
-                ..Default::default()
-            },
-        )
+        .exec_start_libpod(&exec.id, models::ExecStartLibpodBody::default())
         .await
         .unwrap();
 
