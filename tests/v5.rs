@@ -1,12 +1,20 @@
 #![cfg(feature = "v5")]
 
 use assert_matches::assert_matches;
-use futures::stream::TryStreamExt;
+
+use bytes::Bytes;
+use futures::StreamExt;
+use futures::TryStreamExt;
+use podman_rest_client::v5::apis::*;
 use podman_rest_client::v5::models;
 use podman_rest_client::v5::params;
 use podman_rest_client::v5::Client;
+use podman_rest_client::AttachFrame;
+use podman_rest_client::AttachFrameStream;
 use podman_rest_client::ClientError;
 use podman_rest_client::{Config, PodmanRestClient};
+use tokio::io::AsyncReadExt;
+use tokio::io::AsyncWriteExt;
 
 mod v5_common;
 use v5_common as common;
@@ -100,7 +108,6 @@ async fn it_can_pull_images() {
     let config = Config::guess().await.unwrap();
     let client = PodmanRestClient::new(config).await.unwrap();
     let pull_report = client
-        .images()
         .image_pull_libpod(Some(params::ImagePullLibpod {
             reference: Some("docker.io/library/nginx:latest"),
             ..Default::default()
@@ -332,4 +339,161 @@ async fn it_exports_containers() {
     let c = std::io::Cursor::new(bytes);
 
     assert!(tar::Archive::new(c).entries().unwrap().count() > 0)
+}
+
+#[tokio::test]
+async fn it_attaches_to_containers() {
+    common::test_init().await;
+
+    let config = Config::guess().await.unwrap();
+    let client = PodmanRestClient::new(config).await.unwrap();
+
+    common::pull_busybox_image(&client).await;
+    let name = "podman_rest_client_attach_test";
+
+    let create = models::SpecGenerator {
+        name: Some(name.into()),
+        image: Some("docker.io/library/busybox:latest".into()),
+        command: Some(vec![
+            "sh".to_string(),
+            "-c".to_string(),
+            "while true; do echo 'Hello, World'; sleep 1; done".to_string(),
+        ]),
+        ..models::SpecGenerator::default()
+    };
+
+    client
+        .containers()
+        .container_create_libpod(create)
+        .await
+        .expect("Failed to create container");
+
+    client
+        .containers()
+        .container_start_libpod(name, None)
+        .await
+        .unwrap();
+
+    let params = params::ContainerAttachLibpod {
+        detach_keys: None,
+        stderr: Some(true),
+        stdout: Some(true),
+        stream: Some(true),
+        ..Default::default()
+    };
+
+    let conn = client
+        .container_attach_libpod(name, Some(params))
+        .await
+        .unwrap();
+
+    let mut reader = AttachFrameStream::new(conn);
+
+    assert_eq!(
+        reader.next().await.unwrap().unwrap(),
+        AttachFrame::Stdout(Bytes::from_static(b"Hello, World\n")),
+    );
+    assert_eq!(
+        reader.next().await.unwrap().unwrap(),
+        AttachFrame::Stdout(Bytes::from_static(b"Hello, World\n")),
+    );
+
+    common::delete_container(&client, name).await;
+}
+
+#[tokio::test]
+async fn it_execs_containers() {
+    common::test_init().await;
+
+    let config = Config::guess().await.unwrap();
+    let client = PodmanRestClient::new(config).await.unwrap();
+
+    common::pull_nginx_image(&client).await;
+    let name = "podman_rest_client_exec_test";
+
+    common::create_nginx_container(&client, name).await;
+
+    client.container_start_libpod(name, None).await.unwrap();
+
+    let body = models::ContainerExecLibpodBody {
+        attach_stdout: Some(true),
+        attach_stderr: Some(true),
+        cmd: Some(vec!["echo".to_string(), "\"hello world\"".to_string()]),
+        ..Default::default()
+    };
+
+    let exec = client.container_exec_libpod(name, body).await.unwrap();
+
+    let conn = client
+        .exec_start_libpod(&exec.id, models::ExecStartLibpodBody::default())
+        .await
+        .unwrap();
+
+    let mut reader = AttachFrameStream::new(conn);
+
+    assert_eq!(
+        reader.next().await.unwrap().unwrap(),
+        AttachFrame::Stdout(Bytes::from_static(b"\"hello world\"\n")),
+    );
+    assert!(reader.next().await.is_none());
+
+    common::delete_container(&client, name).await;
+}
+
+#[tokio::test]
+async fn it_execs_a_shell_with_a_tty() {
+    common::test_init().await;
+
+    let config = Config::guess().await.unwrap();
+    let client = PodmanRestClient::new(config).await.unwrap();
+
+    common::pull_nginx_image(&client).await;
+    let name = "podman_rest_client_exec_write_test";
+    common::create_nginx_container(&client, name).await;
+
+    client.container_start_libpod(name, None).await.unwrap();
+
+    let exec = client
+        .container_exec_libpod(
+            name,
+            models::ContainerExecLibpodBody {
+                tty: Some(true),
+                attach_stdin: Some(true),
+                attach_stdout: Some(true),
+                attach_stderr: Some(true),
+                cmd: Some(vec!["sh".to_string()]),
+                ..Default::default()
+            },
+        )
+        .await
+        .unwrap();
+
+    let mut conn = client
+        .exec_start_libpod(
+            &exec.id,
+            models::ExecStartLibpodBody {
+                ..Default::default()
+            },
+        )
+        .await
+        .unwrap();
+
+    // Expect the shell prompt #
+    let mut prompt_buf = [0u8; 2];
+    conn.read_exact(&mut prompt_buf).await.unwrap();
+    assert_eq!(&prompt_buf, b"# ");
+
+    // Expect the stdin to be echoed back
+    conn.write_all(b"echo 'tty fun'\n").await.unwrap();
+    conn.flush().await.unwrap();
+    let mut stdin_buf = [0u8; 16];
+    conn.read_exact(&mut stdin_buf).await.unwrap();
+    assert_eq!(&stdin_buf, b"echo 'tty fun'\r\n");
+
+    // Expect the output of the command
+    let mut output_buf = [0u8; 9];
+    conn.read_exact(&mut output_buf).await.unwrap();
+    assert_eq!(&output_buf, b"tty fun\r\n");
+
+    common::delete_container(&client, name).await;
 }
