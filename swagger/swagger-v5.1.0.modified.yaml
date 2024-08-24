@@ -14384,6 +14384,8 @@ paths:
             produces:
                 - application/json
             responses:
+                "101":
+                    description: No error, connection has been hijacked for transporting streams.
                 "200":
                     description: no error
                 "404":
