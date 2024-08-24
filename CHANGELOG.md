@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+* Experimental attach/exec support ([#26](https://github.com/blazzy/podman-rest-client/pull/26))
+
 ## v0.12.3 - 2024-08-23
 
 * `Send` constraint added to byte stream responses ([#24](https://github.com/blazzy/podman-rest-client/pull/24))
