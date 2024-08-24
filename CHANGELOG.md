@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## v0.12.4 - 2024-08-24
 
 * Experimental attach/exec support ([#26](https://github.com/blazzy/podman-rest-client/pull/26))
 
