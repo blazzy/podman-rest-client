@@ -1,6 +1,7 @@
 use crate::api_common::config::HasConfig;
 use crate::api_common::request;
 use crate::api_common::Error;
+use http::request::Builder;
 use std::future::Future;
 use std::pin::Pin;
 pub trait Images: HasConfig + Send + Sync {
@@ -17,7 +18,8 @@ pub trait Images: HasConfig + Send + Sync {
     > {
         Box::pin(request::execute_request_json(
             self.get_config(),
-            (|| {
+            move |mut req_builder: Builder| {
+                req_builder = req_builder.method("POST");
                 let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
                 let mut request_path = request_url.path().to_owned();
                 if request_path.ends_with('/') {
@@ -25,8 +27,7 @@ pub trait Images: HasConfig + Send + Sync {
                 }
                 request_path.push_str("/libpod/build");
                 request_url.set_path(&request_path);
-                let mut req_builder = self.get_config().req_builder("POST")?;
-                if let Some(params) = params {
+                if let Some(params) = &params {
                     let mut query_pairs = request_url.query_pairs_mut();
                     if let Some(dockerfile) = params.dockerfile {
                         query_pairs.append_pair("dockerfile", dockerfile);
@@ -91,7 +92,7 @@ pub trait Images: HasConfig + Send + Sync {
                     if let Some(labels) = params.labels {
                         query_pairs.append_pair("labels", labels);
                     }
-                    if let Some(layer_label) = params.layer_label {
+                    if let Some(layer_label) = &params.layer_label {
                         for value in layer_label {
                             query_pairs.append_pair("layerLabel", &value.to_string());
                         }
@@ -114,17 +115,17 @@ pub trait Images: HasConfig + Send + Sync {
                     if let Some(httpproxy) = params.httpproxy {
                         query_pairs.append_pair("httpproxy", &httpproxy.to_string());
                     }
-                    if let Some(unsetenv) = params.unsetenv {
+                    if let Some(unsetenv) = &params.unsetenv {
                         for value in unsetenv {
                             query_pairs.append_pair("unsetenv", &value.to_string());
                         }
                     }
-                    if let Some(unsetlabel) = params.unsetlabel {
+                    if let Some(unsetlabel) = &params.unsetlabel {
                         for value in unsetlabel {
                             query_pairs.append_pair("unsetlabel", &value.to_string());
                         }
                     }
-                    if let Some(volume) = params.volume {
+                    if let Some(volume) = &params.volume {
                         for value in volume {
                             query_pairs.append_pair("volume", &value.to_string());
                         }
@@ -133,7 +134,7 @@ pub trait Images: HasConfig + Send + Sync {
                 let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
                 req_builder = req_builder.uri(hyper_uri);
                 Ok(req_builder.body(String::new())?)
-            })(),
+            },
         ))
     }
     /// DELETE /libpod/images/{name}
@@ -152,7 +153,8 @@ pub trait Images: HasConfig + Send + Sync {
     > {
         Box::pin(request::execute_request_json(
             self.get_config(),
-            (|| {
+            move |mut req_builder: Builder| {
+                req_builder = req_builder.method("DELETE");
                 let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
                 let mut request_path = request_url.path().to_owned();
                 if request_path.ends_with('/') {
@@ -161,8 +163,7 @@ pub trait Images: HasConfig + Send + Sync {
                 request_path.push_str("/libpod/images/{name}");
                 request_path = request_path.replace("{name}", name);
                 request_url.set_path(&request_path);
-                let mut req_builder = self.get_config().req_builder("DELETE")?;
-                if let Some(params) = params {
+                if let Some(params) = &params {
                     let mut query_pairs = request_url.query_pairs_mut();
                     if let Some(force) = params.force {
                         query_pairs.append_pair("force", &force.to_string());
@@ -171,7 +172,7 @@ pub trait Images: HasConfig + Send + Sync {
                 let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
                 req_builder = req_builder.uri(hyper_uri);
                 Ok(req_builder.body(String::new())?)
-            })(),
+            },
         ))
     }
     /// GET /libpod/images/{name}/changes
@@ -190,7 +191,8 @@ pub trait Images: HasConfig + Send + Sync {
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
-            (|| {
+            move |mut req_builder: Builder| {
+                req_builder = req_builder.method("GET");
                 let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
                 let mut request_path = request_url.path().to_owned();
                 if request_path.ends_with('/') {
@@ -199,8 +201,7 @@ pub trait Images: HasConfig + Send + Sync {
                 request_path.push_str("/libpod/images/{name}/changes");
                 request_path = request_path.replace("{name}", name);
                 request_url.set_path(&request_path);
-                let mut req_builder = self.get_config().req_builder("GET")?;
-                if let Some(params) = params {
+                if let Some(params) = &params {
                     let mut query_pairs = request_url.query_pairs_mut();
                     if let Some(parent) = params.parent {
                         query_pairs.append_pair("parent", parent);
@@ -212,7 +213,7 @@ pub trait Images: HasConfig + Send + Sync {
                 let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
                 req_builder = req_builder.uri(hyper_uri);
                 Ok(req_builder.body(String::new())?)
-            })(),
+            },
         ))
     }
     /// GET /libpod/images/{name}/exists
@@ -226,7 +227,8 @@ pub trait Images: HasConfig + Send + Sync {
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
-            (|| {
+            move |mut req_builder: Builder| {
+                req_builder = req_builder.method("GET");
                 let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
                 let mut request_path = request_url.path().to_owned();
                 if request_path.ends_with('/') {
@@ -235,11 +237,10 @@ pub trait Images: HasConfig + Send + Sync {
                 request_path.push_str("/libpod/images/{name}/exists");
                 request_path = request_path.replace("{name}", name);
                 request_url.set_path(&request_path);
-                let mut req_builder = self.get_config().req_builder("GET")?;
                 let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
                 req_builder = req_builder.uri(hyper_uri);
                 Ok(req_builder.body(String::new())?)
-            })(),
+            },
         ))
     }
     /// GET /libpod/images/{name}/get
@@ -250,32 +251,29 @@ pub trait Images: HasConfig + Send + Sync {
         name: &'a str,
         params: Option<crate::v5::params::ImageGetLibpod<'a>>,
     ) -> Pin<Box<dyn futures::stream::Stream<Item = Result<bytes::Bytes, Error>> + Send + 'a>> {
-        request::execute_request_stream(
-            self.get_config(),
-            (|| {
-                let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
-                let mut request_path = request_url.path().to_owned();
-                if request_path.ends_with('/') {
-                    request_path.pop();
+        request::execute_request_stream(self.get_config(), move |mut req_builder: Builder| {
+            req_builder = req_builder.method("GET");
+            let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
+            let mut request_path = request_url.path().to_owned();
+            if request_path.ends_with('/') {
+                request_path.pop();
+            }
+            request_path.push_str("/libpod/images/{name}/get");
+            request_path = request_path.replace("{name}", name);
+            request_url.set_path(&request_path);
+            if let Some(params) = &params {
+                let mut query_pairs = request_url.query_pairs_mut();
+                if let Some(format) = params.format {
+                    query_pairs.append_pair("format", format);
                 }
-                request_path.push_str("/libpod/images/{name}/get");
-                request_path = request_path.replace("{name}", name);
-                request_url.set_path(&request_path);
-                let mut req_builder = self.get_config().req_builder("GET")?;
-                if let Some(params) = params {
-                    let mut query_pairs = request_url.query_pairs_mut();
-                    if let Some(format) = params.format {
-                        query_pairs.append_pair("format", format);
-                    }
-                    if let Some(compress) = params.compress {
-                        query_pairs.append_pair("compress", &compress.to_string());
-                    }
+                if let Some(compress) = params.compress {
+                    query_pairs.append_pair("compress", &compress.to_string());
                 }
-                let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
-                req_builder = req_builder.uri(hyper_uri);
-                Ok(req_builder.body(String::new())?)
-            })(),
-        )
+            }
+            let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
+            req_builder = req_builder.uri(hyper_uri);
+            Ok(req_builder.body(String::new())?)
+        })
     }
     /// GET /libpod/images/{name}/history
     ///
@@ -289,7 +287,8 @@ pub trait Images: HasConfig + Send + Sync {
     {
         Box::pin(request::execute_request_json(
             self.get_config(),
-            (|| {
+            move |mut req_builder: Builder| {
+                req_builder = req_builder.method("GET");
                 let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
                 let mut request_path = request_url.path().to_owned();
                 if request_path.ends_with('/') {
@@ -298,11 +297,10 @@ pub trait Images: HasConfig + Send + Sync {
                 request_path.push_str("/libpod/images/{name}/history");
                 request_path = request_path.replace("{name}", name);
                 request_url.set_path(&request_path);
-                let mut req_builder = self.get_config().req_builder("GET")?;
                 let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
                 req_builder = req_builder.uri(hyper_uri);
                 Ok(req_builder.body(String::new())?)
-            })(),
+            },
         ))
     }
     /// GET /libpod/images/{name}/json
@@ -317,7 +315,8 @@ pub trait Images: HasConfig + Send + Sync {
     {
         Box::pin(request::execute_request_json(
             self.get_config(),
-            (|| {
+            move |mut req_builder: Builder| {
+                req_builder = req_builder.method("GET");
                 let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
                 let mut request_path = request_url.path().to_owned();
                 if request_path.ends_with('/') {
@@ -326,11 +325,10 @@ pub trait Images: HasConfig + Send + Sync {
                 request_path.push_str("/libpod/images/{name}/json");
                 request_path = request_path.replace("{name}", name);
                 request_url.set_path(&request_path);
-                let mut req_builder = self.get_config().req_builder("GET")?;
                 let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
                 req_builder = req_builder.uri(hyper_uri);
                 Ok(req_builder.body(String::new())?)
-            })(),
+            },
         ))
     }
     /// POST /libpod/images/{name}/push
@@ -345,7 +343,8 @@ pub trait Images: HasConfig + Send + Sync {
     ) -> Pin<Box<dyn Future<Output = Result<String, Error>> + Send + 'a>> {
         Box::pin(request::execute_request_json(
             self.get_config(),
-            (|| {
+            move |mut req_builder: Builder| {
+                req_builder = req_builder.method("POST");
                 let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
                 let mut request_path = request_url.path().to_owned();
                 if request_path.ends_with('/') {
@@ -354,8 +353,7 @@ pub trait Images: HasConfig + Send + Sync {
                 request_path.push_str("/libpod/images/{name}/push");
                 request_path = request_path.replace("{name}", name);
                 request_url.set_path(&request_path);
-                let mut req_builder = self.get_config().req_builder("POST")?;
-                if let Some(params) = params {
+                if let Some(params) = &params {
                     let mut query_pairs = request_url.query_pairs_mut();
                     if let Some(destination) = params.destination {
                         query_pairs.append_pair("destination", destination);
@@ -379,7 +377,7 @@ pub trait Images: HasConfig + Send + Sync {
                 let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
                 req_builder = req_builder.uri(hyper_uri);
                 Ok(req_builder.body(String::new())?)
-            })(),
+            },
         ))
     }
     /// GET /libpod/images/{name}/resolve
@@ -393,7 +391,8 @@ pub trait Images: HasConfig + Send + Sync {
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
-            (|| {
+            move |mut req_builder: Builder| {
+                req_builder = req_builder.method("GET");
                 let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
                 let mut request_path = request_url.path().to_owned();
                 if request_path.ends_with('/') {
@@ -402,11 +401,10 @@ pub trait Images: HasConfig + Send + Sync {
                 request_path.push_str("/libpod/images/{name}/resolve");
                 request_path = request_path.replace("{name}", name);
                 request_url.set_path(&request_path);
-                let mut req_builder = self.get_config().req_builder("GET")?;
                 let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
                 req_builder = req_builder.uri(hyper_uri);
                 Ok(req_builder.body(String::new())?)
-            })(),
+            },
         ))
     }
     /// POST /libpod/images/{name}/tag
@@ -421,7 +419,8 @@ pub trait Images: HasConfig + Send + Sync {
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
-            (|| {
+            move |mut req_builder: Builder| {
+                req_builder = req_builder.method("POST");
                 let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
                 let mut request_path = request_url.path().to_owned();
                 if request_path.ends_with('/') {
@@ -430,8 +429,7 @@ pub trait Images: HasConfig + Send + Sync {
                 request_path.push_str("/libpod/images/{name}/tag");
                 request_path = request_path.replace("{name}", name);
                 request_url.set_path(&request_path);
-                let mut req_builder = self.get_config().req_builder("POST")?;
-                if let Some(params) = params {
+                if let Some(params) = &params {
                     let mut query_pairs = request_url.query_pairs_mut();
                     if let Some(repo) = params.repo {
                         query_pairs.append_pair("repo", repo);
@@ -443,7 +441,7 @@ pub trait Images: HasConfig + Send + Sync {
                 let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
                 req_builder = req_builder.uri(hyper_uri);
                 Ok(req_builder.body(String::new())?)
-            })(),
+            },
         ))
     }
     /// GET /libpod/images/{name}/tree
@@ -459,7 +457,8 @@ pub trait Images: HasConfig + Send + Sync {
     {
         Box::pin(request::execute_request_json(
             self.get_config(),
-            (|| {
+            move |mut req_builder: Builder| {
+                req_builder = req_builder.method("GET");
                 let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
                 let mut request_path = request_url.path().to_owned();
                 if request_path.ends_with('/') {
@@ -468,8 +467,7 @@ pub trait Images: HasConfig + Send + Sync {
                 request_path.push_str("/libpod/images/{name}/tree");
                 request_path = request_path.replace("{name}", name);
                 request_url.set_path(&request_path);
-                let mut req_builder = self.get_config().req_builder("GET")?;
-                if let Some(params) = params {
+                if let Some(params) = &params {
                     let mut query_pairs = request_url.query_pairs_mut();
                     if let Some(whatrequires) = params.whatrequires {
                         query_pairs.append_pair("whatrequires", &whatrequires.to_string());
@@ -478,7 +476,7 @@ pub trait Images: HasConfig + Send + Sync {
                 let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
                 req_builder = req_builder.uri(hyper_uri);
                 Ok(req_builder.body(String::new())?)
-            })(),
+            },
         ))
     }
     /// POST /libpod/images/{name}/untag
@@ -493,7 +491,8 @@ pub trait Images: HasConfig + Send + Sync {
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
-            (|| {
+            move |mut req_builder: Builder| {
+                req_builder = req_builder.method("POST");
                 let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
                 let mut request_path = request_url.path().to_owned();
                 if request_path.ends_with('/') {
@@ -502,8 +501,7 @@ pub trait Images: HasConfig + Send + Sync {
                 request_path.push_str("/libpod/images/{name}/untag");
                 request_path = request_path.replace("{name}", name);
                 request_url.set_path(&request_path);
-                let mut req_builder = self.get_config().req_builder("POST")?;
-                if let Some(params) = params {
+                if let Some(params) = &params {
                     let mut query_pairs = request_url.query_pairs_mut();
                     if let Some(repo) = params.repo {
                         query_pairs.append_pair("repo", repo);
@@ -515,7 +513,7 @@ pub trait Images: HasConfig + Send + Sync {
                 let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
                 req_builder = req_builder.uri(hyper_uri);
                 Ok(req_builder.body(String::new())?)
-            })(),
+            },
         ))
     }
     /// GET /libpod/images/export
@@ -527,44 +525,40 @@ pub trait Images: HasConfig + Send + Sync {
         &'a self,
         params: Option<crate::v5::params::ImageExportLibpod<'a>>,
     ) -> Pin<Box<dyn futures::stream::Stream<Item = Result<bytes::Bytes, Error>> + Send + 'a>> {
-        request::execute_request_stream(
-            self.get_config(),
-            (|| {
-                let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
-                let mut request_path = request_url.path().to_owned();
-                if request_path.ends_with('/') {
-                    request_path.pop();
+        request::execute_request_stream(self.get_config(), move |mut req_builder: Builder| {
+            req_builder = req_builder.method("GET");
+            let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
+            let mut request_path = request_url.path().to_owned();
+            if request_path.ends_with('/') {
+                request_path.pop();
+            }
+            request_path.push_str("/libpod/images/export");
+            request_url.set_path(&request_path);
+            if let Some(params) = &params {
+                let mut query_pairs = request_url.query_pairs_mut();
+                if let Some(format) = params.format {
+                    query_pairs.append_pair("format", format);
                 }
-                request_path.push_str("/libpod/images/export");
-                request_url.set_path(&request_path);
-                let mut req_builder = self.get_config().req_builder("GET")?;
-                if let Some(params) = params {
-                    let mut query_pairs = request_url.query_pairs_mut();
-                    if let Some(format) = params.format {
-                        query_pairs.append_pair("format", format);
-                    }
-                    if let Some(references) = params.references {
-                        for value in references {
-                            query_pairs.append_pair("references", &value.to_string());
-                        }
-                    }
-                    if let Some(compress) = params.compress {
-                        query_pairs.append_pair("compress", &compress.to_string());
-                    }
-                    if let Some(oci_accept_uncompressed_layers) =
-                        params.oci_accept_uncompressed_layers
-                    {
-                        query_pairs.append_pair(
-                            "ociAcceptUncompressedLayers",
-                            &oci_accept_uncompressed_layers.to_string(),
-                        );
+                if let Some(references) = &params.references {
+                    for value in references {
+                        query_pairs.append_pair("references", &value.to_string());
                     }
                 }
-                let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
-                req_builder = req_builder.uri(hyper_uri);
-                Ok(req_builder.body(String::new())?)
-            })(),
-        )
+                if let Some(compress) = params.compress {
+                    query_pairs.append_pair("compress", &compress.to_string());
+                }
+                if let Some(oci_accept_uncompressed_layers) = params.oci_accept_uncompressed_layers
+                {
+                    query_pairs.append_pair(
+                        "ociAcceptUncompressedLayers",
+                        &oci_accept_uncompressed_layers.to_string(),
+                    );
+                }
+            }
+            let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
+            req_builder = req_builder.uri(hyper_uri);
+            Ok(req_builder.body(String::new())?)
+        })
     }
     /// POST /libpod/images/import
     ///
@@ -580,7 +574,8 @@ pub trait Images: HasConfig + Send + Sync {
     > {
         Box::pin(request::execute_request_json(
             self.get_config(),
-            (|| {
+            move |mut req_builder: Builder| {
+                req_builder = req_builder.method("POST");
                 let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
                 let mut request_path = request_url.path().to_owned();
                 if request_path.ends_with('/') {
@@ -588,10 +583,9 @@ pub trait Images: HasConfig + Send + Sync {
                 }
                 request_path.push_str("/libpod/images/import");
                 request_url.set_path(&request_path);
-                let mut req_builder = self.get_config().req_builder("POST")?;
-                if let Some(params) = params {
+                if let Some(params) = &params {
                     let mut query_pairs = request_url.query_pairs_mut();
-                    if let Some(changes) = params.changes {
+                    if let Some(changes) = &params.changes {
                         for value in changes {
                             query_pairs.append_pair("changes", &value.to_string());
                         }
@@ -615,7 +609,7 @@ pub trait Images: HasConfig + Send + Sync {
                 req_builder = req_builder.header(hyper::header::CONTENT_TYPE, "application/json");
                 req_builder = req_builder.header(hyper::header::CONTENT_LENGTH, body.len());
                 Ok(req_builder.body(body)?)
-            })(),
+            },
         ))
     }
     /// GET /libpod/images/json
@@ -635,7 +629,8 @@ pub trait Images: HasConfig + Send + Sync {
     > {
         Box::pin(request::execute_request_json(
             self.get_config(),
-            (|| {
+            move |mut req_builder: Builder| {
+                req_builder = req_builder.method("GET");
                 let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
                 let mut request_path = request_url.path().to_owned();
                 if request_path.ends_with('/') {
@@ -643,8 +638,7 @@ pub trait Images: HasConfig + Send + Sync {
                 }
                 request_path.push_str("/libpod/images/json");
                 request_url.set_path(&request_path);
-                let mut req_builder = self.get_config().req_builder("GET")?;
-                if let Some(params) = params {
+                if let Some(params) = &params {
                     let mut query_pairs = request_url.query_pairs_mut();
                     if let Some(all) = params.all {
                         query_pairs.append_pair("all", &all.to_string());
@@ -656,7 +650,7 @@ pub trait Images: HasConfig + Send + Sync {
                 let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
                 req_builder = req_builder.uri(hyper_uri);
                 Ok(req_builder.body(String::new())?)
-            })(),
+            },
         ))
     }
     /// POST /libpod/images/load
@@ -671,7 +665,8 @@ pub trait Images: HasConfig + Send + Sync {
     {
         Box::pin(request::execute_request_json(
             self.get_config(),
-            (|| {
+            move |mut req_builder: Builder| {
+                req_builder = req_builder.method("POST");
                 let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
                 let mut request_path = request_url.path().to_owned();
                 if request_path.ends_with('/') {
@@ -679,14 +674,13 @@ pub trait Images: HasConfig + Send + Sync {
                 }
                 request_path.push_str("/libpod/images/load");
                 request_url.set_path(&request_path);
-                let mut req_builder = self.get_config().req_builder("POST")?;
                 let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
                 req_builder = req_builder.uri(hyper_uri);
                 let body = serde_json::to_string(&upload)?;
                 req_builder = req_builder.header(hyper::header::CONTENT_TYPE, "application/json");
                 req_builder = req_builder.header(hyper::header::CONTENT_LENGTH, body.len());
                 Ok(req_builder.body(body)?)
-            })(),
+            },
         ))
     }
     /// POST /libpod/images/prune
@@ -701,7 +695,8 @@ pub trait Images: HasConfig + Send + Sync {
     {
         Box::pin(request::execute_request_json(
             self.get_config(),
-            (|| {
+            move |mut req_builder: Builder| {
+                req_builder = req_builder.method("POST");
                 let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
                 let mut request_path = request_url.path().to_owned();
                 if request_path.ends_with('/') {
@@ -709,8 +704,7 @@ pub trait Images: HasConfig + Send + Sync {
                 }
                 request_path.push_str("/libpod/images/prune");
                 request_url.set_path(&request_path);
-                let mut req_builder = self.get_config().req_builder("POST")?;
-                if let Some(params) = params {
+                if let Some(params) = &params {
                     let mut query_pairs = request_url.query_pairs_mut();
                     if let Some(all) = params.all {
                         query_pairs.append_pair("all", &all.to_string());
@@ -725,7 +719,7 @@ pub trait Images: HasConfig + Send + Sync {
                 let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
                 req_builder = req_builder.uri(hyper_uri);
                 Ok(req_builder.body(String::new())?)
-            })(),
+            },
         ))
     }
     /// POST /libpod/images/pull
@@ -745,7 +739,8 @@ pub trait Images: HasConfig + Send + Sync {
     > {
         Box::pin(request::execute_request_json(
             self.get_config(),
-            (|| {
+            move |mut req_builder: Builder| {
+                req_builder = req_builder.method("POST");
                 let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
                 let mut request_path = request_url.path().to_owned();
                 if request_path.ends_with('/') {
@@ -753,8 +748,7 @@ pub trait Images: HasConfig + Send + Sync {
                 }
                 request_path.push_str("/libpod/images/pull");
                 request_url.set_path(&request_path);
-                let mut req_builder = self.get_config().req_builder("POST")?;
-                if let Some(params) = params {
+                if let Some(params) = &params {
                     let mut query_pairs = request_url.query_pairs_mut();
                     if let Some(reference) = params.reference {
                         query_pairs.append_pair("reference", reference);
@@ -790,7 +784,7 @@ pub trait Images: HasConfig + Send + Sync {
                 let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
                 req_builder = req_builder.uri(hyper_uri);
                 Ok(req_builder.body(String::new())?)
-            })(),
+            },
         ))
     }
     /// DELETE /libpod/images/remove
@@ -808,7 +802,8 @@ pub trait Images: HasConfig + Send + Sync {
     > {
         Box::pin(request::execute_request_json(
             self.get_config(),
-            (|| {
+            move |mut req_builder: Builder| {
+                req_builder = req_builder.method("DELETE");
                 let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
                 let mut request_path = request_url.path().to_owned();
                 if request_path.ends_with('/') {
@@ -816,10 +811,9 @@ pub trait Images: HasConfig + Send + Sync {
                 }
                 request_path.push_str("/libpod/images/remove");
                 request_url.set_path(&request_path);
-                let mut req_builder = self.get_config().req_builder("DELETE")?;
-                if let Some(params) = params {
+                if let Some(params) = &params {
                     let mut query_pairs = request_url.query_pairs_mut();
-                    if let Some(images) = params.images {
+                    if let Some(images) = &params.images {
                         for value in images {
                             query_pairs.append_pair("images", &value.to_string());
                         }
@@ -840,7 +834,7 @@ pub trait Images: HasConfig + Send + Sync {
                 let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
                 req_builder = req_builder.uri(hyper_uri);
                 Ok(req_builder.body(String::new())?)
-            })(),
+            },
         ))
     }
     /// POST /libpod/images/scp/{name}
@@ -854,7 +848,8 @@ pub trait Images: HasConfig + Send + Sync {
     {
         Box::pin(request::execute_request_json(
             self.get_config(),
-            (|| {
+            move |mut req_builder: Builder| {
+                req_builder = req_builder.method("POST");
                 let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
                 let mut request_path = request_url.path().to_owned();
                 if request_path.ends_with('/') {
@@ -863,8 +858,7 @@ pub trait Images: HasConfig + Send + Sync {
                 request_path.push_str("/libpod/images/scp/{name}");
                 request_path = request_path.replace("{name}", name);
                 request_url.set_path(&request_path);
-                let mut req_builder = self.get_config().req_builder("POST")?;
-                if let Some(params) = params {
+                if let Some(params) = &params {
                     let mut query_pairs = request_url.query_pairs_mut();
                     if let Some(destination) = params.destination {
                         query_pairs.append_pair("destination", destination);
@@ -876,7 +870,7 @@ pub trait Images: HasConfig + Send + Sync {
                 let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
                 req_builder = req_builder.uri(hyper_uri);
                 Ok(req_builder.body(String::new())?)
-            })(),
+            },
         ))
     }
     /// GET /libpod/images/search
@@ -896,7 +890,8 @@ pub trait Images: HasConfig + Send + Sync {
     > {
         Box::pin(request::execute_request_json(
             self.get_config(),
-            (|| {
+            move |mut req_builder: Builder| {
+                req_builder = req_builder.method("GET");
                 let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
                 let mut request_path = request_url.path().to_owned();
                 if request_path.ends_with('/') {
@@ -904,8 +899,7 @@ pub trait Images: HasConfig + Send + Sync {
                 }
                 request_path.push_str("/libpod/images/search");
                 request_url.set_path(&request_path);
-                let mut req_builder = self.get_config().req_builder("GET")?;
-                if let Some(params) = params {
+                if let Some(params) = &params {
                     let mut query_pairs = request_url.query_pairs_mut();
                     if let Some(term) = params.term {
                         query_pairs.append_pair("term", term);
@@ -926,7 +920,7 @@ pub trait Images: HasConfig + Send + Sync {
                 let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
                 req_builder = req_builder.uri(hyper_uri);
                 Ok(req_builder.body(String::new())?)
-            })(),
+            },
         ))
     }
 }

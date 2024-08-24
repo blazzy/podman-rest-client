@@ -1,6 +1,7 @@
 use crate::api_common::config::HasConfig;
 use crate::api_common::request;
 use crate::api_common::Error;
+use http::request::Builder;
 use std::future::Future;
 use std::pin::Pin;
 pub trait ContainersCompat: HasConfig + Send + Sync {
@@ -15,7 +16,8 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
-            (|| {
+            move |mut req_builder: Builder| {
+                req_builder = req_builder.method("POST");
                 let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
                 let mut request_path = request_url.path().to_owned();
                 if request_path.ends_with('/') {
@@ -23,8 +25,7 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
                 }
                 request_path.push_str("/commit");
                 request_url.set_path(&request_path);
-                let mut req_builder = self.get_config().req_builder("POST")?;
-                if let Some(params) = params {
+                if let Some(params) = &params {
                     let mut query_pairs = request_url.query_pairs_mut();
                     if let Some(container) = params.container {
                         query_pairs.append_pair("container", container);
@@ -54,7 +55,7 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
                 let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
                 req_builder = req_builder.uri(hyper_uri);
                 Ok(req_builder.body(String::new())?)
-            })(),
+            },
         ))
     }
     /// DELETE /containers/{name}
@@ -67,7 +68,8 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
-            (|| {
+            move |mut req_builder: Builder| {
+                req_builder = req_builder.method("DELETE");
                 let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
                 let mut request_path = request_url.path().to_owned();
                 if request_path.ends_with('/') {
@@ -76,8 +78,7 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
                 request_path.push_str("/containers/{name}");
                 request_path = request_path.replace("{name}", name);
                 request_url.set_path(&request_path);
-                let mut req_builder = self.get_config().req_builder("DELETE")?;
-                if let Some(params) = params {
+                if let Some(params) = &params {
                     let mut query_pairs = request_url.query_pairs_mut();
                     if let Some(force) = params.force {
                         query_pairs.append_pair("force", &force.to_string());
@@ -92,7 +93,7 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
                 let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
                 req_builder = req_builder.uri(hyper_uri);
                 Ok(req_builder.body(String::new())?)
-            })(),
+            },
         ))
     }
     /// GET /containers/{name}/archive
@@ -107,7 +108,8 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
     ) -> Pin<Box<dyn Future<Output = Result<String, Error>> + Send + 'a>> {
         Box::pin(request::execute_request_json(
             self.get_config(),
-            (|| {
+            move |mut req_builder: Builder| {
+                req_builder = req_builder.method("GET");
                 let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
                 let mut request_path = request_url.path().to_owned();
                 if request_path.ends_with('/') {
@@ -116,15 +118,14 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
                 request_path.push_str("/containers/{name}/archive");
                 request_path = request_path.replace("{name}", name);
                 request_url.set_path(&request_path);
-                let mut req_builder = self.get_config().req_builder("GET")?;
-                if let Some(params) = params {
+                if let Some(params) = &params {
                     let mut query_pairs = request_url.query_pairs_mut();
                     query_pairs.append_pair("path", params.path);
                 }
                 let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
                 req_builder = req_builder.uri(hyper_uri);
                 Ok(req_builder.body(String::new())?)
-            })(),
+            },
         ))
     }
     /// GET /containers/{name}/archive
@@ -140,7 +141,8 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
-            (|| {
+            move |mut req_builder: Builder| {
+                req_builder = req_builder.method("GET");
                 let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
                 let mut request_path = request_url.path().to_owned();
                 if request_path.ends_with('/') {
@@ -149,8 +151,7 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
                 request_path.push_str("/containers/{name}/archive");
                 request_path = request_path.replace("{name}", name);
                 request_url.set_path(&request_path);
-                let mut req_builder = self.get_config().req_builder("GET")?;
-                if let Some(params) = params {
+                if let Some(params) = &params {
                     let mut query_pairs = request_url.query_pairs_mut();
                     query_pairs.append_pair("path", params.path);
                     if let Some(no_overwrite_dir_non_dir) = params.no_overwrite_dir_non_dir {
@@ -166,7 +167,7 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
                 req_builder = req_builder.header(hyper::header::CONTENT_TYPE, "application/json");
                 req_builder = req_builder.header(hyper::header::CONTENT_LENGTH, body.len());
                 Ok(req_builder.body(body)?)
-            })(),
+            },
         ))
     }
     /// POST /containers/{name}/attach
@@ -182,10 +183,17 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
         &'a self,
         name: &'a str,
         params: Option<crate::v5::params::ContainerAttach<'a>>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
-        Box::pin(request::execute_request_unit(
+    ) -> Pin<
+        Box<
+            dyn Future<Output = Result<hyper_util::rt::TokioIo<hyper::upgrade::Upgraded>, Error>>
+                + Send
+                + 'a,
+        >,
+    > {
+        Box::pin(request::execute_request_upgrade(
             self.get_config(),
-            (|| {
+            move |mut req_builder: Builder| {
+                req_builder = req_builder.method("POST");
                 let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
                 let mut request_path = request_url.path().to_owned();
                 if request_path.ends_with('/') {
@@ -194,8 +202,7 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
                 request_path.push_str("/containers/{name}/attach");
                 request_path = request_path.replace("{name}", name);
                 request_url.set_path(&request_path);
-                let mut req_builder = self.get_config().req_builder("POST")?;
-                if let Some(params) = params {
+                if let Some(params) = &params {
                     let mut query_pairs = request_url.query_pairs_mut();
                     if let Some(detach_keys) = params.detach_keys {
                         query_pairs.append_pair("detachKeys", detach_keys);
@@ -219,7 +226,7 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
                 let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
                 req_builder = req_builder.uri(hyper_uri);
                 Ok(req_builder.body(String::new())?)
-            })(),
+            },
         ))
     }
     /// GET /containers/{name}/export
@@ -233,7 +240,8 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
-            (|| {
+            move |mut req_builder: Builder| {
+                req_builder = req_builder.method("GET");
                 let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
                 let mut request_path = request_url.path().to_owned();
                 if request_path.ends_with('/') {
@@ -242,11 +250,10 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
                 request_path.push_str("/containers/{name}/export");
                 request_path = request_path.replace("{name}", name);
                 request_url.set_path(&request_path);
-                let mut req_builder = self.get_config().req_builder("GET")?;
                 let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
                 req_builder = req_builder.uri(hyper_uri);
                 Ok(req_builder.body(String::new())?)
-            })(),
+            },
         ))
     }
     /// GET /containers/{name}/json
@@ -262,7 +269,8 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
     {
         Box::pin(request::execute_request_json(
             self.get_config(),
-            (|| {
+            move |mut req_builder: Builder| {
+                req_builder = req_builder.method("GET");
                 let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
                 let mut request_path = request_url.path().to_owned();
                 if request_path.ends_with('/') {
@@ -271,8 +279,7 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
                 request_path.push_str("/containers/{name}/json");
                 request_path = request_path.replace("{name}", name);
                 request_url.set_path(&request_path);
-                let mut req_builder = self.get_config().req_builder("GET")?;
-                if let Some(params) = params {
+                if let Some(params) = &params {
                     let mut query_pairs = request_url.query_pairs_mut();
                     if let Some(size) = params.size {
                         query_pairs.append_pair("size", &size.to_string());
@@ -281,7 +288,7 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
                 let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
                 req_builder = req_builder.uri(hyper_uri);
                 Ok(req_builder.body(String::new())?)
-            })(),
+            },
         ))
     }
     /// POST /containers/{name}/kill
@@ -296,7 +303,8 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
-            (|| {
+            move |mut req_builder: Builder| {
+                req_builder = req_builder.method("POST");
                 let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
                 let mut request_path = request_url.path().to_owned();
                 if request_path.ends_with('/') {
@@ -305,8 +313,7 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
                 request_path.push_str("/containers/{name}/kill");
                 request_path = request_path.replace("{name}", name);
                 request_url.set_path(&request_path);
-                let mut req_builder = self.get_config().req_builder("POST")?;
-                if let Some(params) = params {
+                if let Some(params) = &params {
                     let mut query_pairs = request_url.query_pairs_mut();
                     if let Some(all) = params.all {
                         query_pairs.append_pair("all", &all.to_string());
@@ -318,7 +325,7 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
                 let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
                 req_builder = req_builder.uri(hyper_uri);
                 Ok(req_builder.body(String::new())?)
-            })(),
+            },
         ))
     }
     /// GET /containers/{name}/logs
@@ -333,7 +340,8 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
-            (|| {
+            move |mut req_builder: Builder| {
+                req_builder = req_builder.method("GET");
                 let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
                 let mut request_path = request_url.path().to_owned();
                 if request_path.ends_with('/') {
@@ -342,8 +350,7 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
                 request_path.push_str("/containers/{name}/logs");
                 request_path = request_path.replace("{name}", name);
                 request_url.set_path(&request_path);
-                let mut req_builder = self.get_config().req_builder("GET")?;
-                if let Some(params) = params {
+                if let Some(params) = &params {
                     let mut query_pairs = request_url.query_pairs_mut();
                     if let Some(follow) = params.follow {
                         query_pairs.append_pair("follow", &follow.to_string());
@@ -370,7 +377,7 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
                 let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
                 req_builder = req_builder.uri(hyper_uri);
                 Ok(req_builder.body(String::new())?)
-            })(),
+            },
         ))
     }
     /// POST /containers/{name}/pause
@@ -384,7 +391,8 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
-            (|| {
+            move |mut req_builder: Builder| {
+                req_builder = req_builder.method("POST");
                 let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
                 let mut request_path = request_url.path().to_owned();
                 if request_path.ends_with('/') {
@@ -393,11 +401,10 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
                 request_path.push_str("/containers/{name}/pause");
                 request_path = request_path.replace("{name}", name);
                 request_url.set_path(&request_path);
-                let mut req_builder = self.get_config().req_builder("POST")?;
                 let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
                 req_builder = req_builder.uri(hyper_uri);
                 Ok(req_builder.body(String::new())?)
-            })(),
+            },
         ))
     }
     /// POST /containers/{name}/rename
@@ -412,7 +419,8 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
-            (|| {
+            move |mut req_builder: Builder| {
+                req_builder = req_builder.method("POST");
                 let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
                 let mut request_path = request_url.path().to_owned();
                 if request_path.ends_with('/') {
@@ -421,15 +429,14 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
                 request_path.push_str("/containers/{name}/rename");
                 request_path = request_path.replace("{name}", name);
                 request_url.set_path(&request_path);
-                let mut req_builder = self.get_config().req_builder("POST")?;
-                if let Some(params) = params {
+                if let Some(params) = &params {
                     let mut query_pairs = request_url.query_pairs_mut();
                     query_pairs.append_pair("name", params.name);
                 }
                 let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
                 req_builder = req_builder.uri(hyper_uri);
                 Ok(req_builder.body(String::new())?)
-            })(),
+            },
         ))
     }
     /// POST /containers/{name}/resize
@@ -444,7 +451,8 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
     ) -> Pin<Box<dyn Future<Output = Result<serde_json::Value, Error>> + Send + 'a>> {
         Box::pin(request::execute_request_json(
             self.get_config(),
-            (|| {
+            move |mut req_builder: Builder| {
+                req_builder = req_builder.method("POST");
                 let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
                 let mut request_path = request_url.path().to_owned();
                 if request_path.ends_with('/') {
@@ -453,8 +461,7 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
                 request_path.push_str("/containers/{name}/resize");
                 request_path = request_path.replace("{name}", name);
                 request_url.set_path(&request_path);
-                let mut req_builder = self.get_config().req_builder("POST")?;
-                if let Some(params) = params {
+                if let Some(params) = &params {
                     let mut query_pairs = request_url.query_pairs_mut();
                     if let Some(h) = params.h {
                         query_pairs.append_pair("h", &h.to_string());
@@ -469,7 +476,7 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
                 let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
                 req_builder = req_builder.uri(hyper_uri);
                 Ok(req_builder.body(String::new())?)
-            })(),
+            },
         ))
     }
     /// POST /containers/{name}/restart
@@ -482,7 +489,8 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
-            (|| {
+            move |mut req_builder: Builder| {
+                req_builder = req_builder.method("POST");
                 let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
                 let mut request_path = request_url.path().to_owned();
                 if request_path.ends_with('/') {
@@ -491,8 +499,7 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
                 request_path.push_str("/containers/{name}/restart");
                 request_path = request_path.replace("{name}", name);
                 request_url.set_path(&request_path);
-                let mut req_builder = self.get_config().req_builder("POST")?;
-                if let Some(params) = params {
+                if let Some(params) = &params {
                     let mut query_pairs = request_url.query_pairs_mut();
                     if let Some(t) = params.t {
                         query_pairs.append_pair("t", &t.to_string());
@@ -501,7 +508,7 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
                 let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
                 req_builder = req_builder.uri(hyper_uri);
                 Ok(req_builder.body(String::new())?)
-            })(),
+            },
         ))
     }
     /// POST /containers/{name}/start
@@ -514,7 +521,8 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
-            (|| {
+            move |mut req_builder: Builder| {
+                req_builder = req_builder.method("POST");
                 let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
                 let mut request_path = request_url.path().to_owned();
                 if request_path.ends_with('/') {
@@ -523,8 +531,7 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
                 request_path.push_str("/containers/{name}/start");
                 request_path = request_path.replace("{name}", name);
                 request_url.set_path(&request_path);
-                let mut req_builder = self.get_config().req_builder("POST")?;
-                if let Some(params) = params {
+                if let Some(params) = &params {
                     let mut query_pairs = request_url.query_pairs_mut();
                     if let Some(detach_keys) = params.detach_keys {
                         query_pairs.append_pair("detachKeys", detach_keys);
@@ -533,7 +540,7 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
                 let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
                 req_builder = req_builder.uri(hyper_uri);
                 Ok(req_builder.body(String::new())?)
-            })(),
+            },
         ))
     }
     /// GET /containers/{name}/stats
@@ -548,7 +555,8 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
     ) -> Pin<Box<dyn Future<Output = Result<serde_json::Value, Error>> + Send + 'a>> {
         Box::pin(request::execute_request_json(
             self.get_config(),
-            (|| {
+            move |mut req_builder: Builder| {
+                req_builder = req_builder.method("GET");
                 let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
                 let mut request_path = request_url.path().to_owned();
                 if request_path.ends_with('/') {
@@ -557,8 +565,7 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
                 request_path.push_str("/containers/{name}/stats");
                 request_path = request_path.replace("{name}", name);
                 request_url.set_path(&request_path);
-                let mut req_builder = self.get_config().req_builder("GET")?;
-                if let Some(params) = params {
+                if let Some(params) = &params {
                     let mut query_pairs = request_url.query_pairs_mut();
                     if let Some(stream) = params.stream {
                         query_pairs.append_pair("stream", &stream.to_string());
@@ -570,7 +577,7 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
                 let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
                 req_builder = req_builder.uri(hyper_uri);
                 Ok(req_builder.body(String::new())?)
-            })(),
+            },
         ))
     }
     /// POST /containers/{name}/stop
@@ -583,7 +590,8 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
-            (|| {
+            move |mut req_builder: Builder| {
+                req_builder = req_builder.method("POST");
                 let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
                 let mut request_path = request_url.path().to_owned();
                 if request_path.ends_with('/') {
@@ -592,8 +600,7 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
                 request_path.push_str("/containers/{name}/stop");
                 request_path = request_path.replace("{name}", name);
                 request_url.set_path(&request_path);
-                let mut req_builder = self.get_config().req_builder("POST")?;
-                if let Some(params) = params {
+                if let Some(params) = &params {
                     let mut query_pairs = request_url.query_pairs_mut();
                     if let Some(t) = params.t {
                         query_pairs.append_pair("t", &t.to_string());
@@ -602,7 +609,7 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
                 let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
                 req_builder = req_builder.uri(hyper_uri);
                 Ok(req_builder.body(String::new())?)
-            })(),
+            },
         ))
     }
     /// GET /containers/{name}/top
@@ -617,7 +624,8 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
     > {
         Box::pin(request::execute_request_json(
             self.get_config(),
-            (|| {
+            move |mut req_builder: Builder| {
+                req_builder = req_builder.method("GET");
                 let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
                 let mut request_path = request_url.path().to_owned();
                 if request_path.ends_with('/') {
@@ -626,8 +634,7 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
                 request_path.push_str("/containers/{name}/top");
                 request_path = request_path.replace("{name}", name);
                 request_url.set_path(&request_path);
-                let mut req_builder = self.get_config().req_builder("GET")?;
-                if let Some(params) = params {
+                if let Some(params) = &params {
                     let mut query_pairs = request_url.query_pairs_mut();
                     if let Some(ps_args) = params.ps_args {
                         query_pairs.append_pair("ps_args", ps_args);
@@ -636,7 +643,7 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
                 let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
                 req_builder = req_builder.uri(hyper_uri);
                 Ok(req_builder.body(String::new())?)
-            })(),
+            },
         ))
     }
     /// POST /containers/{name}/unpause
@@ -650,7 +657,8 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
-            (|| {
+            move |mut req_builder: Builder| {
+                req_builder = req_builder.method("POST");
                 let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
                 let mut request_path = request_url.path().to_owned();
                 if request_path.ends_with('/') {
@@ -659,11 +667,10 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
                 request_path.push_str("/containers/{name}/unpause");
                 request_path = request_path.replace("{name}", name);
                 request_url.set_path(&request_path);
-                let mut req_builder = self.get_config().req_builder("POST")?;
                 let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
                 req_builder = req_builder.uri(hyper_uri);
                 Ok(req_builder.body(String::new())?)
-            })(),
+            },
         ))
     }
     /// POST /containers/{name}/update
@@ -678,7 +685,8 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
-            (|| {
+            move |mut req_builder: Builder| {
+                req_builder = req_builder.method("POST");
                 let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
                 let mut request_path = request_url.path().to_owned();
                 if request_path.ends_with('/') {
@@ -687,14 +695,13 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
                 request_path.push_str("/containers/{name}/update");
                 request_path = request_path.replace("{name}", name);
                 request_url.set_path(&request_path);
-                let mut req_builder = self.get_config().req_builder("POST")?;
                 let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
                 req_builder = req_builder.uri(hyper_uri);
                 let body = serde_json::to_string(&resources)?;
                 req_builder = req_builder.header(hyper::header::CONTENT_TYPE, "application/json");
                 req_builder = req_builder.header(hyper::header::CONTENT_LENGTH, body.len());
                 Ok(req_builder.body(body)?)
-            })(),
+            },
         ))
     }
     /// POST /containers/{name}/wait
@@ -715,7 +722,8 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
     > {
         Box::pin(request::execute_request_json(
             self.get_config(),
-            (|| {
+            move |mut req_builder: Builder| {
+                req_builder = req_builder.method("POST");
                 let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
                 let mut request_path = request_url.path().to_owned();
                 if request_path.ends_with('/') {
@@ -724,8 +732,7 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
                 request_path.push_str("/containers/{name}/wait");
                 request_path = request_path.replace("{name}", name);
                 request_url.set_path(&request_path);
-                let mut req_builder = self.get_config().req_builder("POST")?;
-                if let Some(params) = params {
+                if let Some(params) = &params {
                     let mut query_pairs = request_url.query_pairs_mut();
                     if let Some(condition) = params.condition {
                         query_pairs.append_pair("condition", condition);
@@ -737,7 +744,7 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
                 let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
                 req_builder = req_builder.uri(hyper_uri);
                 Ok(req_builder.body(String::new())?)
-            })(),
+            },
         ))
     }
     /// POST /containers/create
@@ -756,7 +763,8 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
     > {
         Box::pin(request::execute_request_json(
             self.get_config(),
-            (|| {
+            move |mut req_builder: Builder| {
+                req_builder = req_builder.method("POST");
                 let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
                 let mut request_path = request_url.path().to_owned();
                 if request_path.ends_with('/') {
@@ -764,8 +772,7 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
                 }
                 request_path.push_str("/containers/create");
                 request_url.set_path(&request_path);
-                let mut req_builder = self.get_config().req_builder("POST")?;
-                if let Some(params) = params {
+                if let Some(params) = &params {
                     let mut query_pairs = request_url.query_pairs_mut();
                     if let Some(name) = params.name {
                         query_pairs.append_pair("name", name);
@@ -777,7 +784,7 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
                 req_builder = req_builder.header(hyper::header::CONTENT_TYPE, "application/json");
                 req_builder = req_builder.header(hyper::header::CONTENT_LENGTH, body.len());
                 Ok(req_builder.body(body)?)
-            })(),
+            },
         ))
     }
     /// GET /containers/json
@@ -792,7 +799,8 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
     {
         Box::pin(request::execute_request_json(
             self.get_config(),
-            (|| {
+            move |mut req_builder: Builder| {
+                req_builder = req_builder.method("GET");
                 let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
                 let mut request_path = request_url.path().to_owned();
                 if request_path.ends_with('/') {
@@ -800,8 +808,7 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
                 }
                 request_path.push_str("/containers/json");
                 request_url.set_path(&request_path);
-                let mut req_builder = self.get_config().req_builder("GET")?;
-                if let Some(params) = params {
+                if let Some(params) = &params {
                     let mut query_pairs = request_url.query_pairs_mut();
                     if let Some(all) = params.all {
                         query_pairs.append_pair("all", &all.to_string());
@@ -822,7 +829,7 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
                 let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
                 req_builder = req_builder.uri(hyper_uri);
                 Ok(req_builder.body(String::new())?)
-            })(),
+            },
         ))
     }
     /// POST /containers/prune
@@ -842,7 +849,8 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
     > {
         Box::pin(request::execute_request_json(
             self.get_config(),
-            (|| {
+            move |mut req_builder: Builder| {
+                req_builder = req_builder.method("POST");
                 let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
                 let mut request_path = request_url.path().to_owned();
                 if request_path.ends_with('/') {
@@ -850,8 +858,7 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
                 }
                 request_path.push_str("/containers/prune");
                 request_url.set_path(&request_path);
-                let mut req_builder = self.get_config().req_builder("POST")?;
-                if let Some(params) = params {
+                if let Some(params) = &params {
                     let mut query_pairs = request_url.query_pairs_mut();
                     if let Some(filters) = params.filters {
                         query_pairs.append_pair("filters", filters);
@@ -860,7 +867,7 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
                 let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
                 req_builder = req_builder.uri(hyper_uri);
                 Ok(req_builder.body(String::new())?)
-            })(),
+            },
         ))
     }
     /// GET /libpod/containers/{name}/archive
@@ -875,7 +882,8 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
     ) -> Pin<Box<dyn Future<Output = Result<String, Error>> + Send + 'a>> {
         Box::pin(request::execute_request_json(
             self.get_config(),
-            (|| {
+            move |mut req_builder: Builder| {
+                req_builder = req_builder.method("GET");
                 let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
                 let mut request_path = request_url.path().to_owned();
                 if request_path.ends_with('/') {
@@ -884,8 +892,7 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
                 request_path.push_str("/libpod/containers/{name}/archive");
                 request_path = request_path.replace("{name}", name);
                 request_url.set_path(&request_path);
-                let mut req_builder = self.get_config().req_builder("GET")?;
-                if let Some(params) = params {
+                if let Some(params) = &params {
                     let mut query_pairs = request_url.query_pairs_mut();
                     query_pairs.append_pair("path", params.path);
                     if let Some(rename) = params.rename {
@@ -895,7 +902,7 @@ pub trait ContainersCompat: HasConfig + Send + Sync {
                 let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
                 req_builder = req_builder.uri(hyper_uri);
                 Ok(req_builder.body(String::new())?)
-            })(),
+            },
         ))
     }
 }
