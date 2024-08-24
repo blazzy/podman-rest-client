@@ -13425,6 +13425,13 @@ paths:
             responses:
                 "201":
                     description: no error
+                    schema:
+                      properties:
+                        Id:
+                          type: string
+                      type: object
+                      required:
+                          - Id
                 "404":
                     $ref: '#/responses/containerNotFound'
                 "409":
