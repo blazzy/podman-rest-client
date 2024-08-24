@@ -1,6 +1,7 @@
 use crate::api_common::config::HasConfig;
 use crate::api_common::request;
 use crate::api_common::Error;
+use http::request::Builder;
 use std::future::Future;
 use std::pin::Pin;
 pub trait System: HasConfig + Send + Sync {
@@ -15,7 +16,8 @@ pub trait System: HasConfig + Send + Sync {
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
-            (|| {
+            move |mut req_builder: Builder| {
+                req_builder = req_builder.method("GET");
                 let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
                 let mut request_path = request_url.path().to_owned();
                 if request_path.ends_with('/') {
@@ -23,8 +25,7 @@ pub trait System: HasConfig + Send + Sync {
                 }
                 request_path.push_str("/libpod/events");
                 request_url.set_path(&request_path);
-                let mut req_builder = self.get_config().req_builder("GET")?;
-                if let Some(params) = params {
+                if let Some(params) = &params {
                     let mut query_pairs = request_url.query_pairs_mut();
                     if let Some(since) = params.since {
                         query_pairs.append_pair("since", since);
@@ -42,7 +43,7 @@ pub trait System: HasConfig + Send + Sync {
                 let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
                 req_builder = req_builder.uri(hyper_uri);
                 Ok(req_builder.body(String::new())?)
-            })(),
+            },
         ))
     }
     /// GET /libpod/info
@@ -55,7 +56,8 @@ pub trait System: HasConfig + Send + Sync {
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
-            (|| {
+            move |mut req_builder: Builder| {
+                req_builder = req_builder.method("GET");
                 let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
                 let mut request_path = request_url.path().to_owned();
                 if request_path.ends_with('/') {
@@ -63,11 +65,10 @@ pub trait System: HasConfig + Send + Sync {
                 }
                 request_path.push_str("/libpod/info");
                 request_url.set_path(&request_path);
-                let mut req_builder = self.get_config().req_builder("GET")?;
                 let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
                 req_builder = req_builder.uri(hyper_uri);
                 Ok(req_builder.body(String::new())?)
-            })(),
+            },
         ))
     }
     /// GET /libpod/system/df
@@ -80,7 +81,8 @@ pub trait System: HasConfig + Send + Sync {
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
-            (|| {
+            move |mut req_builder: Builder| {
+                req_builder = req_builder.method("GET");
                 let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
                 let mut request_path = request_url.path().to_owned();
                 if request_path.ends_with('/') {
@@ -88,11 +90,10 @@ pub trait System: HasConfig + Send + Sync {
                 }
                 request_path.push_str("/libpod/system/df");
                 request_url.set_path(&request_path);
-                let mut req_builder = self.get_config().req_builder("GET")?;
                 let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
                 req_builder = req_builder.uri(hyper_uri);
                 Ok(req_builder.body(String::new())?)
-            })(),
+            },
         ))
     }
     /// POST /libpod/system/prune
@@ -103,7 +104,8 @@ pub trait System: HasConfig + Send + Sync {
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
-            (|| {
+            move |mut req_builder: Builder| {
+                req_builder = req_builder.method("POST");
                 let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
                 let mut request_path = request_url.path().to_owned();
                 if request_path.ends_with('/') {
@@ -111,11 +113,10 @@ pub trait System: HasConfig + Send + Sync {
                 }
                 request_path.push_str("/libpod/system/prune");
                 request_url.set_path(&request_path);
-                let mut req_builder = self.get_config().req_builder("POST")?;
                 let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
                 req_builder = req_builder.uri(hyper_uri);
                 Ok(req_builder.body(String::new())?)
-            })(),
+            },
         ))
     }
     /// GET /libpod/version
@@ -126,7 +127,8 @@ pub trait System: HasConfig + Send + Sync {
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
-            (|| {
+            move |mut req_builder: Builder| {
+                req_builder = req_builder.method("GET");
                 let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
                 let mut request_path = request_url.path().to_owned();
                 if request_path.ends_with('/') {
@@ -134,11 +136,10 @@ pub trait System: HasConfig + Send + Sync {
                 }
                 request_path.push_str("/libpod/version");
                 request_url.set_path(&request_path);
-                let mut req_builder = self.get_config().req_builder("GET")?;
                 let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
                 req_builder = req_builder.uri(hyper_uri);
                 Ok(req_builder.body(String::new())?)
-            })(),
+            },
         ))
     }
 }

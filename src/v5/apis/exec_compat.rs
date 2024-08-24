@@ -1,6 +1,7 @@
 use crate::api_common::config::HasConfig;
 use crate::api_common::request;
 use crate::api_common::Error;
+use http::request::Builder;
 use std::future::Future;
 use std::pin::Pin;
 pub trait ExecCompat: HasConfig + Send + Sync {
@@ -16,7 +17,8 @@ pub trait ExecCompat: HasConfig + Send + Sync {
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
-            (|| {
+            move |mut req_builder: Builder| {
+                req_builder = req_builder.method("POST");
                 let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
                 let mut request_path = request_url.path().to_owned();
                 if request_path.ends_with('/') {
@@ -25,14 +27,13 @@ pub trait ExecCompat: HasConfig + Send + Sync {
                 request_path.push_str("/containers/{name}/exec");
                 request_path = request_path.replace("{name}", name);
                 request_url.set_path(&request_path);
-                let mut req_builder = self.get_config().req_builder("POST")?;
                 let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
                 req_builder = req_builder.uri(hyper_uri);
                 let body = serde_json::to_string(&control)?;
                 req_builder = req_builder.header(hyper::header::CONTENT_TYPE, "application/json");
                 req_builder = req_builder.header(hyper::header::CONTENT_LENGTH, body.len());
                 Ok(req_builder.body(body)?)
-            })(),
+            },
         ))
     }
     /// GET /exec/{id}/json
@@ -48,7 +49,8 @@ pub trait ExecCompat: HasConfig + Send + Sync {
     > {
         Box::pin(request::execute_request_json(
             self.get_config(),
-            (|| {
+            move |mut req_builder: Builder| {
+                req_builder = req_builder.method("GET");
                 let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
                 let mut request_path = request_url.path().to_owned();
                 if request_path.ends_with('/') {
@@ -57,11 +59,10 @@ pub trait ExecCompat: HasConfig + Send + Sync {
                 request_path.push_str("/exec/{id}/json");
                 request_path = request_path.replace("{id}", id);
                 request_url.set_path(&request_path);
-                let mut req_builder = self.get_config().req_builder("GET")?;
                 let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
                 req_builder = req_builder.uri(hyper_uri);
                 Ok(req_builder.body(String::new())?)
-            })(),
+            },
         ))
     }
     /// POST /exec/{id}/resize
@@ -76,7 +77,8 @@ pub trait ExecCompat: HasConfig + Send + Sync {
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
-            (|| {
+            move |mut req_builder: Builder| {
+                req_builder = req_builder.method("POST");
                 let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
                 let mut request_path = request_url.path().to_owned();
                 if request_path.ends_with('/') {
@@ -85,8 +87,7 @@ pub trait ExecCompat: HasConfig + Send + Sync {
                 request_path.push_str("/exec/{id}/resize");
                 request_path = request_path.replace("{id}", id);
                 request_url.set_path(&request_path);
-                let mut req_builder = self.get_config().req_builder("POST")?;
-                if let Some(params) = params {
+                if let Some(params) = &params {
                     let mut query_pairs = request_url.query_pairs_mut();
                     if let Some(h) = params.h {
                         query_pairs.append_pair("h", &h.to_string());
@@ -101,7 +102,7 @@ pub trait ExecCompat: HasConfig + Send + Sync {
                 let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
                 req_builder = req_builder.uri(hyper_uri);
                 Ok(req_builder.body(String::new())?)
-            })(),
+            },
         ))
     }
     /// POST /exec/{id}/start
@@ -116,7 +117,8 @@ pub trait ExecCompat: HasConfig + Send + Sync {
     ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
         Box::pin(request::execute_request_unit(
             self.get_config(),
-            (|| {
+            move |mut req_builder: Builder| {
+                req_builder = req_builder.method("POST");
                 let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
                 let mut request_path = request_url.path().to_owned();
                 if request_path.ends_with('/') {
@@ -125,14 +127,13 @@ pub trait ExecCompat: HasConfig + Send + Sync {
                 request_path.push_str("/exec/{id}/start");
                 request_path = request_path.replace("{id}", id);
                 request_url.set_path(&request_path);
-                let mut req_builder = self.get_config().req_builder("POST")?;
                 let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
                 req_builder = req_builder.uri(hyper_uri);
                 let body = serde_json::to_string(&control)?;
                 req_builder = req_builder.header(hyper::header::CONTENT_TYPE, "application/json");
                 req_builder = req_builder.header(hyper::header::CONTENT_LENGTH, body.len());
                 Ok(req_builder.body(body)?)
-            })(),
+            },
         ))
     }
 }

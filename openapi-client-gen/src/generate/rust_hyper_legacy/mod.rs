@@ -118,10 +118,7 @@ pub fn generate<'a>(config: &'a mut GeneratorConfig<'a>) -> Result<(), Error> {
         )?,
     )?;
 
-    common_files.create(
-        src_dir.join("config.rs"),
-        templates::config::config(spec, &common_module)?,
-    )?;
+    common_files.create(src_dir.join("config.rs"), templates::config::config(spec)?)?;
     let file_name = src_dir.join("error.rs");
     common_files.create(file_name, include_str!("./templates/error.rs"))?;
     let file_name = src_dir.join("request.rs");

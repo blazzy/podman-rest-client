@@ -19,6 +19,8 @@ pub fn api(
         use std::future::Future;
         use std::pin::Pin;
 
+        use http::request::Builder;
+
         use #common_module::config::HasConfig;
         use #common_module::Error;
         use #common_module::request;
@@ -45,10 +47,12 @@ pub fn operations(
 
             let success = operation.success_response();
             let response = success
-                .map(|m| model_type(m, &spec.models, api_module))
+                .map(|m| model_type(m.1, &spec.models, api_module))
                 .unwrap_or_else(|| Ok(quote! { () }))?;
 
-            let return_type = if Some(true) == success.map(|m| m.data.is_stream()) {
+            let return_type = if matches!(success, Some((101,_))) {
+                quote! { Pin<Box<dyn Future<Output=Result<hyper_util::rt::TokioIo<hyper::upgrade::Upgraded>, Error>> + Send + 'a>> }
+            } else if Some(true) == success.map(|m| m.1.data.is_stream()) {
                 quote! { Pin<Box<dyn futures::stream::Stream<Item = Result<bytes::Bytes, Error>> + Send + 'a>> }
             } else {
                 quote! { Pin<Box<dyn Future<Output=Result<#response, Error>> + Send + 'a>> }
@@ -90,14 +94,14 @@ pub fn operations(
 
             let params_struct = if operation.should_use_params_struct() {
                 let struct_type = operation.params_struct_as_token_stream(api_module);
-                quote! { params: #struct_type, }
+                Some(quote! { params: #struct_type, })
             } else {
-                TokenStream::new()
+                None
             };
             let (body_param, create_body) = if let Some(body) = &operation.body_param {
                 let var_name = var_name(&body.name);
                 let body_type = model_type(&body.model, &spec.models, api_module)?;
-                let body_param = quote! { #var_name: #body_type, };
+                let body_param = Some(quote! { #var_name: #body_type, });
                 let create_body =  quote! {
                     let body = serde_json::to_string(&#var_name)?;
                     req_builder = req_builder.header(hyper::header::CONTENT_TYPE, "application/json");
@@ -106,7 +110,7 @@ pub fn operations(
                 };
                 (body_param, create_body)
             } else {
-                (TokenStream::new(), quote! { Ok(req_builder.body(String::new())?) })
+                (None, quote! { Ok(req_builder.body(String::new())?) })
             };
 
             let set_path_params = if !operation.path_params.is_empty() {
@@ -131,7 +135,7 @@ pub fn operations(
                     if param.required {
                         if let crate::parameter::Type::Array(_) = param.r#type {
                             quote! {
-                                for value in params.#var_name {
+                                for value in &params.#var_name {
                                     query_pairs.append_pair(#name, &value.to_string());
                                 }
                             }
@@ -144,7 +148,7 @@ pub fn operations(
                         let to_string = parameter_to_str(&quote! { #var_name }, param);
                         if let crate::parameter::Type::Array(_) = param.r#type {
                             quote! {
-                                if let Some(#var_name) = params.#var_name #or_default {
+                                if let Some(#var_name) = &params.#var_name #or_default {
                                     for value in #var_name {
                                         query_pairs.append_pair(#name, &value.to_string());
                                     }
@@ -192,7 +196,7 @@ pub fn operations(
 
             let process_params_struct = if operation.should_use_params_struct() && operation.is_optional_params_struct() {
                 quote! {
-                    if let Some(params) = params {
+                    if let Some(params) = &params {
                         #set_query_params
                         #set_header_params
                     }
@@ -205,7 +209,8 @@ pub fn operations(
             let method = &operation.method.to_string();
 
             let build_request = quote! {
-                (|| {
+                move |mut req_builder: Builder| {
+                    req_builder = req_builder.method(#method);
                     let mut request_url = url::Url::parse(self.get_config().get_base_path())?;
 
                     let mut request_path = request_url.path().to_owned();
@@ -216,21 +221,21 @@ pub fn operations(
                     #set_path_params
                     request_url.set_path(&request_path);
 
-                    let mut req_builder = self.get_config().req_builder(#method)?;
-
                     #process_params_struct
 
                     let hyper_uri: hyper::Uri = request_url.as_str().parse()?;
                     req_builder = req_builder.uri(hyper_uri);
 
                     #create_body
-                })()
+                }
             };
 
-            let execute_request = if Some(true) == success.map(|m| m.data.is_stream()) {
+            let execute_request = if Some(true) == success.map(|m| m.1.data.is_stream()) {
                 quote! { request::execute_request_stream(self.get_config(), #build_request) }
             } else if let Some(success) = success {
-                if success.resolve_model(&spec.models)?.data.is_no_value() {
+                if success.0 == 101 {
+                    quote! { Box::pin(request::execute_request_upgrade(self.get_config(), #build_request)) }
+                } else if success.1.resolve_model(&spec.models)?.data.is_no_value() {
                     quote! { Box::pin(request::execute_request_unit(self.get_config(), #build_request)) }
                 } else {
                     quote! { Box::pin(request::execute_request_json(self.get_config(), #build_request)) }

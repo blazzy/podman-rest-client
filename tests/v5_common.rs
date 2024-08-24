@@ -77,6 +77,17 @@ pub async fn pull_nginx_image(client: &PodmanRestClient) {
         .expect("Failed to pull image");
 }
 
+pub async fn pull_busybox_image(client: &PodmanRestClient) {
+    client
+        .images()
+        .image_pull_libpod(Some(params::ImagePullLibpod {
+            reference: Some("docker.io/library/busybox:latest"),
+            ..Default::default()
+        }))
+        .await
+        .expect("Failed to pull image");
+}
+
 pub async fn create_nginx_container(client: &PodmanRestClient, container_name: &str) {
     let create = models::SpecGenerator {
         name: Some(container_name.into()),
@@ -92,9 +103,13 @@ pub async fn create_nginx_container(client: &PodmanRestClient, container_name: &
 }
 
 pub async fn delete_container(client: &PodmanRestClient, container_name: &str) {
+    let params = params::ContainerDeleteLibpod {
+        force: Some(true),
+        ..Default::default()
+    };
     client
         .containers()
-        .container_delete_libpod(container_name, None)
+        .container_delete_libpod(container_name, Some(params))
         .await
         .expect("Failed to clean up container");
 }

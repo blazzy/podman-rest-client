@@ -34,13 +34,11 @@ impl Operation {
         !(self.header_params.iter().any(predicate) && self.query_params.iter().any(predicate))
     }
 
-    pub fn success_response(&self) -> Option<&Model> {
-        let response = self.responses.iter().find(|(key, _)| {
-            let code: u16 = key.parse().unwrap_or(0);
-            (200..300).contains(&code)
-        });
-
-        response.map(|response| response.1)
+    pub fn success_response(&self) -> Option<(u16, &Model)> {
+        self.responses
+            .iter()
+            .map(|(code, model)| (code.parse().unwrap_or(0), model))
+            .find(|(code, _)| (200..300).contains(code) || code == &101)
     }
 }
 

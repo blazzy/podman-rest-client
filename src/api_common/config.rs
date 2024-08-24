@@ -1,4 +1,3 @@
-use crate::api_common::Error;
 use http::header;
 use http::request::Builder;
 use http::request::Request;
@@ -23,12 +22,12 @@ pub trait ClientConfig: Send + Sync {
         &self,
         request: Request<String>,
     ) -> Pin<Box<dyn Future<Output = Result<Response<Incoming>, HyperError>> + 'a + Send>>;
-    fn req_builder(&self, method: &str) -> Result<Builder, Error> {
-        let mut req_builder = hyper::Request::builder().method(method);
+    fn req_builder(&self) -> Builder {
+        let mut req_builder = Request::builder();
         if let Some(user_agent) = self.get_user_agent() {
             req_builder = req_builder.header(header::USER_AGENT, user_agent);
         }
-        Ok(req_builder)
+        req_builder
     }
 }
 pub struct Config<C: Connector = HttpConnector> {

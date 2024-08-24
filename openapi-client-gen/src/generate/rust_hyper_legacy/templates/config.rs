@@ -2,7 +2,7 @@ use quote::quote;
 
 use crate::{error::Error, spec::Spec};
 
-pub fn config(spec: &Spec, common_module: &syn::Path) -> Result<String, Error> {
+pub fn config(spec: &Spec) -> Result<String, Error> {
     let base_path = &spec.base_path;
 
     let code = quote! {
@@ -20,8 +20,6 @@ pub fn config(spec: &Spec, common_module: &syn::Path) -> Result<String, Error> {
         use hyper_util::client::legacy::Error as HyperError;
         use hyper_util::rt::TokioExecutor;
 
-        use #common_module::Error;
-
         pub trait Connector: Connect + Clone + Send + Sync + 'static {}
         impl Connector for HttpConnector {}
 
@@ -36,12 +34,13 @@ pub fn config(spec: &Spec, common_module: &syn::Path) -> Result<String, Error> {
                 &self,
                 request: Request<String>,
             ) -> Pin<Box<dyn Future<Output = Result<Response<Incoming>, HyperError>> + 'a + Send>>;
-            fn req_builder(&self, method: &str) -> Result<Builder, Error> {
-                let mut req_builder = hyper::Request::builder().method(method);
+
+            fn req_builder(&self) -> Builder {
+                let mut req_builder = Request::builder();
                 if let Some(user_agent) = self.get_user_agent() {
                     req_builder = req_builder.header(header::USER_AGENT, user_agent);
                 }
-                Ok(req_builder)
+                req_builder
             }
         }
 

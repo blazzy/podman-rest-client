@@ -30,6 +30,13 @@ jobs:
     - name: Remove Default Podman
       run: |
         sudo apt-get remove podman
+        sudo apt-get remove crun
+
+    - uses: actions/checkout@v4
+      with:
+        repository: containers/crun
+        ref: 1.16.1
+        path: ./crun
 
     - uses: actions/checkout@v4
       with:
@@ -37,7 +44,7 @@ jobs:
         ref: v5.1.2
         path: ./podman
 
-    - name: Build Podman
+    - name: Install build deps
       run: |
         sudo apt-get update
         sudo apt-get install \
@@ -58,8 +65,24 @@ jobs:
           libselinux1-dev \
           libsystemd-dev \
           pkg-config \
-          uidmap
+          uidmap \
+          automake \
+          libyajl-dev \
+          autoconf \
+          libtool \
+          pkgconf \
+          libcap-dev
 
+    - name: Build crun
+      run: |
+        cd crun
+        ./autogen.sh
+        ./configure --prefix=/usr
+        make PREFIX=/usr
+        sudo make install PREFIX=/usr
+
+    - name: Build Podman
+      run: |
         cd podman
         make BUILDTAGS="systemd seccomp" PREFIX=/usr
         sudo make install PREFIX=/usr
