@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 /// LogConfig represents the logging configuration of the container.
 pub struct LogConfig {
     #[serde(rename = "Config")]
-    pub config: Option<std::collections::HashMap<String, Option<String>>>,
+    pub config: Option<std::collections::HashMap<String, String>>,
     #[serde(rename = "Type")]
     pub r#type: Option<String>,
 }

@@ -36,11 +36,9 @@ pub struct NetworkSettings {
     #[serde(rename = "MacAddress")]
     pub mac_address: Option<String>,
     #[serde(rename = "Networks")]
-    pub networks:
-        Option<std::collections::HashMap<String, Option<crate::v5::models::EndpointSettings>>>,
+    pub networks: Option<std::collections::HashMap<String, crate::v5::models::EndpointSettings>>,
     #[serde(rename = "Ports")]
-    pub ports:
-        Option<std::collections::HashMap<String, Option<Vec<crate::v5::models::PortBinding>>>>,
+    pub ports: Option<std::collections::HashMap<String, Vec<crate::v5::models::PortBinding>>>,
     #[serde(rename = "SandboxID")]
     pub sandbox_id: Option<String>,
     #[serde(rename = "SandboxKey")]

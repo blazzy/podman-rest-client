@@ -18,7 +18,7 @@ pub struct Container {
     #[serde(rename = "ImageID")]
     pub image_id: Option<String>,
     #[serde(rename = "Labels")]
-    pub labels: Option<std::collections::HashMap<String, Option<String>>>,
+    pub labels: Option<std::collections::HashMap<String, String>>,
     #[serde(rename = "Mounts")]
     pub mounts: Option<Vec<crate::v5::models::MountPoint>>,
     #[serde(rename = "Name")]

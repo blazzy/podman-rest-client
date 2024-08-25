@@ -20,6 +20,14 @@ where
     Ok(())
 }
 
+pub async fn execute_request_text<F>(config: &dyn ClientConfig, request: F) -> Result<String, Error>
+where
+    F: Fn(Builder) -> Result<http::request::Request<String>, Error>,
+{
+    let bytes = execute_request_bytes(config, request).await?;
+    Ok(String::from_utf8_lossy(&bytes).to_string())
+}
+
 pub async fn execute_request_json<U, F>(config: &dyn ClientConfig, request: F) -> Result<U, Error>
 where
     for<'a> U: serde::Deserialize<'a>,

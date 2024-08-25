@@ -548,6 +548,8 @@ mod registry_search_response;
 pub use registry_search_response::RegistrySearchResponse;
 mod container_exec_body;
 pub use container_exec_body::ContainerExecBody;
+mod container_exec_201;
+pub use container_exec_201::ContainerExec201;
 mod container_exec_libpod_body;
 pub use container_exec_libpod_body::ContainerExecLibpodBody;
 mod container_exec_libpod_201;

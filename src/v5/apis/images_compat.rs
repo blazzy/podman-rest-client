@@ -530,7 +530,7 @@ pub trait ImagesCompat: HasConfig + Send + Sync {
         params: Option<crate::v5::params::ImageSearch<'a>>,
     ) -> Pin<
         Box<
-            dyn Future<Output = Result<crate::v5::models::RegistrySearchResponse, Error>>
+            dyn Future<Output = Result<Vec<crate::v5::models::RegistrySearchResponse>, Error>>
                 + Send
                 + 'a,
         >,

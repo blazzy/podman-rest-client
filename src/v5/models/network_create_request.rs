@@ -23,11 +23,11 @@ pub struct NetworkCreateRequest {
     #[serde(rename = "Internal")]
     pub internal: Option<bool>,
     #[serde(rename = "Labels")]
-    pub labels: Option<std::collections::HashMap<String, Option<String>>>,
+    pub labels: Option<std::collections::HashMap<String, String>>,
     #[serde(rename = "Name")]
     pub name: Option<String>,
     #[serde(rename = "Options")]
-    pub options: Option<std::collections::HashMap<String, Option<String>>>,
+    pub options: Option<std::collections::HashMap<String, String>>,
     #[serde(rename = "Scope")]
     pub scope: Option<String>,
 }

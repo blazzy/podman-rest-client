@@ -9,8 +9,7 @@ pub struct NetworkResource {
     #[serde(rename = "ConfigOnly")]
     pub config_only: Option<bool>,
     #[serde(rename = "Containers")]
-    pub containers:
-        Option<std::collections::HashMap<String, Option<crate::v5::models::EndpointResource>>>,
+    pub containers: Option<std::collections::HashMap<String, crate::v5::models::EndpointResource>>,
     #[serde(rename = "Created")]
     pub created: Option<String>,
     #[serde(rename = "Driver")]
@@ -26,15 +25,15 @@ pub struct NetworkResource {
     #[serde(rename = "Internal")]
     pub internal: Option<bool>,
     #[serde(rename = "Labels")]
-    pub labels: Option<std::collections::HashMap<String, Option<String>>>,
+    pub labels: Option<std::collections::HashMap<String, String>>,
     #[serde(rename = "Name")]
     pub name: Option<String>,
     #[serde(rename = "Options")]
-    pub options: Option<std::collections::HashMap<String, Option<String>>>,
+    pub options: Option<std::collections::HashMap<String, String>>,
     #[serde(rename = "Peers")]
     pub peers: Option<Vec<crate::v5::models::PeerInfo>>,
     #[serde(rename = "Scope")]
     pub scope: Option<String>,
     #[serde(rename = "Services")]
-    pub services: Option<std::collections::HashMap<String, Option<crate::v5::models::ServiceInfo>>>,
+    pub services: Option<std::collections::HashMap<String, crate::v5::models::ServiceInfo>>,
 }

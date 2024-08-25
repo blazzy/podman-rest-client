@@ -101,7 +101,7 @@ pub struct ContainerStorageConfig {
     pub shm_size_systemd: Option<i64>,
     /// StorageOpts is the container's storage options
     /// Optional.
-    pub storage_opts: Option<std::collections::HashMap<String, Option<String>>>,
+    pub storage_opts: Option<std::collections::HashMap<String, String>>,
     /// Volatile specifies whether the container storage can be optimized
     /// at the cost of not syncing all the dirty files in memory.
     /// Optional.

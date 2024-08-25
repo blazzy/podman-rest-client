@@ -24,10 +24,10 @@ pub struct ImageConfig {
     pub env: Option<Vec<String>>,
     /// ExposedPorts a set of ports to expose from a container running this image.
     #[serde(rename = "ExposedPorts")]
-    pub exposed_ports: Option<std::collections::HashMap<String, Option<serde_json::Value>>>,
+    pub exposed_ports: Option<std::collections::HashMap<String, serde_json::Value>>,
     /// Labels contains arbitrary metadata for the container.
     #[serde(rename = "Labels")]
-    pub labels: Option<std::collections::HashMap<String, Option<String>>>,
+    pub labels: Option<std::collections::HashMap<String, String>>,
     /// StopSignal contains the system call signal that will be sent to the container to exit.
     #[serde(rename = "StopSignal")]
     pub stop_signal: Option<String>,
@@ -36,7 +36,7 @@ pub struct ImageConfig {
     pub user: Option<String>,
     /// Volumes is a set of directories describing where the process is likely write data specific to a container instance.
     #[serde(rename = "Volumes")]
-    pub volumes: Option<std::collections::HashMap<String, Option<serde_json::Value>>>,
+    pub volumes: Option<std::collections::HashMap<String, serde_json::Value>>,
     /// WorkingDir sets the current working directory of the entrypoint process in the container.
     #[serde(rename = "WorkingDir")]
     pub working_dir: Option<String>,

@@ -11,12 +11,11 @@ pub struct SpecGenerator {
     /// will be joined to the default network.
     /// Optional.
     #[serde(rename = "Networks")]
-    pub networks:
-        Option<std::collections::HashMap<String, Option<crate::v5::models::PerNetworkOptions>>>,
+    pub networks: Option<std::collections::HashMap<String, crate::v5::models::PerNetworkOptions>>,
     /// Annotations are key-value options passed into the container runtime
     /// that can be used to trigger special behavior.
     /// Optional.
-    pub annotations: Option<std::collections::HashMap<String, Option<String>>>,
+    pub annotations: Option<std::collections::HashMap<String, String>>,
     /// ApparmorProfile is the name of the Apparmor profile the container
     /// will use.
     /// Optional.
@@ -121,7 +120,7 @@ pub struct SpecGenerator {
     /// Env is a set of environment variables that will be set in the
     /// container.
     /// Optional.
-    pub env: Option<std::collections::HashMap<String, Option<String>>>,
+    pub env: Option<std::collections::HashMap<String, String>>,
     /// EnvHost indicates that the host environment should be added to container
     /// Optional.
     pub env_host: Option<bool>,
@@ -219,7 +218,7 @@ pub struct SpecGenerator {
     /// Labels are key-value pairs that are used to add metadata to
     /// containers.
     /// Optional.
-    pub labels: Option<std::collections::HashMap<String, Option<String>>>,
+    pub labels: Option<std::collections::HashMap<String, String>>,
     pub log_configuration: Option<crate::v5::models::LogConfigLibpod>,
     /// Passwd is a container run option that determines if we are validating users/groups before running the container
     pub manage_password: Option<bool>,
@@ -239,7 +238,7 @@ pub struct SpecGenerator {
     pub netns: Option<crate::v5::models::Namespace>,
     /// NetworkOptions are additional options for each network
     /// Optional.
-    pub network_options: Option<std::collections::HashMap<String, Option<Vec<String>>>>,
+    pub network_options: Option<std::collections::HashMap<String, Vec<String>>>,
     /// NoNewPrivileges is whether the container will set the no new
     /// privileges flag on create, which disables gaining additional
     /// privileges (e.g. via setuid) in the container.
@@ -351,7 +350,7 @@ pub struct SpecGenerator {
     pub seccomp_profile_path: Option<String>,
     /// EnvSecrets are secrets that will be set as environment variables
     /// Optional.
-    pub secret_env: Option<std::collections::HashMap<String, Option<String>>>,
+    pub secret_env: Option<std::collections::HashMap<String, String>>,
     /// Secrets are the secrets that will be added to the container
     /// Optional.
     pub secrets: Option<Vec<crate::v5::models::Secret>>,
@@ -383,9 +382,9 @@ pub struct SpecGenerator {
     pub stop_timeout: Option<u64>,
     /// StorageOpts is the container's storage options
     /// Optional.
-    pub storage_opts: Option<std::collections::HashMap<String, Option<String>>>,
+    pub storage_opts: Option<std::collections::HashMap<String, String>>,
     /// Sysctl sets kernel parameters for the container
-    pub sysctl: Option<std::collections::HashMap<String, Option<String>>>,
+    pub sysctl: Option<std::collections::HashMap<String, String>>,
     /// Systemd is whether the container will be started in systemd mode.
     /// Valid options are "true", "false", and "always".
     /// "true" enables this mode only if the binary run in the container is
@@ -403,19 +402,19 @@ pub struct SpecGenerator {
     /// IO read rate limit per cgroup per device, bytes per second
     #[serde(rename = "throttleReadBpsDevice")]
     pub throttle_read_bps_device:
-        Option<std::collections::HashMap<String, Option<crate::v5::models::LinuxThrottleDevice>>>,
+        Option<std::collections::HashMap<String, crate::v5::models::LinuxThrottleDevice>>,
     /// IO read rate limit per cgroup per device, IO per second
     #[serde(rename = "throttleReadIOPSDevice")]
     pub throttle_read_iops_device:
-        Option<std::collections::HashMap<String, Option<crate::v5::models::LinuxThrottleDevice>>>,
+        Option<std::collections::HashMap<String, crate::v5::models::LinuxThrottleDevice>>,
     /// IO write rate limit per cgroup per device, bytes per second
     #[serde(rename = "throttleWriteBpsDevice")]
     pub throttle_write_bps_device:
-        Option<std::collections::HashMap<String, Option<crate::v5::models::LinuxThrottleDevice>>>,
+        Option<std::collections::HashMap<String, crate::v5::models::LinuxThrottleDevice>>,
     /// IO write rate limit per cgroup per device, IO per second
     #[serde(rename = "throttleWriteIOPSDevice")]
     pub throttle_write_iops_device:
-        Option<std::collections::HashMap<String, Option<crate::v5::models::LinuxThrottleDevice>>>,
+        Option<std::collections::HashMap<String, crate::v5::models::LinuxThrottleDevice>>,
     /// Timeout is a maximum time in seconds the container will run before
     /// main process is sent SIGKILL.
     /// If 0 is used, signal will not be sent. Container can run indefinitely
@@ -431,7 +430,7 @@ pub struct SpecGenerator {
     /// CgroupConf are key-value options passed into the container runtime
     /// that are used to configure cgroup v2.
     /// Optional.
-    pub unified: Option<std::collections::HashMap<String, Option<String>>>,
+    pub unified: Option<std::collections::HashMap<String, String>>,
     /// Unmask a path in the container. Some paths are masked by default,
     /// preventing them from being accessed within the container; this undoes
     /// that masking. If ALL is passed, all paths will be unmasked.
@@ -481,7 +480,7 @@ pub struct SpecGenerator {
     /// Weight per cgroup per device, can override BlkioWeight
     #[serde(rename = "weightDevice")]
     pub weight_device:
-        Option<std::collections::HashMap<String, Option<crate::v5::models::LinuxWeightDevice>>>,
+        Option<std::collections::HashMap<String, crate::v5::models::LinuxWeightDevice>>,
     /// WorkDir is the container's working directory.
     /// If unset, the default, /, will be used.
     /// Optional.

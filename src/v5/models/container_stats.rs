@@ -29,7 +29,7 @@ pub struct ContainerStats {
     /// Map of interface name to network statistics for that interface.
     #[serde(rename = "Network")]
     pub network:
-        Option<std::collections::HashMap<String, Option<crate::v5::models::ContainerNetworkStats>>>,
+        Option<std::collections::HashMap<String, crate::v5::models::ContainerNetworkStats>>,
     #[serde(rename = "PIDs")]
     pub pi_ds: Option<u64>,
     #[serde(rename = "PerCPU")]

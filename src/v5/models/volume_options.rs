@@ -5,7 +5,7 @@ pub struct VolumeOptions {
     #[serde(rename = "DriverConfig")]
     pub driver_config: Option<crate::v5::models::Driver>,
     #[serde(rename = "Labels")]
-    pub labels: Option<std::collections::HashMap<String, Option<String>>>,
+    pub labels: Option<std::collections::HashMap<String, String>>,
     #[serde(rename = "NoCopy")]
     pub no_copy: Option<bool>,
     #[serde(rename = "Subpath")]

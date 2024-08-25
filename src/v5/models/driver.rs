@@ -5,5 +5,5 @@ pub struct Driver {
     #[serde(rename = "Name")]
     pub name: Option<String>,
     #[serde(rename = "Options")]
-    pub options: Option<std::collections::HashMap<String, Option<String>>>,
+    pub options: Option<std::collections::HashMap<String, String>>,
 }

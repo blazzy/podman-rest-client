@@ -10,7 +10,7 @@ pub struct StoreInfo {
     #[serde(rename = "graphDriverName")]
     pub graph_driver_name: Option<String>,
     #[serde(rename = "graphOptions")]
-    pub graph_options: Option<std::collections::HashMap<String, Option<()>>>,
+    pub graph_options: Option<std::collections::HashMap<String, serde_json::Value>>,
     #[serde(rename = "graphRoot")]
     pub graph_root: Option<String>,
     /// GraphRootAllocated is how much space the graphroot has in bytes
@@ -20,7 +20,7 @@ pub struct StoreInfo {
     #[serde(rename = "graphRootUsed")]
     pub graph_root_used: Option<u64>,
     #[serde(rename = "graphStatus")]
-    pub graph_status: Option<std::collections::HashMap<String, Option<String>>>,
+    pub graph_status: Option<std::collections::HashMap<String, String>>,
     #[serde(rename = "imageCopyTmpDir")]
     pub image_copy_tmp_dir: Option<String>,
     #[serde(rename = "imageStore")]

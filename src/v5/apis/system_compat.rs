@@ -105,7 +105,7 @@ pub trait SystemCompat: HasConfig + Send + Sync {
     fn system_ping<'a>(
         &'a self,
     ) -> Pin<Box<dyn Future<Output = Result<String, Error>> + Send + 'a>> {
-        Box::pin(request::execute_request_json(
+        Box::pin(request::execute_request_text(
             self.get_config(),
             move |mut req_builder: Builder| {
                 req_builder = req_builder.method("GET");

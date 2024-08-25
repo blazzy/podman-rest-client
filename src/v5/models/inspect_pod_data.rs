@@ -46,7 +46,7 @@ pub struct InspectPodData {
     /// Labels is a set of key-value labels that have been applied to the
     /// pod.
     #[serde(rename = "Labels")]
-    pub labels: Option<std::collections::HashMap<String, Option<String>>>,
+    pub labels: Option<std::collections::HashMap<String, String>>,
     /// Number of the pod's Libpod lock.
     #[serde(rename = "LockNumber")]
     pub lock_number: Option<u32>,

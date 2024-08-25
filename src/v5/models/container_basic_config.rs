@@ -5,7 +5,7 @@ pub struct ContainerBasicConfig {
     /// Annotations are key-value options passed into the container runtime
     /// that can be used to trigger special behavior.
     /// Optional.
-    pub annotations: Option<std::collections::HashMap<String, Option<String>>>,
+    pub annotations: Option<std::collections::HashMap<String, String>>,
     /// Command is the container's command.
     /// If not given and Image is specified, this will be populated by the
     /// image's configuration.
@@ -38,7 +38,7 @@ pub struct ContainerBasicConfig {
     /// Env is a set of environment variables that will be set in the
     /// container.
     /// Optional.
-    pub env: Option<std::collections::HashMap<String, Option<String>>>,
+    pub env: Option<std::collections::HashMap<String, String>>,
     /// EnvHost indicates that the host environment should be added to container
     /// Optional.
     pub env_host: Option<bool>,
@@ -69,7 +69,7 @@ pub struct ContainerBasicConfig {
     /// Labels are key-value pairs that are used to add metadata to
     /// containers.
     /// Optional.
-    pub labels: Option<std::collections::HashMap<String, Option<String>>>,
+    pub labels: Option<std::collections::HashMap<String, String>>,
     pub log_configuration: Option<crate::v5::models::LogConfigLibpod>,
     /// Passwd is a container run option that determines if we are validating users/groups before running the container
     pub manage_password: Option<bool>,
@@ -113,7 +113,7 @@ pub struct ContainerBasicConfig {
     pub sdnotify_mode: Option<String>,
     /// EnvSecrets are secrets that will be set as environment variables
     /// Optional.
-    pub secret_env: Option<std::collections::HashMap<String, Option<String>>>,
+    pub secret_env: Option<std::collections::HashMap<String, String>>,
     /// Stdin is whether the container will keep its STDIN open.
     /// Optional.
     pub stdin: Option<bool>,
@@ -126,7 +126,7 @@ pub struct ContainerBasicConfig {
     /// Optional.
     pub stop_timeout: Option<u64>,
     /// Sysctl sets kernel parameters for the container
-    pub sysctl: Option<std::collections::HashMap<String, Option<String>>>,
+    pub sysctl: Option<std::collections::HashMap<String, String>>,
     /// Systemd is whether the container will be started in systemd mode.
     /// Valid options are "true", "false", and "always".
     /// "true" enables this mode only if the binary run in the container is

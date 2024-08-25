@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 /// ImageData holds the inspect information of an image.
 pub struct ImageData {
     #[serde(rename = "Annotations")]
-    pub annotations: Option<std::collections::HashMap<String, Option<String>>>,
+    pub annotations: Option<std::collections::HashMap<String, String>>,
     #[serde(rename = "Architecture")]
     pub architecture: Option<String>,
     #[serde(rename = "Author")]
@@ -25,7 +25,7 @@ pub struct ImageData {
     #[serde(rename = "Id")]
     pub id: Option<String>,
     #[serde(rename = "Labels")]
-    pub labels: Option<std::collections::HashMap<String, Option<String>>>,
+    pub labels: Option<std::collections::HashMap<String, String>>,
     #[serde(rename = "ManifestType")]
     pub manifest_type: Option<String>,
     #[serde(rename = "NamesHistory")]

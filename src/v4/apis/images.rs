@@ -182,8 +182,8 @@ pub trait Images: HasConfig + Send + Sync {
         &'a self,
         name: &'a str,
         params: Option<crate::v4::params::ImageChangesLibpod<'a>>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
-        Box::pin(request::execute_request_unit(
+    ) -> Pin<Box<dyn Future<Output = Result<String, Error>> + Send + 'a>> {
+        Box::pin(request::execute_request_text(
             self.get_config(),
             move |mut req_builder: Builder| {
                 req_builder = req_builder.method("GET");
@@ -826,8 +826,8 @@ pub trait Images: HasConfig + Send + Sync {
     fn image_search_libpod<'a>(
         &'a self,
         params: Option<crate::v4::params::ImageSearchLibpod<'a>>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
-        Box::pin(request::execute_request_unit(
+    ) -> Pin<Box<dyn Future<Output = Result<Vec<()>, Error>> + Send + 'a>> {
+        Box::pin(request::execute_request_json(
             self.get_config(),
             move |mut req_builder: Builder| {
                 req_builder = req_builder.method("GET");

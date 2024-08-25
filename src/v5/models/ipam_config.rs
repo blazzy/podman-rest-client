@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 /// IPAMConfig represents IPAM configurations
 pub struct IpamConfig {
     #[serde(rename = "AuxiliaryAddresses")]
-    pub auxiliary_addresses: Option<std::collections::HashMap<String, Option<String>>>,
+    pub auxiliary_addresses: Option<std::collections::HashMap<String, String>>,
     #[serde(rename = "Gateway")]
     pub gateway: Option<String>,
     #[serde(rename = "IPRange")]

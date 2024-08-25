@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 pub struct LibpodInfo {
     pub host: Option<crate::v5::models::HostInfo>,
     pub plugins: Option<crate::v5::models::Plugins>,
-    pub registries: Option<std::collections::HashMap<String, Option<()>>>,
+    pub registries: Option<std::collections::HashMap<String, serde_json::Value>>,
     pub store: Option<crate::v5::models::StoreInfo>,
     pub version: Option<crate::v5::models::Version>,
 }

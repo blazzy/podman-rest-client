@@ -14,8 +14,9 @@ pub trait ExecCompat: HasConfig + Send + Sync {
         &'a self,
         name: &'a str,
         control: crate::v5::models::ContainerExecBody,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
-        Box::pin(request::execute_request_unit(
+    ) -> Pin<Box<dyn Future<Output = Result<crate::v5::models::ContainerExec201, Error>> + Send + 'a>>
+    {
+        Box::pin(request::execute_request_json(
             self.get_config(),
             move |mut req_builder: Builder| {
                 req_builder = req_builder.method("POST");
@@ -114,8 +115,14 @@ pub trait ExecCompat: HasConfig + Send + Sync {
         &'a self,
         id: &'a str,
         control: crate::v5::models::ExecStartBody,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
-        Box::pin(request::execute_request_unit(
+    ) -> Pin<
+        Box<
+            dyn Future<Output = Result<hyper_util::rt::TokioIo<hyper::upgrade::Upgraded>, Error>>
+                + Send
+                + 'a,
+        >,
+    > {
+        Box::pin(request::execute_request_upgrade(
             self.get_config(),
             move |mut req_builder: Builder| {
                 req_builder = req_builder.method("POST");

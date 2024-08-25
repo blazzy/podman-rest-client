@@ -12,7 +12,7 @@ pub struct InspectContainerHostConfig {
     /// Annotations are provided to the runtime when the container is
     /// started.
     #[serde(rename = "Annotations")]
-    pub annotations: Option<std::collections::HashMap<String, Option<String>>>,
+    pub annotations: Option<std::collections::HashMap<String, String>>,
     /// AutoRemove is whether the container will be automatically removed on
     /// exiting.
     /// It is not handled directly within libpod and is stored in an
@@ -99,7 +99,7 @@ pub struct InspectContainerHostConfig {
     pub cgroup: Option<String>,
     /// CgroupConf is the configuration for cgroup v2.
     #[serde(rename = "CgroupConf")]
-    pub cgroup_conf: Option<std::collections::HashMap<String, Option<String>>>,
+    pub cgroup_conf: Option<std::collections::HashMap<String, String>>,
     /// CgroupManager is the cgroup manager used by the container.
     /// At present, allowed values are either "cgroupfs" or "systemd".
     #[serde(rename = "CgroupManager")]
@@ -310,7 +310,7 @@ pub struct InspectContainerHostConfig {
     /// bound to multiple host ports (on different IPs).
     #[serde(rename = "PortBindings")]
     pub port_bindings:
-        Option<std::collections::HashMap<String, Option<Vec<crate::v5::models::InspectHostPort>>>>,
+        Option<std::collections::HashMap<String, Vec<crate::v5::models::InspectHostPort>>>,
     /// Privileged indicates whether the container is running with elevated
     /// privileges.
     /// This has a very specific meaning in the Docker sense, so it's very
@@ -342,7 +342,7 @@ pub struct InspectContainerHostConfig {
     /// container.
     /// It is a map of destination path to options for the mount.
     #[serde(rename = "Tmpfs")]
-    pub tmpfs: Option<std::collections::HashMap<String, Option<String>>>,
+    pub tmpfs: Option<std::collections::HashMap<String, String>>,
     /// UTSMode represents the configuration of the container's UID
     /// namespace.
     /// Populated as follows:

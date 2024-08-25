@@ -22,7 +22,7 @@ pub struct LibpodImageSummary {
     #[serde(rename = "IsManifestList")]
     pub is_manifest_list: Option<bool>,
     #[serde(rename = "Labels")]
-    pub labels: Option<std::collections::HashMap<String, Option<String>>>,
+    pub labels: Option<std::collections::HashMap<String, String>>,
     #[serde(rename = "Names")]
     pub names: Option<Vec<String>>,
     #[serde(rename = "Os")]

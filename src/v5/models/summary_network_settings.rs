@@ -4,6 +4,5 @@ use serde::{Deserialize, Serialize};
 /// in /containers/json
 pub struct SummaryNetworkSettings {
     #[serde(rename = "Networks")]
-    pub networks:
-        Option<std::collections::HashMap<String, Option<crate::v5::models::EndpointSettings>>>,
+    pub networks: Option<std::collections::HashMap<String, crate::v5::models::EndpointSettings>>,
 }

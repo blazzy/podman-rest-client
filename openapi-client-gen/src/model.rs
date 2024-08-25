@@ -178,12 +178,6 @@ fn from_yaml(
     match type_name {
         "object" => {
             let additional_properties = &yaml["additionalProperties"];
-            println!(
-                "parent_name {} {} {}",
-                parent_name,
-                additional_properties.is_null(),
-                additional_properties.is_badvalue(),
-            );
 
             if !additional_properties.is_null() && !additional_properties.is_badvalue() {
                 let nullable = Some(true) == additional_properties["nullable"].as_bool()

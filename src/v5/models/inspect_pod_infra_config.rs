@@ -26,7 +26,7 @@ pub struct InspectPodInfraConfig {
     pub host_network: Option<bool>,
     /// NetworkOptions are additional options for each network
     #[serde(rename = "NetworkOptions")]
-    pub network_options: Option<std::collections::HashMap<String, Option<Vec<String>>>>,
+    pub network_options: Option<std::collections::HashMap<String, Vec<String>>>,
     /// Networks is a list of networks the pod will join.
     #[serde(rename = "Networks")]
     pub networks: Option<Vec<String>>,

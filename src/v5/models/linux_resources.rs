@@ -16,7 +16,7 @@ pub struct LinuxResources {
     /// Rdma resource restriction configuration.
     /// Limits are a set of key value pairs that define RDMA resource limits,
     /// where the key is device name and value is resource limits.
-    pub rdma: Option<std::collections::HashMap<String, Option<crate::v5::models::LinuxRdma>>>,
+    pub rdma: Option<std::collections::HashMap<String, crate::v5::models::LinuxRdma>>,
     /// Unified resources.
-    pub unified: Option<std::collections::HashMap<String, Option<String>>>,
+    pub unified: Option<std::collections::HashMap<String, String>>,
 }

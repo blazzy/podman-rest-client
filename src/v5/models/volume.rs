@@ -12,7 +12,7 @@ pub struct Volume {
     pub driver: String,
     /// User-defined key/value metadata.
     #[serde(rename = "Labels")]
-    pub labels: std::collections::HashMap<String, Option<String>>,
+    pub labels: std::collections::HashMap<String, String>,
     /// Mount path of the volume on the host.
     #[serde(rename = "Mountpoint")]
     pub mountpoint: String,
@@ -21,7 +21,7 @@ pub struct Volume {
     pub name: String,
     /// The driver specific options used when creating the volume.
     #[serde(rename = "Options")]
-    pub options: std::collections::HashMap<String, Option<String>>,
+    pub options: std::collections::HashMap<String, String>,
     /// The level at which the volume exists. Either `global` for cluster-wide,
     /// or `local` for machine level.
     #[serde(rename = "Scope")]
@@ -33,7 +33,7 @@ pub struct Volume {
     /// The `Status` field is optional, and is omitted if the volume driver
     /// does not support this feature.
     #[serde(rename = "Status")]
-    pub status: Option<std::collections::HashMap<String, Option<()>>>,
+    pub status: Option<std::collections::HashMap<String, serde_json::Value>>,
     #[serde(rename = "UsageData")]
     pub usage_data: Option<crate::v5::models::UsageData>,
 }

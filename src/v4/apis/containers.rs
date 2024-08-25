@@ -301,8 +301,8 @@ pub trait Containers: HasConfig + Send + Sync {
         &'a self,
         name: &'a str,
         params: Option<crate::v4::params::ContainerChangesLibpod<'a>>,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
-        Box::pin(request::execute_request_unit(
+    ) -> Pin<Box<dyn Future<Output = Result<String, Error>> + Send + 'a>> {
+        Box::pin(request::execute_request_text(
             self.get_config(),
             move |mut req_builder: Builder| {
                 req_builder = req_builder.method("GET");
@@ -1220,7 +1220,7 @@ pub trait Containers: HasConfig + Send + Sync {
         &'a self,
     ) -> Pin<
         Box<
-            dyn Future<Output = Result<std::collections::HashMap<String, Option<String>>, Error>>
+            dyn Future<Output = Result<std::collections::HashMap<String, String>, Error>>
                 + Send
                 + 'a,
         >,
@@ -1293,7 +1293,7 @@ pub trait Containers: HasConfig + Send + Sync {
         params: Option<crate::v4::params::GenerateSystemdLibpod<'a>>,
     ) -> Pin<
         Box<
-            dyn Future<Output = Result<std::collections::HashMap<String, Option<String>>, Error>>
+            dyn Future<Output = Result<std::collections::HashMap<String, String>, Error>>
                 + Send
                 + 'a,
         >,
@@ -1378,7 +1378,7 @@ pub trait Containers: HasConfig + Send + Sync {
         &'a self,
         params: Option<crate::v4::params::GenerateKubeLibpod<'a>>,
     ) -> Pin<Box<dyn Future<Output = Result<String, Error>> + Send + 'a>> {
-        Box::pin(request::execute_request_json(
+        Box::pin(request::execute_request_text(
             self.get_config(),
             move |mut req_builder: Builder| {
                 req_builder = req_builder.method("GET");

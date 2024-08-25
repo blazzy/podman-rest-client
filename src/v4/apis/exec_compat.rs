@@ -112,8 +112,8 @@ pub trait ExecCompat: HasConfig + Send + Sync {
         &'a self,
         id: &'a str,
         control: crate::v4::models::ExecStartBody,
-    ) -> Pin<Box<dyn Future<Output = Result<(), Error>> + Send + 'a>> {
-        Box::pin(request::execute_request_unit(
+    ) -> Pin<Box<dyn Future<Output = Result<bytes::Bytes, Error>> + Send + 'a>> {
+        Box::pin(request::execute_request_json(
             self.get_config(),
             move |mut req_builder: Builder| {
                 req_builder = req_builder.method("POST");

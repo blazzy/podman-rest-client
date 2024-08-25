@@ -9,8 +9,7 @@ pub struct PodSpecGenerator {
     /// If the map is empty and the bridge network mode is set the container
     /// will be joined to the default network.
     #[serde(rename = "Networks")]
-    pub networks:
-        Option<std::collections::HashMap<String, Option<crate::v5::models::PerNetworkOptions>>>,
+    pub networks: Option<std::collections::HashMap<String, crate::v5::models::PerNetworkOptions>>,
     /// CgroupParent is the parent for the Cgroup that the pod will create.
     /// This pod cgroup will, in turn, be the default cgroup parent for all
     /// containers in the pod.
@@ -94,7 +93,7 @@ pub struct PodSpecGenerator {
     pub ipcns: Option<crate::v5::models::Namespace>,
     /// Labels are key-value pairs that are used to add metadata to pods.
     /// Optional.
-    pub labels: Option<std::collections::HashMap<String, Option<String>>>,
+    pub labels: Option<std::collections::HashMap<String, String>>,
     /// Mounts are mounts that will be added to the pod.
     /// These will supersede Image Volumes and VolumesFrom volumes where
     /// there are conflicts.
@@ -107,7 +106,7 @@ pub struct PodSpecGenerator {
     pub netns: Option<crate::v5::models::Namespace>,
     /// NetworkOptions are additional options for each network
     /// Optional.
-    pub network_options: Option<std::collections::HashMap<String, Option<Vec<String>>>>,
+    pub network_options: Option<std::collections::HashMap<String, Vec<String>>>,
     /// NoInfra tells the pod not to create an infra container. If this is
     /// done, many networking-related options will become unavailable.
     /// Conflicts with setting any options in PodNetworkConfig, and the
@@ -178,11 +177,11 @@ pub struct PodSpecGenerator {
     /// Optional
     pub shm_size_systemd: Option<i64>,
     /// Sysctl sets kernel parameters for the pod
-    pub sysctl: Option<std::collections::HashMap<String, Option<String>>>,
+    pub sysctl: Option<std::collections::HashMap<String, String>>,
     /// ThrottleReadBpsDevice contains the rate at which the devices in the pod can be read from/accessed
     #[serde(rename = "throttleReadBpsDevice")]
     pub throttle_read_bps_device:
-        Option<std::collections::HashMap<String, Option<crate::v5::models::LinuxThrottleDevice>>>,
+        Option<std::collections::HashMap<String, crate::v5::models::LinuxThrottleDevice>>,
     pub userns: Option<crate::v5::models::Namespace>,
     pub utsns: Option<crate::v5::models::Namespace>,
     /// Volumes are named volumes that will be added to the pod.

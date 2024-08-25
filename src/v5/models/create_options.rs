@@ -11,10 +11,10 @@ pub struct CreateOptions {
     /// A mapping of driver options and values. These options are
     /// passed directly to the driver and are driver specific.
     #[serde(rename = "DriverOpts")]
-    pub driver_opts: Option<std::collections::HashMap<String, Option<String>>>,
+    pub driver_opts: Option<std::collections::HashMap<String, String>>,
     /// User-defined key/value metadata.
     #[serde(rename = "Labels")]
-    pub labels: Option<std::collections::HashMap<String, Option<String>>>,
+    pub labels: Option<std::collections::HashMap<String, String>>,
     /// The new volume's name. If not specified, Docker generates a name.
     #[serde(rename = "Name")]
     pub name: Option<String>,

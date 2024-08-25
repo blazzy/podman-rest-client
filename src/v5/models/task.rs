@@ -7,7 +7,7 @@ pub struct Task {
     #[serde(rename = "EndpointIP")]
     pub endpoint_ip: Option<String>,
     #[serde(rename = "Info")]
-    pub info: Option<std::collections::HashMap<String, Option<String>>>,
+    pub info: Option<std::collections::HashMap<String, String>>,
     #[serde(rename = "Name")]
     pub name: Option<String>,
 }
