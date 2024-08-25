@@ -1,3 +1,5 @@
+set -euo pipefail
+
 # Use openapi-client-gen to auto generate the basic podman-autogen-api client
 cargo run -p openapi-client-gen -- --skip-default-client --module --common-dir ./src/api_common --hash-maps-always-nullable ./swagger/swagger-v5.1.0.modified.yaml ./src/v5
 
