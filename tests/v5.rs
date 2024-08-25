@@ -540,7 +540,7 @@ async fn it_can_do_a_system_ping() {
     let config = Config::guess().await.unwrap();
     let client = PodmanRestClient::new(config).await.unwrap();
     let string = client.system_ping().await.unwrap();
-    assert_eq!("Ok", string);
+    assert_eq!("OK", string);
 }
 
 #[tokio::test]
