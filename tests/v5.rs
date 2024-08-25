@@ -489,3 +489,98 @@ async fn it_execs_a_shell_with_a_tty() {
 
     common::delete_container(&client, name).await;
 }
+
+#[tokio::test]
+async fn it_execs_containers_compat() {
+    common::test_init().await;
+
+    let config = Config::guess().await.unwrap();
+    let client = PodmanRestClient::new(config).await.unwrap();
+
+    common::pull_nginx_image(&client).await;
+    let name = "podman_rest_client_exec_compat_test";
+
+    common::create_nginx_container(&client, name).await;
+
+    client.container_start_libpod(name, None).await.unwrap();
+
+    let exec = client
+        .container_exec(
+            name,
+            models::ContainerExecBody {
+                attach_stdout: Some(true),
+                attach_stderr: Some(true),
+                cmd: Some(vec!["echo".to_string(), "\"hello world\"".to_string()]),
+                ..Default::default()
+            },
+        )
+        .await
+        .unwrap();
+
+    let conn = client
+        .exec_start(&exec.id, models::ExecStartBody::default())
+        .await
+        .unwrap();
+
+    let mut reader = AttachFrameStream::new(conn);
+
+    assert_eq!(
+        reader.next().await.unwrap().unwrap(),
+        AttachFrame::Stdout(Bytes::from_static(b"\"hello world\"\n")),
+    );
+    assert!(reader.next().await.is_none());
+
+    common::delete_container(&client, name).await;
+}
+
+#[tokio::test]
+async fn it_can_do_a_system_ping() {
+    common::test_init().await;
+
+    let config = Config::guess().await.unwrap();
+    let client = PodmanRestClient::new(config).await.unwrap();
+    let string = client.system_ping().await.unwrap();
+    assert_eq!("Ok", string);
+}
+
+#[tokio::test]
+async fn it_can_get_system_info() {
+    common::test_init().await;
+
+    let config = Config::guess().await.unwrap();
+    let client = PodmanRestClient::new(config).await.unwrap();
+    let info = client.system_info_libpod().await;
+    assert!(info.is_ok());
+}
+
+#[tokio::test]
+async fn it_can_search_for_images_via_compat_endpoint() {
+    common::test_init().await;
+
+    let config = Config::guess().await.unwrap();
+    let client = PodmanRestClient::new(config).await.unwrap();
+    let res = client
+        .image_search(Some(params::ImageSearch {
+            term: Some("debian"),
+            ..Default::default()
+        }))
+        .await
+        .unwrap();
+    assert!(res.len() > 1);
+}
+
+#[tokio::test]
+async fn it_can_search_for_images() {
+    common::test_init().await;
+
+    let config = Config::guess().await.unwrap();
+    let client = PodmanRestClient::new(config).await.unwrap();
+    let res = client
+        .image_search_libpod(Some(params::ImageSearchLibpod {
+            term: Some("debian"),
+            ..Default::default()
+        }))
+        .await
+        .unwrap();
+    assert!(res.len() > 1);
+}
