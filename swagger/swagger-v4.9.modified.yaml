@@ -4412,7 +4412,10 @@ paths:
                 - application/json
             responses:
                 "200":
-                    $ref: '#/responses/registrySearchResponse'
+                    schema:
+                      items:
+                        $ref: '#/responses/registrySearchResponse'
+                      type: array
                 "500":
                     $ref: '#/responses/internalError'
             summary: Search images

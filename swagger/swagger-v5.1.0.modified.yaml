@@ -11568,6 +11568,13 @@ paths:
             responses:
                 "201":
                     description: no error
+                    schema:
+                      properties:
+                        Id:
+                          type: string
+                      type: object
+                      required:
+                          - Id
                 "404":
                     $ref: '#/responses/containerNotFound'
                 "409":
@@ -12241,6 +12248,8 @@ paths:
             produces:
                 - application/octet-stream
             responses:
+                "101":
+                    description: No error, connection has been hijacked for transporting streams.
                 "200":
                     description: no error
                 "404":
@@ -12629,7 +12638,10 @@ paths:
                 - application/json
             responses:
                 "200":
-                    $ref: '#/responses/registrySearchResponse'
+                    schema:
+                      items:
+                        $ref: '#/responses/registrySearchResponse'
+                      type: array
                 "400":
                     $ref: '#/responses/badParamError'
                 "500":
@@ -15241,7 +15253,10 @@ paths:
                 - application/json
             responses:
                 "200":
-                    $ref: '#/responses/registrySearchResponse'
+                    schema:
+                      items:
+                        $ref: '#/responses/registrySearchResponse'
+                      type: array
                 "500":
                     $ref: '#/responses/internalError'
             summary: Search images
