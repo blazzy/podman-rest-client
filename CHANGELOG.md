@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## v0.12.5 - 2024-08-25
 
 * Fix image search endpoints
 * Fix system_info_libpod endpoint
