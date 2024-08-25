@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+* Fix image search endpoints
+* Fix system_info_libpod endpoint
+* Fix ping endpoint
+* Apply experimental attach support to compat endpoints
+
 ## v0.12.4 - 2024-08-24
 
 * Experimental attach/exec support ([#26](https://github.com/blazzy/podman-rest-client/pull/26))
