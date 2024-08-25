@@ -155,11 +155,12 @@ mod unix_socket;
 pub mod v4;
 
 mod api_common;
+mod attach_frame_stream;
 
-pub mod attach_frame_stream;
 #[cfg_attr(docsrs, doc(cfg(feature = "v5")))]
 #[cfg(feature = "v5")]
 pub mod v5;
+
 pub use api_common::Error;
 pub use attach_frame_stream::AttachFrame;
 pub use attach_frame_stream::AttachFrameStream;

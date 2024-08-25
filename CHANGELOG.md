@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+Breaking changes:
+
+* The attach_frame_stream module is not exposed anymore 
+
 ## v0.12.5 - 2024-08-25
 
 * Fix image search endpoints
