@@ -6,6 +6,7 @@ use yaml_rust2::Yaml;
 use crate::error::Error;
 use crate::model::Model;
 use crate::parse;
+use crate::spec::Config;
 
 pub struct Parameter {
     pub name: String,
@@ -131,10 +132,17 @@ impl BodyParameter {
         base_name: &str,
         path_ref: String,
         models: &mut BTreeMap<String, Model>,
+        config: &Config,
     ) -> Result<Self, Error> {
         let schema = &yaml["schema"];
         let model_ref = format!("{}/{}", path_ref, "body");
-        let model = Model::new(format!("{}Body", base_name), schema, &model_ref, models)?;
+        let model = Model::new(
+            format!("{}Body", base_name),
+            schema,
+            &model_ref,
+            models,
+            config,
+        )?;
 
         Ok(BodyParameter {
             name: parse::string(&yaml["name"], "parameter name")?,

@@ -13,19 +13,28 @@ use crate::tag::Tag;
 
 #[derive(Default)]
 pub struct Spec {
+    config: Config,
     pub base_path: String,
     pub models: BTreeMap<String, Model>,
     pub tags: BTreeMap<String, Tag>,
 }
 
+#[derive(Default, Clone)]
+pub struct Config {
+    pub hash_maps_always_nullable: bool,
+}
+
 impl Spec {
-    pub fn from_yaml_string(string: &str) -> Result<Spec, Error> {
+    pub fn from_yaml_string(string: &str, config: &Config) -> Result<Spec, Error> {
         let yaml = YamlLoader::load_from_str(string)?;
-        Spec::from_yaml(&yaml[0])
+        Spec::from_yaml(&yaml[0], config)
     }
 
-    pub fn from_yaml(yaml: &Yaml) -> Result<Spec, Error> {
-        let mut spec = Spec::default();
+    pub fn from_yaml(yaml: &Yaml, config: &Config) -> Result<Spec, Error> {
+        let mut spec = Spec {
+            config: config.clone(),
+            ..Spec::default()
+        };
 
         let host: String = parse::string(&yaml["host"], "host")?;
         let base_path: String = parse::string(&yaml["basePath"], "basePath").unwrap_or("/".into());
@@ -80,7 +89,13 @@ impl Spec {
         for (key, value) in yaml {
             let name: String = parse::string(key, "response name")?;
             let model_ref = format!("#/responses/{}", name);
-            Model::new(name, &value["schema"], &model_ref, &mut self.models)?;
+            Model::new(
+                name,
+                &value["schema"],
+                &model_ref,
+                &mut self.models,
+                &self.config,
+            )?;
         }
         Ok(())
     }
@@ -89,7 +104,7 @@ impl Spec {
         for (key, value) in yaml {
             let name: String = parse::string(key, "definition name")?;
             let model_ref = format!("#/definitions/{}", name);
-            Model::new(name, value, &model_ref, &mut self.models)?;
+            Model::new(name, value, &model_ref, &mut self.models, &self.config)?;
         }
         Ok(())
     }
@@ -129,6 +144,7 @@ impl Spec {
                                         operation_id,
                                         format!("#paths/{}/parameters", operation_id),
                                         &mut self.models,
+                                        &self.config,
                                     )?)
                                 }
                                 _ => return Err(Error::UnrecognizedRequestPart(part_name.into())),
@@ -174,6 +190,7 @@ impl Spec {
                                     yaml,
                                     &format!("#paths/{}/responses/{}", operation_id, code),
                                     &mut self.models,
+                                    &self.config,
                                 )?,
                             };
                             operation.responses.insert(code.clone(), model);
@@ -209,13 +226,16 @@ mod tests {
 
     #[test]
     fn builds_base_path() {
-        let spec = Spec::from_yaml_string(indoc! {r#"
+        let spec = Spec::from_yaml_string(
+            indoc! {r#"
             basePath: /
             host: example.com
             schemes:
                 - http
                 - https
-            "#})
+            "#},
+            &Config::default(),
+        )
         .unwrap();
         assert_eq!(spec.base_path, "http://example.com/");
     }

@@ -4,6 +4,7 @@ use yaml_rust2::Yaml;
 
 use crate::error::Error;
 use crate::parse;
+use crate::spec::Config;
 
 #[derive(Clone)]
 pub struct Model {
@@ -97,8 +98,9 @@ impl Model {
         yaml: &Yaml,
         model_ref: &String,
         models: &mut BTreeMap<String, Model>,
+        config: &Config,
     ) -> Result<Model, Error> {
-        let data: ModelData = from_yaml(yaml, &name, model_ref, models)?;
+        let data: ModelData = from_yaml(yaml, &name, model_ref, models, config)?;
         let model = Model {
             name,
             title: yaml["title"].as_str().map(|d| d.to_string()),
@@ -154,6 +156,7 @@ fn from_yaml(
     parent_name: &String,
     model_ref: &String,
     models: &mut BTreeMap<String, Model>,
+    config: &Config,
 ) -> Result<ModelData, Error> {
     if !yaml["$ref"].is_badvalue() && !yaml["$ref"].is_null() {
         return Ok(ModelData::Ref(parse::string(
@@ -184,8 +187,9 @@ fn from_yaml(
                         additional_properties,
                         &format!("{}/{}", model_ref, "additionalProperties"),
                         models,
+                        config,
                     )?),
-                    nullable,
+                    config.hash_maps_always_nullable || nullable,
                 ));
             }
 
@@ -206,6 +210,7 @@ fn from_yaml(
                         yaml,
                         &format!("{}/{}", model_ref, name),
                         models,
+                        config,
                     )?;
 
                     properties.push(Property {
@@ -234,6 +239,7 @@ fn from_yaml(
                 &yaml["items"],
                 &format!("{}/{}", model_ref, "items"),
                 models,
+                config,
             )?);
             Ok(ModelData::Array(items))
         }

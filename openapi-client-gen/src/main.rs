@@ -37,6 +37,9 @@ struct Cli {
     /// Do not generate the default client struct
     #[arg(long)]
     skip_default_client: bool,
+    /// Assume all hashmap values can be nullable
+    #[arg(long)]
+    hash_maps_always_nullable: bool,
 }
 
 fn main() -> Result<(), Error> {
@@ -56,7 +59,12 @@ fn app() -> Result<(), Error> {
     let cli = Cli::parse();
 
     let contents = fs::read_to_string(cli.input_spec_file)?;
-    let spec = spec::Spec::from_yaml_string(&contents)?;
+    let spec = spec::Spec::from_yaml_string(
+        &contents,
+        &spec::Config {
+            hash_maps_always_nullable: cli.hash_maps_always_nullable,
+        },
+    )?;
 
     generate::rust_hyper_legacy::generate(&mut generate::rust_hyper_legacy::GeneratorConfig {
         spec: &spec,
