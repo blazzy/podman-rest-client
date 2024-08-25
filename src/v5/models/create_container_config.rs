@@ -21,7 +21,7 @@ pub struct CreateContainerConfig {
     #[serde(rename = "EnvMerge")]
     pub env_merge: Option<Vec<String>>,
     #[serde(rename = "ExposedPorts")]
-    pub exposed_ports: Option<std::collections::HashMap<String, serde_json::Value>>,
+    pub exposed_ports: Option<std::collections::HashMap<String, Option<serde_json::Value>>>,
     #[serde(rename = "Healthcheck")]
     pub healthcheck: Option<crate::v5::models::HealthcheckConfig>,
     #[serde(rename = "HostConfig")]
@@ -31,7 +31,7 @@ pub struct CreateContainerConfig {
     #[serde(rename = "Image")]
     pub image: Option<String>,
     #[serde(rename = "Labels")]
-    pub labels: Option<std::collections::HashMap<String, String>>,
+    pub labels: Option<std::collections::HashMap<String, Option<String>>>,
     /// Mac Address of the container.
     ///
     /// Deprecated: this field is deprecated since API v1.44. Use EndpointSettings.MacAddress instead.
@@ -64,7 +64,7 @@ pub struct CreateContainerConfig {
     #[serde(rename = "User")]
     pub user: Option<String>,
     #[serde(rename = "Volumes")]
-    pub volumes: Option<std::collections::HashMap<String, serde_json::Value>>,
+    pub volumes: Option<std::collections::HashMap<String, Option<serde_json::Value>>>,
     #[serde(rename = "WorkingDir")]
     pub working_dir: Option<String>,
 }

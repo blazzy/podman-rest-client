@@ -7,7 +7,7 @@ pub struct LogConfigLibpod {
     pub driver: Option<String>,
     /// A set of options to accompany the log driver.
     /// Optional.
-    pub options: Option<std::collections::HashMap<String, String>>,
+    pub options: Option<std::collections::HashMap<String, Option<String>>>,
     /// LogPath is the path the container's logs will be stored at.
     /// Only available if LogDriver is set to "json-file" or "k8s-file".
     /// Optional.

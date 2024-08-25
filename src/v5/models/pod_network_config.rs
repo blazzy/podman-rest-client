@@ -9,7 +9,8 @@ pub struct PodNetworkConfig {
     /// If the map is empty and the bridge network mode is set the container
     /// will be joined to the default network.
     #[serde(rename = "Networks")]
-    pub networks: Option<std::collections::HashMap<String, crate::v5::models::PerNetworkOptions>>,
+    pub networks:
+        Option<std::collections::HashMap<String, Option<crate::v5::models::PerNetworkOptions>>>,
     /// CNINetworks is a list of CNI networks to join the container to.
     /// If this list is empty, the default CNI network will be joined
     /// instead. If at least one entry is present, we will not join the
@@ -50,7 +51,7 @@ pub struct PodNetworkConfig {
     pub netns: Option<crate::v5::models::Namespace>,
     /// NetworkOptions are additional options for each network
     /// Optional.
-    pub network_options: Option<std::collections::HashMap<String, Vec<String>>>,
+    pub network_options: Option<std::collections::HashMap<String, Option<Vec<String>>>>,
     /// NoManageHosts indicates that /etc/hosts should not be managed by the
     /// pod. Instead, each container will create a separate /etc/hosts as
     /// they would if not in a pod.

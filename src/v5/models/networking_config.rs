@@ -5,5 +5,5 @@ use serde::{Deserialize, Serialize};
 pub struct NetworkingConfig {
     #[serde(rename = "EndpointsConfig")]
     pub endpoints_config:
-        Option<std::collections::HashMap<String, crate::v5::models::EndpointSettings>>,
+        Option<std::collections::HashMap<String, Option<crate::v5::models::EndpointSettings>>>,
 }

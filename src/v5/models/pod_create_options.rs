@@ -17,7 +17,7 @@ pub struct PodCreateOptions {
     pub infra: Option<bool>,
     pub infra_image: Option<String>,
     pub ipc: Option<String>,
-    pub labels: Option<std::collections::HashMap<String, String>>,
+    pub labels: Option<std::collections::HashMap<String, Option<String>>>,
     pub name: Option<String>,
     pub net: Option<crate::v5::models::NetOptions>,
     pub pid: Option<String>,

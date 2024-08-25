@@ -8,7 +8,7 @@ pub struct SecretCreate {
     pub driver: Option<crate::v5::models::SecretDriverSpec>,
     /// Labels are labels on the secret
     #[serde(rename = "Labels")]
-    pub labels: Option<std::collections::HashMap<String, String>>,
+    pub labels: Option<std::collections::HashMap<String, Option<String>>>,
     /// User-defined name of the secret.
     #[serde(rename = "Name")]
     pub name: Option<String>,

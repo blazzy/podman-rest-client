@@ -35,7 +35,7 @@ pub struct PodBasicConfig {
     pub ipcns: Option<crate::v5::models::Namespace>,
     /// Labels are key-value pairs that are used to add metadata to pods.
     /// Optional.
-    pub labels: Option<std::collections::HashMap<String, String>>,
+    pub labels: Option<std::collections::HashMap<String, Option<String>>>,
     /// Name is the name of the pod.
     /// If not provided, a name will be generated when the pod is created.
     /// Optional.
@@ -77,7 +77,7 @@ pub struct PodBasicConfig {
     /// Optional.
     pub shared_namespaces: Option<Vec<String>>,
     /// Sysctl sets kernel parameters for the pod
-    pub sysctl: Option<std::collections::HashMap<String, String>>,
+    pub sysctl: Option<std::collections::HashMap<String, Option<String>>>,
     pub userns: Option<crate::v5::models::Namespace>,
     pub utsns: Option<crate::v5::models::Namespace>,
 }

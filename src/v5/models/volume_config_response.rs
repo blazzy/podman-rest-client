@@ -23,7 +23,7 @@ pub struct VolumeConfigResponse {
     /// can be passed during volume creation to provide information for third
     /// party tools.
     #[serde(rename = "Labels")]
-    pub labels: Option<std::collections::HashMap<String, String>>,
+    pub labels: Option<std::collections::HashMap<String, Option<String>>>,
     /// LockNumber is the number of the volume's Libpod lock.
     #[serde(rename = "LockNumber")]
     pub lock_number: Option<u32>,
@@ -51,7 +51,7 @@ pub struct VolumeConfigResponse {
     /// manpage.
     /// For non-local drivers, these are passed as-is to the volume plugin.
     #[serde(rename = "Options")]
-    pub options: Option<std::collections::HashMap<String, String>>,
+    pub options: Option<std::collections::HashMap<String, Option<String>>>,
     /// Scope is unused and provided solely for Docker compatibility. It is
     /// unconditionally set to "local".
     #[serde(rename = "Scope")]
@@ -63,7 +63,7 @@ pub struct VolumeConfigResponse {
     /// made about its format or contents. Further, it is an optional field,
     /// so it may not be set even in cases where a volume plugin is in use.
     #[serde(rename = "Status")]
-    pub status: Option<std::collections::HashMap<String, ()>>,
+    pub status: Option<std::collections::HashMap<String, Option<()>>>,
     /// StorageID is the ID of the container backing the volume in c/storage.
     /// Only used with Image Volumes.
     #[serde(rename = "StorageID")]

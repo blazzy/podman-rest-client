@@ -47,7 +47,7 @@ pub struct HostInfo {
     #[serde(rename = "rootlessNetworkCmd")]
     pub rootless_network_cmd: Option<String>,
     #[serde(rename = "runtimeInfo")]
-    pub runtime_info: Option<std::collections::HashMap<String, ()>>,
+    pub runtime_info: Option<std::collections::HashMap<String, Option<()>>>,
     pub security: Option<crate::v5::models::SecurityInfo>,
     /// ServiceIsRemote is true when the podman/libpod service is remote to the client
     #[serde(rename = "serviceIsRemote")]

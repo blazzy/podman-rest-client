@@ -9,7 +9,7 @@ pub struct EndpointSettings {
     #[serde(rename = "DNSNames")]
     pub dns_names: Option<Vec<String>>,
     #[serde(rename = "DriverOpts")]
-    pub driver_opts: Option<std::collections::HashMap<String, String>>,
+    pub driver_opts: Option<std::collections::HashMap<String, Option<String>>>,
     #[serde(rename = "EndpointID")]
     pub endpoint_id: Option<String>,
     #[serde(rename = "Gateway")]

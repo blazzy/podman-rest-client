@@ -25,7 +25,7 @@ pub struct Summary {
     pub id: String,
     /// User-defined key/value metadata.
     #[serde(rename = "Labels")]
-    pub labels: std::collections::HashMap<String, String>,
+    pub labels: std::collections::HashMap<String, Option<String>>,
     /// ID of the parent image.
     ///
     /// Depending on how the image was created, this field may be empty and

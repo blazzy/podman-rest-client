@@ -14,7 +14,7 @@ pub struct Info {
     /// VolumeContext is the context originating from the CSI storage plugin
     /// when the Volume is created.
     #[serde(rename = "VolumeContext")]
-    pub volume_context: Option<std::collections::HashMap<String, String>>,
+    pub volume_context: Option<std::collections::HashMap<String, Option<String>>>,
     /// VolumeID is the ID of the Volume as seen by the CSI storage plugin. This
     /// is distinct from the Volume's Swarm ID, which is the ID used by all of
     /// the Docker Engine to refer to the Volume. If this field is blank, then

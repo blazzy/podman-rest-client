@@ -9,5 +9,5 @@ pub struct PodResourceConfig {
     /// ThrottleReadBpsDevice contains the rate at which the devices in the pod can be read from/accessed
     #[serde(rename = "throttleReadBpsDevice")]
     pub throttle_read_bps_device:
-        Option<std::collections::HashMap<String, crate::v5::models::LinuxThrottleDevice>>,
+        Option<std::collections::HashMap<String, Option<crate::v5::models::LinuxThrottleDevice>>>,
 }

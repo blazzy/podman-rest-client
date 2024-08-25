@@ -12,7 +12,7 @@ pub struct ListPodsReport {
     #[serde(rename = "InfraId")]
     pub infra_id: Option<String>,
     #[serde(rename = "Labels")]
-    pub labels: Option<std::collections::HashMap<String, String>>,
+    pub labels: Option<std::collections::HashMap<String, Option<String>>>,
     #[serde(rename = "Name")]
     pub name: Option<String>,
     #[serde(rename = "Namespace")]

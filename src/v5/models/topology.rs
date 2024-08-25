@@ -33,5 +33,5 @@ use serde::{Deserialize, Serialize};
 /// between.
 pub struct Topology {
     #[serde(rename = "Segments")]
-    pub segments: Option<std::collections::HashMap<String, String>>,
+    pub segments: Option<std::collections::HashMap<String, Option<String>>>,
 }

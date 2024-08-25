@@ -9,14 +9,14 @@ pub struct VolumeCreateOptions {
     pub ignore_if_exists: Option<bool>,
     /// User-defined key/value metadata. Provided for compatibility
     #[serde(rename = "Label")]
-    pub label: Option<std::collections::HashMap<String, String>>,
+    pub label: Option<std::collections::HashMap<String, Option<String>>>,
     /// User-defined key/value metadata. Preferred field, will override Label
     #[serde(rename = "Labels")]
-    pub labels: Option<std::collections::HashMap<String, String>>,
+    pub labels: Option<std::collections::HashMap<String, Option<String>>>,
     /// New volume's name. Can be left blank
     #[serde(rename = "Name")]
     pub name: Option<String>,
     /// Mapping of driver options and values.
     #[serde(rename = "Options")]
-    pub options: Option<std::collections::HashMap<String, String>>,
+    pub options: Option<std::collections::HashMap<String, Option<String>>>,
 }

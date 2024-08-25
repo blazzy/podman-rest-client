@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 /// InspectLogConfig holds information about a container's configured log driver
 pub struct InspectLogConfig {
     #[serde(rename = "Config")]
-    pub config: Option<std::collections::HashMap<String, String>>,
+    pub config: Option<std::collections::HashMap<String, Option<String>>>,
     /// Path specifies a path to the log file
     #[serde(rename = "Path")]
     pub path: Option<String>,

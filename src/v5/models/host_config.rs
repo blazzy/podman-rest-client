@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 /// Portable information *should* appear in Config.
 pub struct HostConfig {
     #[serde(rename = "Annotations")]
-    pub annotations: Option<std::collections::HashMap<String, String>>,
+    pub annotations: Option<std::collections::HashMap<String, Option<String>>>,
     #[serde(rename = "AutoRemove")]
     pub auto_remove: Option<bool>,
     /// Applicable to all platforms
@@ -123,7 +123,7 @@ pub struct HostConfig {
     pub pids_limit: Option<i64>,
     #[serde(rename = "PortBindings")]
     pub port_bindings:
-        Option<std::collections::HashMap<String, Vec<crate::v5::models::PortBinding>>>,
+        Option<std::collections::HashMap<String, Option<Vec<crate::v5::models::PortBinding>>>>,
     #[serde(rename = "Privileged")]
     pub privileged: Option<bool>,
     #[serde(rename = "PublishAllPorts")]
@@ -142,11 +142,11 @@ pub struct HostConfig {
     #[serde(rename = "ShmSize")]
     pub shm_size: Option<i64>,
     #[serde(rename = "StorageOpt")]
-    pub storage_opt: Option<std::collections::HashMap<String, String>>,
+    pub storage_opt: Option<std::collections::HashMap<String, Option<String>>>,
     #[serde(rename = "Sysctls")]
-    pub sysctls: Option<std::collections::HashMap<String, String>>,
+    pub sysctls: Option<std::collections::HashMap<String, Option<String>>>,
     #[serde(rename = "Tmpfs")]
-    pub tmpfs: Option<std::collections::HashMap<String, String>>,
+    pub tmpfs: Option<std::collections::HashMap<String, Option<String>>>,
     #[serde(rename = "UTSMode")]
     pub uts_mode: Option<String>,
     #[serde(rename = "Ulimits")]

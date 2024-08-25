@@ -1220,7 +1220,7 @@ pub trait Containers: HasConfig + Send + Sync {
         &'a self,
     ) -> Pin<
         Box<
-            dyn Future<Output = Result<std::collections::HashMap<String, String>, Error>>
+            dyn Future<Output = Result<std::collections::HashMap<String, Option<String>>, Error>>
                 + Send
                 + 'a,
         >,
@@ -1293,7 +1293,7 @@ pub trait Containers: HasConfig + Send + Sync {
         params: Option<crate::v4::params::GenerateSystemdLibpod<'a>>,
     ) -> Pin<
         Box<
-            dyn Future<Output = Result<std::collections::HashMap<String, String>, Error>>
+            dyn Future<Output = Result<std::collections::HashMap<String, Option<String>>, Error>>
                 + Send
                 + 'a,
         >,

@@ -46,7 +46,7 @@ pub struct ListContainer {
     pub is_infra: Option<bool>,
     /// Labels for container
     #[serde(rename = "Labels")]
-    pub labels: Option<std::collections::HashMap<String, String>>,
+    pub labels: Option<std::collections::HashMap<String, Option<String>>>,
     /// User volume mounts
     #[serde(rename = "Mounts")]
     pub mounts: Option<Vec<String>>,

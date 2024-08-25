@@ -15,25 +15,25 @@ pub struct ContainerResourceConfig {
     /// IO read rate limit per cgroup per device, bytes per second
     #[serde(rename = "throttleReadBpsDevice")]
     pub throttle_read_bps_device:
-        Option<std::collections::HashMap<String, crate::v5::models::LinuxThrottleDevice>>,
+        Option<std::collections::HashMap<String, Option<crate::v5::models::LinuxThrottleDevice>>>,
     /// IO read rate limit per cgroup per device, IO per second
     #[serde(rename = "throttleReadIOPSDevice")]
     pub throttle_read_iops_device:
-        Option<std::collections::HashMap<String, crate::v5::models::LinuxThrottleDevice>>,
+        Option<std::collections::HashMap<String, Option<crate::v5::models::LinuxThrottleDevice>>>,
     /// IO write rate limit per cgroup per device, bytes per second
     #[serde(rename = "throttleWriteBpsDevice")]
     pub throttle_write_bps_device:
-        Option<std::collections::HashMap<String, crate::v5::models::LinuxThrottleDevice>>,
+        Option<std::collections::HashMap<String, Option<crate::v5::models::LinuxThrottleDevice>>>,
     /// IO write rate limit per cgroup per device, IO per second
     #[serde(rename = "throttleWriteIOPSDevice")]
     pub throttle_write_iops_device:
-        Option<std::collections::HashMap<String, crate::v5::models::LinuxThrottleDevice>>,
+        Option<std::collections::HashMap<String, Option<crate::v5::models::LinuxThrottleDevice>>>,
     /// CgroupConf are key-value options passed into the container runtime
     /// that are used to configure cgroup v2.
     /// Optional.
-    pub unified: Option<std::collections::HashMap<String, String>>,
+    pub unified: Option<std::collections::HashMap<String, Option<String>>>,
     /// Weight per cgroup per device, can override BlkioWeight
     #[serde(rename = "weightDevice")]
     pub weight_device:
-        Option<std::collections::HashMap<String, crate::v5::models::LinuxWeightDevice>>,
+        Option<std::collections::HashMap<String, Option<crate::v5::models::LinuxWeightDevice>>>,
 }

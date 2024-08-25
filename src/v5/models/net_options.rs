@@ -10,8 +10,9 @@ pub struct NetOptions {
     pub netns: Option<crate::v5::models::Namespace>,
     pub network_alias: Option<Vec<String>>,
     /// NetworkOptions are additional options for each network
-    pub network_options: Option<std::collections::HashMap<String, Vec<String>>>,
-    pub networks: Option<std::collections::HashMap<String, crate::v5::models::PerNetworkOptions>>,
+    pub network_options: Option<std::collections::HashMap<String, Option<Vec<String>>>>,
+    pub networks:
+        Option<std::collections::HashMap<String, Option<crate::v5::models::PerNetworkOptions>>>,
     pub no_manage_hosts: Option<bool>,
     pub no_manage_resolv_conf: Option<bool>,
     pub portmappings: Option<Vec<crate::v5::models::PortMapping>>,

@@ -46,8 +46,9 @@ pub struct InspectNetworkSettings {
     /// container has joined.
     /// It is a map of network name to network information.
     #[serde(rename = "Networks")]
-    pub networks:
-        Option<std::collections::HashMap<String, crate::v5::models::InspectAdditionalNetwork>>,
+    pub networks: Option<
+        std::collections::HashMap<String, Option<crate::v5::models::InspectAdditionalNetwork>>,
+    >,
     #[serde(rename = "Ports")]
     pub ports:
         Option<std::collections::HashMap<String, Option<Vec<crate::v5::models::InspectHostPort>>>>,

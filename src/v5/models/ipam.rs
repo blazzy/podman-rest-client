@@ -7,5 +7,5 @@ pub struct Ipam {
     #[serde(rename = "Driver")]
     pub driver: Option<String>,
     #[serde(rename = "Options")]
-    pub options: Option<std::collections::HashMap<String, String>>,
+    pub options: Option<std::collections::HashMap<String, Option<String>>>,
 }

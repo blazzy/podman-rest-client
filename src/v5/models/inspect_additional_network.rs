@@ -16,7 +16,7 @@ pub struct InspectAdditionalNetwork {
     /// DriverOpts is presently unused and maintained exclusively for
     /// compatibility.
     #[serde(rename = "DriverOpts")]
-    pub driver_opts: Option<std::collections::HashMap<String, String>>,
+    pub driver_opts: Option<std::collections::HashMap<String, Option<String>>>,
     /// EndpointID is unused, maintained exclusively for compatibility.
     #[serde(rename = "EndpointID")]
     pub endpoint_id: Option<String>,
@@ -32,7 +32,7 @@ pub struct InspectAdditionalNetwork {
     /// IPAMConfig is presently unused and maintained exclusively for
     /// compatibility.
     #[serde(rename = "IPAMConfig")]
-    pub ipam_config: Option<std::collections::HashMap<String, String>>,
+    pub ipam_config: Option<std::collections::HashMap<String, Option<String>>>,
     /// IPAddress is the IP address for this network.
     #[serde(rename = "IPAddress")]
     pub ip_address: Option<String>,

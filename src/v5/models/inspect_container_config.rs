@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 pub struct InspectContainerConfig {
     /// Container annotations
     #[serde(rename = "Annotations")]
-    pub annotations: Option<std::collections::HashMap<String, String>>,
+    pub annotations: Option<std::collections::HashMap<String, Option<String>>>,
     /// Unused, at present
     #[serde(rename = "AttachStderr")]
     pub attach_stderr: Option<bool>,
@@ -49,7 +49,7 @@ pub struct InspectContainerConfig {
     pub image: Option<String>,
     /// Container labels
     #[serde(rename = "Labels")]
-    pub labels: Option<std::collections::HashMap<String, String>>,
+    pub labels: Option<std::collections::HashMap<String, Option<String>>>,
     /// On-build arguments - presently unused. More of Buildah's domain.
     #[serde(rename = "OnBuild")]
     pub on_build: Option<String>,
@@ -95,7 +95,7 @@ pub struct InspectContainerConfig {
     pub user: Option<String>,
     /// Unused, at present. I've never seen this field populated.
     #[serde(rename = "Volumes")]
-    pub volumes: Option<std::collections::HashMap<String, serde_json::Value>>,
+    pub volumes: Option<std::collections::HashMap<String, Option<serde_json::Value>>>,
     /// Container working directory
     #[serde(rename = "WorkingDir")]
     pub working_dir: Option<String>,

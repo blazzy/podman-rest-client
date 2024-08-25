@@ -8,7 +8,7 @@ pub struct GraphDriverData {
     /// This information is driver-specific, and depends on the storage-driver
     /// in use, and should be used for informational purposes only.
     #[serde(rename = "Data")]
-    pub data: std::collections::HashMap<String, String>,
+    pub data: std::collections::HashMap<String, Option<String>>,
     /// Name of the storage driver.
     #[serde(rename = "Name")]
     pub name: String,

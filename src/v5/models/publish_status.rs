@@ -9,7 +9,7 @@ pub struct PublishStatus {
     /// PublishContext is the PublishContext returned by the CSI plugin when
     /// a volume is published.
     #[serde(rename = "PublishContext")]
-    pub publish_context: Option<std::collections::HashMap<String, String>>,
+    pub publish_context: Option<std::collections::HashMap<String, Option<String>>>,
     #[serde(rename = "State")]
     pub state: Option<String>,
 }
