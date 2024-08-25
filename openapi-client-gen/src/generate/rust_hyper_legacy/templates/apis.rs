@@ -4,7 +4,7 @@ use quote::quote;
 use crate::lang::rust::{
     model_type, or_default, parameter_to_str, struct_name, to_doc_comment, var_name,
 };
-use crate::{error::Error, spec::Spec, tag::Tag};
+use crate::{error::Error, model::ModelData, spec::Spec, tag::Tag};
 
 pub fn api(
     spec: &Spec,
@@ -235,6 +235,8 @@ pub fn operations(
             } else if let Some(success) = success {
                 if success.0 == 101 {
                     quote! { Box::pin(request::execute_request_upgrade(self.get_config(), #build_request)) }
+                } else if matches!(success.1.data, ModelData::PlainString) {
+                    quote! { Box::pin(request::execute_request_text(self.get_config(), #build_request)) }
                 } else if success.1.resolve_model(&spec.models)?.data.is_no_value() {
                     quote! { Box::pin(request::execute_request_unit(self.get_config(), #build_request)) }
                 } else {

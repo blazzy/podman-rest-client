@@ -185,13 +185,32 @@ impl Spec {
                                     description: None,
                                     data: ModelData::Tarball,
                                 },
-                                "application/json" | _ => Model::new(
+                                "application/octet-stream" => Model {
+                                    name,
+                                    title: None,
+                                    description: None,
+                                    data: ModelData::Bytes,
+                                },
+                                "text/plain" => Model {
+                                    name,
+                                    title: None,
+                                    description: None,
+                                    data: ModelData::PlainString,
+                                },
+                                "text/vnd.yaml" => Model {
+                                    name,
+                                    title: None,
+                                    description: None,
+                                    data: ModelData::PlainString,
+                                },
+                                "application/json" => Model::new(
                                     name,
                                     yaml,
                                     &format!("#paths/{}/responses/{}", operation_id, code),
                                     &mut self.models,
                                     &self.config,
                                 )?,
+                                _ => panic!("Unsupported content-type {}", produces),
                             };
                             operation.responses.insert(code.clone(), model);
                         }

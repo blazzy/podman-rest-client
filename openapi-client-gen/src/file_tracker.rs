@@ -25,7 +25,7 @@ impl FileTracker {
         if !self.files.insert(path.clone()) {
             log::error!("File written to multiple times: {}", path.display());
         }
-        log::info!("Creating: {}", path.display());
+        //log::info!("Creating: {}", path.display());
 
         if let Some(parent) = path.parent() {
             fs::create_dir_all(parent)?;

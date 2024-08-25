@@ -178,6 +178,8 @@ pub fn model_type(
 ) -> Result<TokenStream, Error> {
     Ok(match &model.data {
         ModelData::String => quote! { String },
+        ModelData::PlainString => quote! { String },
+        ModelData::Bytes => quote! { bytes::Bytes },
         ModelData::Integer(format) => format.as_token_stream(),
         ModelData::Number => quote! { f64 },
         ModelData::Boolean => quote! { bool },

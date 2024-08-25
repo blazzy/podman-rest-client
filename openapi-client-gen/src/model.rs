@@ -21,6 +21,8 @@ pub enum ModelData {
     Integer(IntegerFormat),
     Number,
     Boolean,
+    Bytes,
+    PlainString,
     Array(Box<Model>),
     HashMap(Box<Model>, bool),
     ArbitraryValue,
@@ -176,21 +178,41 @@ fn from_yaml(
     match type_name {
         "object" => {
             let additional_properties = &yaml["additionalProperties"];
+            println!(
+                "parent_name {} {} {}",
+                parent_name,
+                additional_properties.is_null(),
+                additional_properties.is_badvalue(),
+            );
 
             if !additional_properties.is_null() && !additional_properties.is_badvalue() {
                 let nullable = Some(true) == additional_properties["nullable"].as_bool()
                     || Some(true) == additional_properties["x-nullable"].as_bool();
 
-                return Ok(ModelData::HashMap(
-                    Box::new(Model::new(
-                        "additionalProperties".into(),
-                        additional_properties,
-                        &format!("{}/{}", model_ref, "additionalProperties"),
-                        models,
-                        config,
-                    )?),
-                    config.hash_maps_always_nullable || nullable,
-                ));
+                if let Some(hash) = additional_properties.as_hash() {
+                    if hash.is_empty() {
+                        return Ok(ModelData::HashMap(
+                            Box::new(Model {
+                                name: "additionalProperties".into(),
+                                description: None,
+                                title: None,
+                                data: ModelData::ArbitraryValue,
+                            }),
+                            config.hash_maps_always_nullable || nullable,
+                        ));
+                    } else {
+                        return Ok(ModelData::HashMap(
+                            Box::new(Model::new(
+                                "additionalProperties".into(),
+                                additional_properties,
+                                &format!("{}/{}", model_ref, "additionalProperties"),
+                                models,
+                                config,
+                            )?),
+                            config.hash_maps_always_nullable || nullable,
+                        ));
+                    }
+                };
             }
 
             if let Some(yaml_props) = yaml["properties"].as_hash() {
